@@ -6,7 +6,7 @@
 #define AD9834_DATA GPIOB_8
 #define AD9834_SYNC GPIOB_9
 
-volatile u16 CONTROL_DATA=0;		//��ֵʵʱ�洢�˵�ǰ���ƼĴ�����״̬
+volatile u16 CONTROL_DATA=0;		//该值实时存储了当前控制寄存器的状态
 
 void AD9834_Write_Register(u16 Data)
 {

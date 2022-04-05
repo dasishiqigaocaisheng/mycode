@@ -5,27 +5,27 @@
 #include "Memory.h"
 #include "Timer.h"
 
-#define SD_READ_BLOCK_SIZE	 512	//¶ÁÈ¡¿é´óĞ¡
-#define SD_WRITE_BLOCK_SIZE	 1024	//Ğ´Èë¿é´óĞ¡
-#define SD_CARD_BLOCK_SIZE	 512	//SDHC¿¨¹Ì¶¨¿é´óĞ¡
-#define SD_MAX_BLOCK_ADDRESS 67108863		//SD¿¨×î´ó¿éµØÖ·
-#define SD_MAX_BYTE_ADDRESS  34359738367	//SD¿¨×î´ó×Ö½ÚµØÖ·£¨4GB-1B£©
-#define SD_MAX_DLEN			 131072	//×î´óµ¥´Î´«ÊäÊı¾İÁ¿£¨128*1024×Ö½Ú£©
+#define SD_READ_BLOCK_SIZE	 512	//è¯»å–å—å¤§å°
+#define SD_WRITE_BLOCK_SIZE	 1024	//å†™å…¥å—å¤§å°
+#define SD_CARD_BLOCK_SIZE	 512	//SDHCå¡å›ºå®šå—å¤§å°
+#define SD_MAX_BLOCK_ADDRESS 67108863		//SDå¡æœ€å¤§å—åœ°å€
+#define SD_MAX_BYTE_ADDRESS  34359738367	//SDå¡æœ€å¤§å­—èŠ‚åœ°å€ï¼ˆ4GB-1Bï¼‰
+#define SD_MAX_DLEN			 131072	//æœ€å¤§å•æ¬¡ä¼ è¾“æ•°æ®é‡ï¼ˆ128*1024å­—èŠ‚ï¼‰
 
-/*ÃüÁîµÄÏìÓ¦ÀàĞÍ*/
-#define SD_RESPONSE_TYPE_NONE	0	//ÎŞÏìÓ¦
-#define SD_RESPONSE_TYPE_SHORT  1	//¶ÌÏìÓ¦
-#define SD_RESPONSE_TYPE_LONG	3	//³¤ÏìÓ¦
+/*å‘½ä»¤çš„å“åº”ç±»å‹*/
+#define SD_RESPONSE_TYPE_NONE	0	//æ— å“åº”
+#define SD_RESPONSE_TYPE_SHORT  1	//çŸ­å“åº”
+#define SD_RESPONSE_TYPE_LONG	3	//é•¿å“åº”
 
-/*¶ÁÈ¡ÏìÓ¦Ê±ÊÇ·ñ¼ì²éCRC*/
-#define SD_RESPONSE_CRC_CARE		0	//¼ì²é
-#define SD_RESPONSE_CRC_IGNORE		1	//²»¼ì²é
+/*è¯»å–å“åº”æ—¶æ˜¯å¦æ£€æŸ¥CRC*/
+#define SD_RESPONSE_CRC_CARE		0	//æ£€æŸ¥
+#define SD_RESPONSE_CRC_IGNORE		1	//ä¸æ£€æŸ¥
 
-#define SD_DMA2_SR_CLEAR() DMA2->HIFCR|=0xf<<18	//Çå³ıDMAÖĞ¶Ï±êÖ¾
-#define SD_CARD_SR_CLEAR() SDIO->ICR|=0xc007ff	//Çå³ıSDIOÖĞ¶Ï±êÖ¾
+#define SD_DMA2_SR_CLEAR() DMA2->HIFCR|=0xf<<18	//æ¸…é™¤DMAä¸­æ–­æ ‡å¿—
+#define SD_CARD_SR_CLEAR() SDIO->ICR|=0xc007ff	//æ¸…é™¤SDIOä¸­æ–­æ ‡å¿—
 
-#define SDIO_DCTRL_READ 	 0x0000009b	//Ö´ĞĞ¶Á²Ù×÷Ê±£¬SDIO->DCTRLµÄÅäÖÃ
-#define SDIO_DCTRL_WRITE	 0x00000099 //Ö´ĞĞĞ´²Ù×÷Ê±£¬SDIO->DCTRLµÄÅäÖÃ
+#define SDIO_DCTRL_READ 	 0x0000009b	//æ‰§è¡Œè¯»æ“ä½œæ—¶ï¼ŒSDIO->DCTRLçš„é…ç½®
+#define SDIO_DCTRL_WRITE	 0x00000099 //æ‰§è¡Œå†™æ“ä½œæ—¶ï¼ŒSDIO->DCTRLçš„é…ç½®
 
 #define INTERRUPT_TYPE_WRITE 1
 #define INTERRUPT_TYPE_READ  2
@@ -40,29 +40,29 @@ u8 Data_Ready=0;
 u8 Fast_Mode=0;
 u8 Interrupt_Type=0;
 u8 Interrupt_Flag=0;
-u32 RCA;	//SD¿¨µØÖ·
+u32 RCA;	//SDå¡åœ°å€
 
-u8 *Send_Buffer1,*Send_Buffer2;	//Á½¸ö·¢ËÍ»º³å
-u8* Receive_Buffer;				//Ò»¸ö½ÓÊÕ»º³å
+u8 *Send_Buffer1,*Send_Buffer2;	//ä¸¤ä¸ªå‘é€ç¼“å†²
+u8* Receive_Buffer;				//ä¸€ä¸ªæ¥æ”¶ç¼“å†²
 
 GeneralTimer_Info SD_Timer;
 
-/*·¢ËÍÒ»¸öCMDÃüÁî*/
+/*å‘é€ä¸€ä¸ªCMDå‘½ä»¤*/
 void _SD_Card_Send_Command(u8 CMD_Index, u32 CMD, u8 Response_Type);
 
-/*·¢ËÍÒ»¸öACMDÃüÁî*/
+/*å‘é€ä¸€ä¸ªACMDå‘½ä»¤*/
 void _SD_Card_Send_Application_Command(u8 CMD_Index, u32 CMD, u16 RCA, u8 Response_Type);
 
-/*¶ÁÈ¡ÏìÓ¦*/
+/*è¯»å–å“åº”*/
 void _SD_Card_Read_Response(u8 Response_Type, u8 Response_CRC, u8* CMD_Index, void* Buffer);
 
-/*Ìø¹ıÏìÓ¦£¨²»¶ÁÈ¡£©*/
+/*è·³è¿‡å“åº”ï¼ˆä¸è¯»å–ï¼‰*/
 void _SD_Card_Skip_Response(u8 Response_CRC);
 
-/*Ğ´¼¸¸öÁ¬Ğø¿é£¬ÕâÀï¿é´óĞ¡ÓÉSD_WRITE_BLOCK_SIZE¶¨Òå£¬µØÖ·Ò²»á·¢Éú¸Ä±ä*/
+/*å†™å‡ ä¸ªè¿ç»­å—ï¼Œè¿™é‡Œå—å¤§å°ç”±SD_WRITE_BLOCK_SIZEå®šä¹‰ï¼Œåœ°å€ä¹Ÿä¼šå‘ç”Ÿæ”¹å˜*/
 u8 _SD_Card_Write_Blocks(u32 Block_Address, u32 Block_Number, void* Data);
 
-/*¶ÁÈ¡¼¸¸öÁ¬ĞøµÄ¿é£¬¿é´óĞ¡ÓÉSD_READ_BLOCK_SIZE¶¨Òå£¬µØÖ·Ò²»á·¢Éú¸Ä±ä*/
+/*è¯»å–å‡ ä¸ªè¿ç»­çš„å—ï¼Œå—å¤§å°ç”±SD_READ_BLOCK_SIZEå®šä¹‰ï¼Œåœ°å€ä¹Ÿä¼šå‘ç”Ÿæ”¹å˜*/
 u8 _SD_Card_Read_Blocks(u32 Block_Address, u32 Block_Number, void* Data);
 
 void SD_Card_Init(void)
@@ -70,10 +70,10 @@ void SD_Card_Init(void)
 	u8 Command_Index;
 	u32 Command[4];
 	
-	RCC->AHB1ENR|=1<<2;	//GPIOCÊ±ÖÓÊ¹ÄÜ
-	RCC->AHB1ENR|=1<<3;	//GPIODÊ±ÖÓÊ¹ÄÜ
-	RCC->AHB1ENR|=1<<22;//DMA2Ê±ÖÓÊ¹ÄÜ
-	RCC->APB2ENR|=1<<11;//SDIOÊ±ÖÓÊ¹ÄÜ
+	RCC->AHB1ENR|=1<<2;	//GPIOCæ—¶é’Ÿä½¿èƒ½
+	RCC->AHB1ENR|=1<<3;	//GPIODæ—¶é’Ÿä½¿èƒ½
+	RCC->AHB1ENR|=1<<22;//DMA2æ—¶é’Ÿä½¿èƒ½
+	RCC->APB2ENR|=1<<11;//SDIOæ—¶é’Ÿä½¿èƒ½
 	RCC->APB2RSTR|=1<<11;
 	
 	GPIO_Set(GPIOC,PIN8|PIN9|PIN10|PIN11|PIN12,GPIO_MODE_AF,
@@ -89,16 +89,16 @@ void SD_Card_Init(void)
 	GPIO_AF_Set(GPIOD,2,12);
 	RCC->APB2RSTR&=~(1<<11);
 
-	SDIO->POWER|=3;		//SDIOÉÏµç
-	SDIO->CLKCR|=158;	//Ê±ÖÓ160·ÖÆµ£¬300kHz
-	delay_us(500);		//¸Ã¼Ä´æÆ÷Á½´ÎÁ¬ĞøĞ´ÈëÊ±¼ä¼ä¸ô²»ÄÜĞ¡ÓÚÈı¸öSDIOÊ±ÖÓÖÜÆÚ
-	SDIO->CLKCR|=1<<8;	//Ê¹ÄÜÊ±ÖÓ
+	SDIO->POWER|=3;		//SDIOä¸Šç”µ
+	SDIO->CLKCR|=158;	//æ—¶é’Ÿ160åˆ†é¢‘ï¼Œ300kHz
+	delay_us(500);		//è¯¥å¯„å­˜å™¨ä¸¤æ¬¡è¿ç»­å†™å…¥æ—¶é—´é—´éš”ä¸èƒ½å°äºä¸‰ä¸ªSDIOæ—¶é’Ÿå‘¨æœŸ
+	SDIO->CLKCR|=1<<8;	//ä½¿èƒ½æ—¶é’Ÿ
 	delay_us(500);
-	SDIO->CLKCR|=1<<11;	//4Î»×ÜÏß¿í¶È
+	SDIO->CLKCR|=1<<11;	//4ä½æ€»çº¿å®½åº¦
 	delay_us(500);
-	//SDIO->CLKCR|=1<<14;	//¿ªÆôÓ²¼şÁ÷¿ØÖÆ
+	//SDIO->CLKCR|=1<<14;	//å¼€å¯ç¡¬ä»¶æµæ§åˆ¶
 	
-	SDIO->MASK|=1<<8;	//Êı¾İ¿é½áÊøÖĞ¶ÏÊ¹ÄÜ
+	SDIO->MASK|=1<<8;	//æ•°æ®å—ç»“æŸä¸­æ–­ä½¿èƒ½
 	//MY_NVIC_Init(Pre_Priority,Sub_Priority,SDIO_IRQn,Interrupt_Group);
 	MY_NVIC_Init(1,1,SDIO_IRQn,2);
 	SD_CARD_SR_CLEAR();
@@ -106,49 +106,49 @@ void SD_Card_Init(void)
 	delay_ms(20);
 	
 	_SD_Card_Send_Command(0,0,SD_RESPONSE_TYPE_NONE);	//CMD0
-	_SD_Card_Send_Command(8,0x1aa,SD_RESPONSE_TYPE_SHORT);	//CMD8£¬¸æÖªÖ÷»úÔÊĞíµçÑ¹·¶Î§
+	_SD_Card_Send_Command(8,0x1aa,SD_RESPONSE_TYPE_SHORT);	//CMD8ï¼Œå‘ŠçŸ¥ä¸»æœºå…è®¸ç”µå‹èŒƒå›´
 	_SD_Card_Read_Response(SD_RESPONSE_TYPE_SHORT,SD_RESPONSE_CRC_CARE,&Command_Index,Command);
 
 	_SD_Card_Send_Command(55,0,SD_RESPONSE_TYPE_SHORT);
 	_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
-	_SD_Card_Send_Command(41,0x40000000,SD_RESPONSE_TYPE_SHORT);	//ACMD41£¬¸æÖªÖ÷»úÔÊĞíSDHC
+	_SD_Card_Send_Command(41,0x40000000,SD_RESPONSE_TYPE_SHORT);	//ACMD41ï¼Œå‘ŠçŸ¥ä¸»æœºå…è®¸SDHC
 	_SD_Card_Read_Response(SD_RESPONSE_TYPE_SHORT,SD_RESPONSE_CRC_IGNORE,&Command_Index,Command);
-	while (((Command[0]>>31)&1)!=1)	//Ñ­»··¢ËÍACMD41£¬Ö±µ½SD¿¨ÉÏµçÍê³É
+	while (((Command[0]>>31)&1)!=1)	//å¾ªç¯å‘é€ACMD41ï¼Œç›´åˆ°SDå¡ä¸Šç”µå®Œæˆ
 	{
 		_SD_Card_Send_Application_Command(41,(1<<30)+(1<<20),0,SD_RESPONSE_TYPE_SHORT);
 		_SD_Card_Read_Response(SD_RESPONSE_TYPE_SHORT,SD_RESPONSE_CRC_IGNORE,&Command_Index,Command);
 	}
-	_SD_Card_Send_Command(2,0,SD_RESPONSE_TYPE_LONG);	//CMD2£¬»ñÈ¡CID¼Ä´æÆ÷
+	_SD_Card_Send_Command(2,0,SD_RESPONSE_TYPE_LONG);	//CMD2ï¼Œè·å–CIDå¯„å­˜å™¨
 	_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
-	_SD_Card_Send_Command(3,0,SD_RESPONSE_TYPE_SHORT);	//CMD3£¬»ñÈ¡RCAµØÖ·
+	_SD_Card_Send_Command(3,0,SD_RESPONSE_TYPE_SHORT);	//CMD3ï¼Œè·å–RCAåœ°å€
 	_SD_Card_Read_Response(SD_RESPONSE_TYPE_SHORT,SD_RESPONSE_CRC_CARE,&Command_Index,Command);
 	RCA=Command[0]>>16;
-	_SD_Card_Send_Command(9,RCA<<16,SD_RESPONSE_TYPE_LONG);	//CMD9£¬»ñÈ¡CSD¼Ä´æÆ÷
+	_SD_Card_Send_Command(9,RCA<<16,SD_RESPONSE_TYPE_LONG);	//CMD9ï¼Œè·å–CSDå¯„å­˜å™¨
 	_SD_Card_Read_Response(SD_RESPONSE_TYPE_LONG,SD_RESPONSE_CRC_CARE,&Command_Index,Command);
-	_SD_Card_Send_Command(7,RCA<<16,SD_RESPONSE_TYPE_SHORT);	//CMD7£¬½øÈë´«ÊäÄ£Ê½
+	_SD_Card_Send_Command(7,RCA<<16,SD_RESPONSE_TYPE_SHORT);	//CMD7ï¼Œè¿›å…¥ä¼ è¾“æ¨¡å¼
 	_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
 	
-	_SD_Card_Send_Command(55,RCA<<16,SD_RESPONSE_TYPE_SHORT);//ACM6£¬ÉèÖÃÊı¾İ¿í¶È4Î»
+	_SD_Card_Send_Command(55,RCA<<16,SD_RESPONSE_TYPE_SHORT);//ACM6ï¼Œè®¾ç½®æ•°æ®å®½åº¦4ä½
 	_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
 	_SD_Card_Send_Command(6,2,SD_RESPONSE_TYPE_SHORT);
 	_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
 	
 	SDIO->CLKCR&=~0xff;
 	delay_us(500);
-	SDIO->CLKCR|=0;	//2·ÖÆµ£¬24MHz
+	SDIO->CLKCR|=0;	//2åˆ†é¢‘ï¼Œ24MHz
 	
-	DMA2_Stream6->CR|=1<<5;	//ÍâÉèÁ÷¿ØÖÆÆ÷
-	//DMA2_Stream6->CR|=1<<6;	//´æ´¢Æ÷µ½ÍâÉè
-	DMA2_Stream6->CR|=1<<10;//´æ´¢Æ÷µØÖ·µİÔö
-	DMA2_Stream6->CR|=1<<12;//ÍâÉèÊı¾İ´óĞ¡32Î»
-	//DMA2_Stream6->CR|=1<<14;//´æ´¢Æ÷Êı¾İ´óĞ¡32Î»
-	DMA2_Stream6->CR|=1<<21;//ÍâÉè4½ÚÅÄÔöÁ¿Í»·¢´«Êä
-	//DMA2_Stream6->CR|=1<<23;//´æ´¢Æ÷4½ÚÅÄÔöÁ¿Í»·¢´«Êä
-	DMA2_Stream6->CR|=3<<23;//´æ´¢Æ÷16½ÚÅÄÔöÁ¿Í»·¢´«Êä
-	DMA2_Stream6->CR|=1<<27;//Í¨µÀ4
+	DMA2_Stream6->CR|=1<<5;	//å¤–è®¾æµæ§åˆ¶å™¨
+	//DMA2_Stream6->CR|=1<<6;	//å­˜å‚¨å™¨åˆ°å¤–è®¾
+	DMA2_Stream6->CR|=1<<10;//å­˜å‚¨å™¨åœ°å€é€’å¢
+	DMA2_Stream6->CR|=1<<12;//å¤–è®¾æ•°æ®å¤§å°32ä½
+	//DMA2_Stream6->CR|=1<<14;//å­˜å‚¨å™¨æ•°æ®å¤§å°32ä½
+	DMA2_Stream6->CR|=1<<21;//å¤–è®¾4èŠ‚æ‹å¢é‡çªå‘ä¼ è¾“
+	//DMA2_Stream6->CR|=1<<23;//å­˜å‚¨å™¨4èŠ‚æ‹å¢é‡çªå‘ä¼ è¾“
+	DMA2_Stream6->CR|=3<<23;//å­˜å‚¨å™¨16èŠ‚æ‹å¢é‡çªå‘ä¼ è¾“
+	DMA2_Stream6->CR|=1<<27;//é€šé“4
 	
-	DMA2_Stream6->FCR|=3<<0;//FIFOÍêÕûÈİÁ¿
-	DMA2_Stream6->FCR|=1<<2;//½ûÖ¹Ö±½ÓÄ£Ê½
+	DMA2_Stream6->FCR|=3<<0;//FIFOå®Œæ•´å®¹é‡
+	DMA2_Stream6->FCR|=1<<2;//ç¦æ­¢ç›´æ¥æ¨¡å¼
 	
 	DMA2_Stream6->PAR=(u32)&SDIO->FIFO;
 	
@@ -159,7 +159,7 @@ void SD_Card_Init(void)
 
 void SD_Card_Fast_Mode_Enable(TIM_TypeDef* Timer, u8 Interrupt_Group, u8 Pre_Priority, u8 Sub_Priority)
 {
-	//SDIO->MASK|=1<<8;	//Êı¾İ¿é½áÊøÖĞ¶ÏÊ¹ÄÜ
+	//SDIO->MASK|=1<<8;	//æ•°æ®å—ç»“æŸä¸­æ–­ä½¿èƒ½
 	GeneralTimer_Reset(Timer,&SD_Timer);
 	GeneralTimer_Global_Set(&SD_Timer,APB1_MAX_CLOCK,INSIDE_CLOCK_SOURCE,1000000,TRIGGER_SOFTWARE);
 	GeneralTimer_Timing_Init(&SD_Timer);
@@ -170,13 +170,13 @@ void SD_Card_Fast_Mode_Enable(TIM_TypeDef* Timer, u8 Interrupt_Group, u8 Pre_Pri
 void SD_Card_Fast_Mode_On(void)
 {
 	SD_CARD_SR_CLEAR();
-	SDIO->MASK|=1<<8;	//Êı¾İ¿é½áÊøÖĞ¶ÏÊ¹ÄÜ
+	SDIO->MASK|=1<<8;	//æ•°æ®å—ç»“æŸä¸­æ–­ä½¿èƒ½
 	Fast_Mode=1;
 }
 
 void SD_Card_Fast_Mode_Off(void)
 {
-	SDIO->MASK&=~(1<<8);	//Êı¾İ¿é½áÊøÖĞ¶ÏÊ§ÄÜ
+	SDIO->MASK&=~(1<<8);	//æ•°æ®å—ç»“æŸä¸­æ–­å¤±èƒ½
 	Fast_Mode=0;
 }
 
@@ -190,7 +190,7 @@ void _SD_Card_Send_Command(u8 CMD_Index, u32 CMD, u8 Response_Type)
 	u32 save;
 	
 	SDIO->ARG=CMD;
-	//¶ÔSDIO->CMDµÄÁ½´ÎÁ¬ĞøĞ´ÈëÊ±¼ä¼ä¸ô²»ÄÜÉÙÓÚ3¸öSDIOCLKÖÜÆÚ
+	//å¯¹SDIO->CMDçš„ä¸¤æ¬¡è¿ç»­å†™å…¥æ—¶é—´é—´éš”ä¸èƒ½å°‘äº3ä¸ªSDIOCLKå‘¨æœŸ
 	save=SDIO->CMD;
 	save&=~0xff;
 	save|=CMD_Index;
@@ -199,8 +199,8 @@ void _SD_Card_Send_Command(u8 CMD_Index, u32 CMD, u8 Response_Type)
 	save|=1<<10;
 	SDIO->CMD=save;
 	
-	while (((SDIO->STA>>11)&1)==1);	//ÃüÁî´«ÊäÕıÔÚ½øĞĞ
-	SDIO->ICR|=1<<7;	//ÃüÁîÒÑ·¢ËÍÇåÁã
+	while (((SDIO->STA>>11)&1)==1);	//å‘½ä»¤ä¼ è¾“æ­£åœ¨è¿›è¡Œ
+	SDIO->ICR|=1<<7;	//å‘½ä»¤å·²å‘é€æ¸…é›¶
 }
 
 void _SD_Card_Send_Application_Command(u8 CMD_Index, u32 CMD, u16 RCA, u8 Response_Type)
@@ -218,12 +218,12 @@ void _SD_Card_Read_Response(u8 Response_Type, u8 Response_CRC, u8* CMD_Index, vo
 	
 	if (Response_CRC==SD_RESPONSE_CRC_CARE)
 	{
-		while (((SDIO->STA>>6)&1)==0);	//ÃüÁîÏìÓ¦Î´½ÓÊÕ
+		while (((SDIO->STA>>6)&1)==0);	//å‘½ä»¤å“åº”æœªæ¥æ”¶
 		SDIO->ICR|=1<<6;
 	}
 	else if (Response_CRC==SD_RESPONSE_CRC_IGNORE)
 	{
-		while ((SDIO->STA&1)==0);	//ÃüÁîÏìÓ¦Î´½ÓÊÕ
+		while ((SDIO->STA&1)==0);	//å‘½ä»¤å“åº”æœªæ¥æ”¶
 		SDIO->ICR|=1<<0;
 	}
 	
@@ -245,12 +245,12 @@ void _SD_Card_Skip_Response(u8 Response_CRC)
 {
 	if (Response_CRC==SD_RESPONSE_CRC_CARE)
 	{
-		while (((SDIO->STA>>6)&1)==0);	//ÃüÁîÏìÓ¦Î´½ÓÊÕ
+		while (((SDIO->STA>>6)&1)==0);	//å‘½ä»¤å“åº”æœªæ¥æ”¶
 		SDIO->ICR|=1<<6;
 	}
 	else if (Response_CRC==SD_RESPONSE_CRC_IGNORE)
 	{
-		while ((SDIO->STA&1)==0);	//ÃüÁîÏìÓ¦Î´½ÓÊÕ
+		while ((SDIO->STA&1)==0);	//å‘½ä»¤å“åº”æœªæ¥æ”¶
 		SDIO->ICR|=1<<0;
 	}
 }
@@ -265,11 +265,11 @@ u8 _SD_Card_Write_Blocks(u32 Block_Address, u32 Block_Number, void* Data)
 	u32 Max_Length_Transfer_Time,Real_Block_Address;
 	u16 Remained_Block_Number;
 	
-	DMA2_Stream6->CR|=1<<6;	//´æ´¢Æ÷µ½ÍâÉè
+	DMA2_Stream6->CR|=1<<6;	//å­˜å‚¨å™¨åˆ°å¤–è®¾
 	DMA2_Stream6->M0AR=(u32)Data;
 	
-	Real_Block_Address=Block_Address*(SD_WRITE_BLOCK_SIZE/SD_CARD_BLOCK_SIZE);//»»Ëã³ÉÊµ¼ÊÎïÀíµØÖ·
-	if (Block_Number>SD_MAX_DLEN/SD_WRITE_BLOCK_SIZE)//Êı¾İÁ¿´óÓÚ×î´óµ¥´Î·¢ËÍÊıÁ¿
+	Real_Block_Address=Block_Address*(SD_WRITE_BLOCK_SIZE/SD_CARD_BLOCK_SIZE);//æ¢ç®—æˆå®é™…ç‰©ç†åœ°å€
+	if (Block_Number>SD_MAX_DLEN/SD_WRITE_BLOCK_SIZE)//æ•°æ®é‡å¤§äºæœ€å¤§å•æ¬¡å‘é€æ•°é‡
 	{
 		//u8 save;
 		//save=Fast_Mode;
@@ -279,12 +279,12 @@ u8 _SD_Card_Write_Blocks(u32 Block_Address, u32 Block_Number, void* Data)
 		for (i=0;i<Max_Length_Transfer_Time;i++)
 		{
 			SDIO->DLEN=SD_MAX_DLEN;
-			SDIO->DTIMER=1000000;	//Êı¾İ¶¨Ê±Æ÷Öµ
+			SDIO->DTIMER=1000000;	//æ•°æ®å®šæ—¶å™¨å€¼
 			
 			_SD_Card_Send_Command(25,Real_Block_Address+i*(SD_MAX_DLEN/SD_CARD_BLOCK_SIZE),SD_RESPONSE_TYPE_SHORT);
 			_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
 			
-			DMA2_Stream6->CR|=1;	//DMAÊ¹ÄÜ
+			DMA2_Stream6->CR|=1;	//DMAä½¿èƒ½
 			SDIO->DCTRL=SDIO_DCTRL_WRITE;
 			
 			while (Interrupt_Flag==0);
@@ -296,16 +296,16 @@ u8 _SD_Card_Write_Blocks(u32 Block_Address, u32 Block_Number, void* Data)
 		}
 		//if (save==1)
 		//	SD_Card_Fast_Mode_On();
-		if (Remained_Block_Number!=0)//Ê£ÏÂ»¹ÓĞ¿éÎ´·¢ËÍ
+		if (Remained_Block_Number!=0)//å‰©ä¸‹è¿˜æœ‰å—æœªå‘é€
 		{
 			DMA2_Stream6->M0AR=(u32)((u32*)Data+(Max_Length_Transfer_Time*SD_MAX_DLEN)/4);
 			SDIO->DLEN=Remained_Block_Number*SD_WRITE_BLOCK_SIZE;
-			SDIO->DTIMER=1000000;	//Êı¾İ¶¨Ê±Æ÷Öµ
+			SDIO->DTIMER=1000000;	//æ•°æ®å®šæ—¶å™¨å€¼
 				
 			_SD_Card_Send_Command(25,Real_Block_Address+Max_Length_Transfer_Time*(SD_MAX_DLEN/SD_CARD_BLOCK_SIZE),SD_RESPONSE_TYPE_SHORT);
 			_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
 
-			DMA2_Stream6->CR|=1;	//DMAÊ¹ÄÜ
+			DMA2_Stream6->CR|=1;	//DMAä½¿èƒ½
 			SDIO->DCTRL=SDIO_DCTRL_WRITE;
 				
 			/*if (Fast_Mode==1)
@@ -326,18 +326,18 @@ u8 _SD_Card_Write_Blocks(u32 Block_Address, u32 Block_Number, void* Data)
 		//else
 		//	Block_Ready=1;
 	}
-	else//Ò»´Î¿ÉÒÔ·¢ËÍÍê±Ï
+	else//ä¸€æ¬¡å¯ä»¥å‘é€å®Œæ¯•
 	{
 		//USART_Printf(USART1,"ll\n");
 		SDIO->DLEN=Block_Number*SD_WRITE_BLOCK_SIZE;
 		//USART_Printf(USART1,"%d\n",SDIO->DLEN);
-		SDIO->DTIMER=1000000;	//Êı¾İ¶¨Ê±Æ÷Öµ
+		SDIO->DTIMER=1000000;	//æ•°æ®å®šæ—¶å™¨å€¼
 			
 		_SD_Card_Send_Command(25,Real_Block_Address,SD_RESPONSE_TYPE_SHORT);
 		_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
 	
 		//SD_CARD_SR_CLEAR();
-		DMA2_Stream6->CR|=1;	//DMAÊ¹ÄÜ
+		DMA2_Stream6->CR|=1;	//DMAä½¿èƒ½
 		SDIO->DCTRL=SDIO_DCTRL_WRITE;
 			
 		/*if (Fast_Mode==1)
@@ -371,7 +371,7 @@ u8 _SD_Card_Read_Blocks(u32 Block_Address, u32 Block_Number, void* Data)
 	u32 Max_Length_Transfer_Time;
 	u16 Remained_Block_Number;
 	
-	DMA2_Stream6->CR&=~(1<<6);	//ÍâÉèµ½´æ´¢Æ÷
+	DMA2_Stream6->CR&=~(1<<6);	//å¤–è®¾åˆ°å­˜å‚¨å™¨
 	DMA2_Stream6->M0AR=(u32)Data;
 	
 	if (Block_Number>SD_MAX_DLEN/SD_READ_BLOCK_SIZE)
@@ -381,12 +381,12 @@ u8 _SD_Card_Read_Blocks(u32 Block_Address, u32 Block_Number, void* Data)
 		for (i=0;i<Max_Length_Transfer_Time;i++)
 		{
 			SDIO->DLEN=SD_MAX_DLEN;
-			SDIO->DTIMER=1000000;	//Êı¾İ¶¨Ê±Æ÷Öµ
+			SDIO->DTIMER=1000000;	//æ•°æ®å®šæ—¶å™¨å€¼
 			
 			_SD_Card_Send_Command(18,Block_Address,SD_RESPONSE_TYPE_SHORT);
 			_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
 			
-			DMA2_Stream6->CR|=1;	//DMAÊ¹ÄÜ
+			DMA2_Stream6->CR|=1;	//DMAä½¿èƒ½
 			SDIO->DCTRL=SDIO_DCTRL_READ;
 			
 			while (Interrupt_Flag==0);
@@ -399,12 +399,12 @@ u8 _SD_Card_Read_Blocks(u32 Block_Address, u32 Block_Number, void* Data)
 		{
 			DMA2_Stream6->M0AR=(u32)((u32*)Data+(Max_Length_Transfer_Time*SD_MAX_DLEN)/4);
 			SDIO->DLEN=Remained_Block_Number*SD_READ_BLOCK_SIZE;
-			SDIO->DTIMER=1000000;	//Êı¾İ¶¨Ê±Æ÷Öµ
+			SDIO->DTIMER=1000000;	//æ•°æ®å®šæ—¶å™¨å€¼
 				
 			_SD_Card_Send_Command(18,Block_Address,SD_RESPONSE_TYPE_SHORT);
 			_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
 				
-			DMA2_Stream6->CR|=1;	//DMAÊ¹ÄÜ
+			DMA2_Stream6->CR|=1;	//DMAä½¿èƒ½
 			SDIO->DCTRL=SDIO_DCTRL_READ;
 
 			/*if (Fast_Mode==1)
@@ -424,13 +424,13 @@ u8 _SD_Card_Read_Blocks(u32 Block_Address, u32 Block_Number, void* Data)
 	else
 	{
 		SDIO->DLEN=Block_Number*SD_READ_BLOCK_SIZE;
-		SDIO->DTIMER=1000000;	//Êı¾İ¶¨Ê±Æ÷Öµ
+		SDIO->DTIMER=1000000;	//æ•°æ®å®šæ—¶å™¨å€¼
 			
 		_SD_Card_Send_Command(18,Block_Address,SD_RESPONSE_TYPE_SHORT);
 		_SD_Card_Skip_Response(SD_RESPONSE_CRC_CARE);
 			
 		SD_CARD_SR_CLEAR();
-		DMA2_Stream6->CR|=1;	//DMAÊ¹ÄÜ
+		DMA2_Stream6->CR|=1;	//DMAä½¿èƒ½
 		SDIO->DCTRL=SDIO_DCTRL_READ;
 
 		/*if (Fast_Mode==1)
@@ -459,20 +459,20 @@ u8 SD_Card_Write_Data(long long unsigned int Byte_Address, long long unsigned in
 {
 	u16 i;
 	
-	/*¸Ãº¯ÊıÄÚµÄ¿éµØÖ·¶¼ÊÇÂß¼­µØÖ·*/
-	u32 Start_Block_Address,End_Block_Address;//ÆğÊ¼¿éµØÖ·¡¢½áÊø¿éµØÖ·
-	u16 Start_Block_Valid_Length,End_Block_Valid_Length;//ÆğÊ¼¿éµÄÓĞĞ§³¤¶È¡¢½áÊø¿éµØÖ·
+	/*è¯¥å‡½æ•°å†…çš„å—åœ°å€éƒ½æ˜¯é€»è¾‘åœ°å€*/
+	u32 Start_Block_Address,End_Block_Address;//èµ·å§‹å—åœ°å€ã€ç»“æŸå—åœ°å€
+	u16 Start_Block_Valid_Length,End_Block_Valid_Length;//èµ·å§‹å—çš„æœ‰æ•ˆé•¿åº¦ã€ç»“æŸå—åœ°å€
 	
 	Start_Block_Address=Byte_Address/SD_WRITE_BLOCK_SIZE;
 	End_Block_Address=(Byte_Address+Length)/SD_WRITE_BLOCK_SIZE;
 	
 	Start_Block_Valid_Length=SD_WRITE_BLOCK_SIZE-Byte_Address%SD_WRITE_BLOCK_SIZE;
 	End_Block_Valid_Length=(Byte_Address+Length)%SD_WRITE_BLOCK_SIZE;
-	if ((Start_Block_Valid_Length==SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length==0))	//Í·Î²¿é¶ÔÆë
+	if ((Start_Block_Valid_Length==SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length==0))	//å¤´å°¾å—å¯¹é½
 	{
 		_SD_Card_Write_Blocks(Start_Block_Address,End_Block_Address-Start_Block_Address,Data);
 	}
-	else if ((Start_Block_Valid_Length==SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length!=0))	//Í·¶ÔÆë£¬Î²²»¶ÔÆë
+	else if ((Start_Block_Valid_Length==SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length!=0))	//å¤´å¯¹é½ï¼Œå°¾ä¸å¯¹é½
 	{
 		_SD_Card_Read_Blocks(End_Block_Address*2,2,Send_Buffer1);
 		for (i=0;i<End_Block_Valid_Length;i++)
@@ -480,7 +480,7 @@ u8 SD_Card_Write_Data(long long unsigned int Byte_Address, long long unsigned in
 		_SD_Card_Write_Blocks(Start_Block_Address,End_Block_Address-Start_Block_Address,Data);
 		_SD_Card_Write_Blocks(End_Block_Address,1,Send_Buffer1);
 	}
-	else if ((Start_Block_Valid_Length!=SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length==0))	//Í·²»¶ÔÆë£¬Î²¶ÔÆë
+	else if ((Start_Block_Valid_Length!=SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length==0))	//å¤´ä¸å¯¹é½ï¼Œå°¾å¯¹é½
 	{
 		_SD_Card_Read_Blocks(Start_Block_Address*2,2,Send_Buffer1);
 		for (i=0;i<Start_Block_Valid_Length;i++)
@@ -488,9 +488,9 @@ u8 SD_Card_Write_Data(long long unsigned int Byte_Address, long long unsigned in
 		_SD_Card_Write_Blocks(Start_Block_Address,1,Send_Buffer1);
 		_SD_Card_Write_Blocks(Start_Block_Address+1,End_Block_Address-Start_Block_Address-1,((u8*)Data)+Start_Block_Valid_Length);
 	}
-	else	//Í·Î²¶¼²»¶ÔÆë
+	else	//å¤´å°¾éƒ½ä¸å¯¹é½
 	{
-		if ((Length<SD_WRITE_BLOCK_SIZE)&&(Start_Block_Address==End_Block_Address))	//³¤¶ÈĞ¡ÓÚ¿é´óĞ¡£¬ÇÒËùÓĞÊı¾İÎ»ÓÚÒ»¸ö¿éÄÚ
+		if ((Length<SD_WRITE_BLOCK_SIZE)&&(Start_Block_Address==End_Block_Address))	//é•¿åº¦å°äºå—å¤§å°ï¼Œä¸”æ‰€æœ‰æ•°æ®ä½äºä¸€ä¸ªå—å†…
 		{
 			_SD_Card_Read_Blocks(Start_Block_Address*2,2,Send_Buffer1);
 			for (i=0;i<Length;i++)
@@ -528,23 +528,23 @@ u8 SD_Card_Read_Data(long long unsigned int Byte_Address, long long unsigned int
 	End_Block_Valid_Length=(Byte_Address+Length)%SD_READ_BLOCK_SIZE;
 	if ((Start_Block_Valid_Length==SD_READ_BLOCK_SIZE)&&(End_Block_Valid_Length==0))
 		_SD_Card_Read_Blocks(Start_Block_Address,End_Block_Address-Start_Block_Address,Data);
-	else if ((Start_Block_Valid_Length==SD_READ_BLOCK_SIZE)&&(End_Block_Valid_Length!=0))	//Í·¶ÔÆë£¬Î²²»¶ÔÆë
+	else if ((Start_Block_Valid_Length==SD_READ_BLOCK_SIZE)&&(End_Block_Valid_Length!=0))	//å¤´å¯¹é½ï¼Œå°¾ä¸å¯¹é½
 	{
 		_SD_Card_Read_Blocks(Start_Block_Address,End_Block_Address-Start_Block_Address,Data);
 		_SD_Card_Read_Blocks(End_Block_Address,1,Receive_Buffer);
 		for (i=0;i<End_Block_Valid_Length;i++)
 			((u8*)Data)[Length-End_Block_Valid_Length+i]=Receive_Buffer[i];
 	}
-	else if ((Start_Block_Valid_Length!=SD_READ_BLOCK_SIZE)&&(End_Block_Valid_Length==0))	//Í·²»¶ÔÆë£¬Î²¶ÔÆë
+	else if ((Start_Block_Valid_Length!=SD_READ_BLOCK_SIZE)&&(End_Block_Valid_Length==0))	//å¤´ä¸å¯¹é½ï¼Œå°¾å¯¹é½
 	{
 		_SD_Card_Read_Blocks(Start_Block_Address,1,Receive_Buffer);
 		for (i=0;i<Start_Block_Valid_Length;i++)
 			((u8*)Data)[i]=Receive_Buffer[SD_READ_BLOCK_SIZE-Start_Block_Valid_Length+i];
 		_SD_Card_Read_Blocks(Start_Block_Address+1,End_Block_Address-Start_Block_Address-1,((u8*)Data)+Start_Block_Valid_Length);
 	}
-	else	//Í·Î²¶¼²»¶ÔÆë
+	else	//å¤´å°¾éƒ½ä¸å¯¹é½
 	{
-		if ((Length<SD_READ_BLOCK_SIZE)&&(Start_Block_Address==End_Block_Address))	//³¤¶ÈĞ¡ÓÚ¿é´óĞ¡£¬ÇÒËùÓĞÊı¾İÎ»ÓÚÒ»¸ö¿éÄÚ
+		if ((Length<SD_READ_BLOCK_SIZE)&&(Start_Block_Address==End_Block_Address))	//é•¿åº¦å°äºå—å¤§å°ï¼Œä¸”æ‰€æœ‰æ•°æ®ä½äºä¸€ä¸ªå—å†…
 		{
 			_SD_Card_Read_Blocks(Start_Block_Address,1,Receive_Buffer);
 			for (i=0;i<Length;i++)
@@ -578,35 +578,35 @@ u8 SD_Card_Set_Memory(long long unsigned int Byte_Address, long long unsigned in
 	Start_Block_Valid_Length=SD_WRITE_BLOCK_SIZE-Byte_Address%SD_WRITE_BLOCK_SIZE;
 	End_Block_Valid_Length=(Byte_Address+Length)%SD_WRITE_BLOCK_SIZE;
 	
-	if ((Start_Block_Valid_Length==SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length==0))	//Í·Î²¿é¶ÔÆë
+	if ((Start_Block_Valid_Length==SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length==0))	//å¤´å°¾å—å¯¹é½
 	{
 		while ((DMA2_Stream6->CR&1)!=0);
-		DMA2_Stream6->CR&=~(1<<10);//´æ´¢Æ÷µØÖ·²»µİÔö
+		DMA2_Stream6->CR&=~(1<<10);//å­˜å‚¨å™¨åœ°å€ä¸é€’å¢
 		_SD_Card_Write_Blocks(Start_Block_Address,End_Block_Address-Start_Block_Address,&Data);
 	}
-	else if ((Start_Block_Valid_Length==SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length!=0))	//Í·¶ÔÆë£¬Î²²»¶ÔÆë
+	else if ((Start_Block_Valid_Length==SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length!=0))	//å¤´å¯¹é½ï¼Œå°¾ä¸å¯¹é½
 	{
 		_SD_Card_Read_Blocks(End_Block_Address*2,2,Send_Buffer1);
 		for (i=0;i<End_Block_Valid_Length;i++)
 			Send_Buffer1[i]=Data;
 		_SD_Card_Write_Blocks(End_Block_Address,1,Send_Buffer1);
 		while ((DMA2_Stream6->CR&1)!=0);
-		DMA2_Stream6->CR&=~(1<<10);//´æ´¢Æ÷µØÖ·²»µİÔö
+		DMA2_Stream6->CR&=~(1<<10);//å­˜å‚¨å™¨åœ°å€ä¸é€’å¢
 		_SD_Card_Write_Blocks(Start_Block_Address,End_Block_Address-Start_Block_Address,&Data);
 	}
-	else if ((Start_Block_Valid_Length!=SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length==0))	//Í·²»¶ÔÆë£¬Î²¶ÔÆë
+	else if ((Start_Block_Valid_Length!=SD_WRITE_BLOCK_SIZE)&&(End_Block_Valid_Length==0))	//å¤´ä¸å¯¹é½ï¼Œå°¾å¯¹é½
 	{
 		_SD_Card_Read_Blocks(Start_Block_Address*2,2,Send_Buffer1);
 		for (i=0;i<Start_Block_Valid_Length;i++)
 			Send_Buffer1[SD_WRITE_BLOCK_SIZE-Start_Block_Valid_Length+i]=Data;
 		_SD_Card_Write_Blocks(Start_Block_Address,1,Send_Buffer1);
 		while ((DMA2_Stream6->CR&1)!=0);
-		DMA2_Stream6->CR&=~(1<<10);//´æ´¢Æ÷µØÖ·²»µİÔö
+		DMA2_Stream6->CR&=~(1<<10);//å­˜å‚¨å™¨åœ°å€ä¸é€’å¢
 		_SD_Card_Write_Blocks(Start_Block_Address+1,End_Block_Address-Start_Block_Address,&Data);
 	}
-	else	//Í·Î²¶¼²»¶ÔÆë
+	else	//å¤´å°¾éƒ½ä¸å¯¹é½
 	{
-		if ((Length<SD_WRITE_BLOCK_SIZE)&&(Start_Block_Address==End_Block_Address))	//³¤¶ÈĞ¡ÓÚ¿é´óĞ¡£¬ÇÒËùÓĞÊı¾İÎ»ÓÚÒ»¸ö¿éÄÚ
+		if ((Length<SD_WRITE_BLOCK_SIZE)&&(Start_Block_Address==End_Block_Address))	//é•¿åº¦å°äºå—å¤§å°ï¼Œä¸”æ‰€æœ‰æ•°æ®ä½äºä¸€ä¸ªå—å†…
 		{
 			_SD_Card_Read_Blocks(Start_Block_Address*2,2,Send_Buffer1);
 			for (i=0;i<Length;i++)
@@ -624,12 +624,12 @@ u8 SD_Card_Set_Memory(long long unsigned int Byte_Address, long long unsigned in
 		_SD_Card_Write_Blocks(Start_Block_Address,1,Send_Buffer1);
 		_SD_Card_Write_Blocks(End_Block_Address,1,Send_Buffer2);
 		while ((DMA2_Stream6->CR&1)!=0);
-		DMA2_Stream6->CR&=~(1<<10);//´æ´¢Æ÷µØÖ·²»µİÔö
+		DMA2_Stream6->CR&=~(1<<10);//å­˜å‚¨å™¨åœ°å€ä¸é€’å¢
 		_SD_Card_Write_Blocks(Start_Block_Address+1,End_Block_Address-Start_Block_Address-1,&Data);
 	}
 	
 	while ((DMA2_Stream6->CR&1)!=0);
-	DMA2_Stream6->CR|=1<<10;//´æ´¢Æ÷µØÖ·µİÔö
+	DMA2_Stream6->CR|=1<<10;//å­˜å‚¨å™¨åœ°å€é€’å¢
 	return 0;
 }
 
@@ -643,8 +643,8 @@ void SD_Card_Test(USART_TypeDef* USART)
 	GeneralTimer_Reset(TIM5,&Timer5);
 	GeneralTimer_Global_Set(&Timer5,APB1_MAX_CLOCK,INSIDE_CLOCK_SOURCE,4000000,TRIGGER_SOFTWARE);
 	GeneralTimer_Free_Run_Init(&Timer5);
-	USART_Printf(USART,"\n/*******************SD¿¨²âÊÔ*******************/\n");
-	USART_Printf(USART,"SD¿¨Ğ´²âÊÔ£º\n");
+	USART_Printf(USART,"\n/*******************SDå¡æµ‹è¯•*******************/\n");
+	USART_Printf(USART,"SDå¡å†™æµ‹è¯•ï¼š\n");
 	SD_Card_Write_Data(1024*1024,1024,(u8*)0x20000000);
 	SD_Card_Write_Data(1024*1024,1024,(u8*)0x20000000);
 	TIM5->CNT=0;
@@ -652,30 +652,30 @@ void SD_Card_Test(USART_TypeDef* USART)
 	SD_Card_Write_Data(1024*1024,1024,(u8*)0x20000000);
 	save=TIM5->CNT;
 	GeneralTimer_Disable(&Timer5);
-	USART_Printf(USART,"1KB×î¸ßĞ´ËÙ¶È£º%.1f KB/s\n",1.0f/((float)save/4000000));
+	USART_Printf(USART,"1KBæœ€é«˜å†™é€Ÿåº¦ï¼š%.1f KB/s\n",1.0f/((float)save/4000000));
 	
 	TIM5->CNT=0;
 	GeneralTimer_Enable(&Timer5);
 	SD_Card_Write_Data(1024*1024+2,1024,(u8*)0x20000000);
 	save=TIM5->CNT;
 	GeneralTimer_Disable(&Timer5);
-	USART_Printf(USART,"1KB×îµÍĞ´ËÙ¶È£º%.1f KB/s\n",1.0f/((float)save/4000000));
+	USART_Printf(USART,"1KBæœ€ä½å†™é€Ÿåº¦ï¼š%.1f KB/s\n",1.0f/((float)save/4000000));
 	
 	TIM5->CNT=0;
 	GeneralTimer_Enable(&Timer5);
 	SD_Card_Write_Data(1024*1024,10240,(u8*)0x20000000);
 	save=TIM5->CNT;
 	GeneralTimer_Disable(&Timer5);
-	USART_Printf(USART,"10KB×î¸ßĞ´ËÙ¶È£º%.1f KB/s\n",10.0f/((float)save/4000000));
+	USART_Printf(USART,"10KBæœ€é«˜å†™é€Ÿåº¦ï¼š%.1f KB/s\n",10.0f/((float)save/4000000));
 	
 	TIM5->CNT=0;
 	GeneralTimer_Enable(&Timer5);
 	SD_Card_Write_Data(1024*1024+2,10240,(u8*)0x20000000);
 	save=TIM5->CNT;
 	GeneralTimer_Disable(&Timer5);
-	USART_Printf(USART,"10KB×îµÍĞ´ËÙ¶È£º%.1f KB/s\n",10.0f/((float)save/4000000));
+	USART_Printf(USART,"10KBæœ€ä½å†™é€Ÿåº¦ï¼š%.1f KB/s\n",10.0f/((float)save/4000000));
 	
-	USART_Printf(USART,"SD¿¨¶Á²âÊÔ£º\n");
+	USART_Printf(USART,"SDå¡è¯»æµ‹è¯•ï¼š\n");
 	SD_Card_Read_Data(1024*1024,1024,Send_Buffer1);
 	SD_Card_Read_Data(1024*1024,1024,Send_Buffer1);
 	TIM5->CNT=0;
@@ -683,28 +683,28 @@ void SD_Card_Test(USART_TypeDef* USART)
 	SD_Card_Read_Data(1024*1024,1024,Send_Buffer1);
 	save=TIM5->CNT;
 	GeneralTimer_Disable(&Timer5);
-	USART_Printf(USART,"1KB×î¸ß¶ÁËÙ¶È£º%.1f KB/s\n",1.0f/((float)save/4000000));
+	USART_Printf(USART,"1KBæœ€é«˜è¯»é€Ÿåº¦ï¼š%.1f KB/s\n",1.0f/((float)save/4000000));
 	
 	TIM5->CNT=0;
 	GeneralTimer_Enable(&Timer5);
 	SD_Card_Read_Data(1024*1024+2,1024,Send_Buffer1);
 	save=TIM5->CNT;
 	GeneralTimer_Disable(&Timer5);
-	USART_Printf(USART,"1KB×îµÍ¶ÁËÙ¶È£º%.1f KB/s\n",1.0f/((float)save/4000000));
-	USART_Printf(USART,"/*******************SD¿¨²âÊÔ½áÊø*******************/\n");
+	USART_Printf(USART,"1KBæœ€ä½è¯»é€Ÿåº¦ï¼š%.1f KB/s\n",1.0f/((float)save/4000000));
+	USART_Printf(USART,"/*******************SDå¡æµ‹è¯•ç»“æŸ*******************/\n");
 	/*TIM5->CNT=0;
 	GeneralTimer_Enable(&Timer5);
 	SD_Card_Read_Data(1024*1024+2,10240,(u8*)0x20000000);
 	save=TIM5->CNT;
 	GeneralTimer_Disable(&Timer5);
-	USART_Printf(USART,"10KB×îµÍĞ´ËÙ¶È£º%.1f\n",10.0f/((float)save/2000000));
+	USART_Printf(USART,"10KBæœ€ä½å†™é€Ÿåº¦ï¼š%.1f\n",10.0f/((float)save/2000000));
 	
 	TIM5->CNT=0;
 	GeneralTimer_Enable(&Timer5);
 	SD_Card_Read_Data(1024*1024+2,10240,(u8*)0x20000000);
 	save=TIM5->CNT;
 	GeneralTimer_Disable(&Timer5);
-	USART_Printf(USART,"10KB×îµÍĞ´ËÙ¶È£º%.1f\n",10.0f/((float)save/2000000));*/
+	USART_Printf(USART,"10KBæœ€ä½å†™é€Ÿåº¦ï¼š%.1f\n",10.0f/((float)save/2000000));*/
 	
 }
 

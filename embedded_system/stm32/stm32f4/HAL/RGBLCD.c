@@ -26,7 +26,7 @@
 
 #define LCD_BL	GPIO_Write(GPIOD_13)
 
-/*LTDC ±÷”≥ı ºªØ*/
+/*LTDCÊó∂ÈíüÂàùÂßãÂåñ*/
 u8 _RGBLCD_Clock_Init(u32 pllsain, u32 pllsair, u32 pllsaidivr);
 
 void RGBLCD_ON(void)
@@ -39,36 +39,36 @@ void RGBLCD_OFF(void)
 	LCD_BL=0;
 }
 
-//LTDC ±÷”(Fdclk)…Ë÷√∫Ø ˝
+//LTDCÊó∂Èíü(Fdclk)ËÆæÁΩÆÂáΩÊï∞
 //Fvco=Fin*pllsain; 
 //Fdclk=Fvco/pllsair/2*2^pllsaidivr=Fin*pllsain/pllsair/2*2^pllsaidivr;
-//Fvco:VCO∆µ¬ 
-//Fin: ‰»Î ±÷”∆µ¬ “ª∞„Œ™1Mhz(¿¥◊‘œµÕ≥ ±÷”PLLM∑÷∆µ∫Ûµƒ ±÷”,º˚ ±÷” ˜Õº)
-//pllsain:SAI ±÷”±∂∆µœµ ˝N,»°÷µ∑∂Œß:50~432.  
-//pllsair:SAI ±÷”µƒ∑÷∆µœµ ˝R,»°÷µ∑∂Œß:2~7
-//pllsaidivr:LCD ±÷”∑÷∆µœµ ˝,»°÷µ∑∂Œß:0~3,∂‘”¶∑÷∆µ2^(pllsaidivr+1) 
-//ºŸ…Ë:Õ‚≤øæß’ÒŒ™25M,pllm=25µƒ ±∫Ú,Fin=1Mhz.
-//¿˝»Á:“™µ√µΩ20MµƒLTDC ±÷”,‘Úø…“‘…Ë÷√:pllsain=400,pllsair=5,pllsaidivr=1
+//Fvco:VCOÈ¢ëÁéá
+//Fin:ËæìÂÖ•Êó∂ÈíüÈ¢ëÁéá‰∏ÄËà¨‰∏∫1Mhz(Êù•Ëá™Á≥ªÁªüÊó∂ÈíüPLLMÂàÜÈ¢ëÂêéÁöÑÊó∂Èíü,ËßÅÊó∂ÈíüÊ†ëÂõæ)
+//pllsain:SAIÊó∂ÈíüÂÄçÈ¢ëÁ≥ªÊï∞N,ÂèñÂÄºËåÉÂõ¥:50~432.  
+//pllsair:SAIÊó∂ÈíüÁöÑÂàÜÈ¢ëÁ≥ªÊï∞R,ÂèñÂÄºËåÉÂõ¥:2~7
+//pllsaidivr:LCDÊó∂ÈíüÂàÜÈ¢ëÁ≥ªÊï∞,ÂèñÂÄºËåÉÂõ¥:0~3,ÂØπÂ∫îÂàÜÈ¢ë2^(pllsaidivr+1) 
+//ÂÅáËÆæ:Â§ñÈÉ®Êô∂ÊåØ‰∏∫25M,pllm=25ÁöÑÊó∂ÂÄô,Fin=1Mhz.
+//‰æãÂ¶Ç:Ë¶ÅÂæóÂà∞20MÁöÑLTDCÊó∂Èíü,ÂàôÂèØ‰ª•ËÆæÁΩÆ:pllsain=400,pllsair=5,pllsaidivr=1
 //Fdclk=1*396/3/2*2^1=396/12=33Mhz
-//∑µªÿ÷µ:0,≥…π¶;1, ß∞‹°£
+//ËøîÂõûÂÄº:0,ÊàêÂäü;1,Â§±Ë¥•„ÄÇ
 u8 _RGBLCD_Clock_Init(u32 pllsain,u32 pllsair,u32 pllsaidivr)
 { 
 	u16 retry=0;
 	u8 status=0;
 	u32 tempreg=0;
-	RCC->CR&=~(1<<28);					//πÿ±’SAI ±÷” 
-	while(((RCC->CR&(1<<29)))&&(retry<0X1FFF))retry++;//µ»¥˝SAI ±÷” ßÀ¯
- 	if(retry==0X1FFF)status=1;			//LTDC ±÷”πÿ±’ ß∞‹
+	RCC->CR&=~(1<<28);					//ÂÖ≥Èó≠SAIÊó∂Èíü 
+	while(((RCC->CR&(1<<29)))&&(retry<0X1FFF))retry++;//Á≠âÂæÖSAIÊó∂ÈíüÂ§±ÈîÅ
+ 	if(retry==0X1FFF)status=1;			//LTDCÊó∂ÈíüÂÖ≥Èó≠Â§±Ë¥•
 	else   
 	{ 
 		tempreg|=pllsain<<6;
 		tempreg|=pllsair<<28;
-		RCC->PLLSAICFGR=tempreg;		//…Ë÷√LTDCµƒ±∂∆µ∫Õ∑÷∆µ
-		RCC->DCKCFGR&=~(3<<16);			//«Â≥˝‘≠¿¥µƒ…Ë÷√.
-		RCC->DCKCFGR|=pllsaidivr<<16;	//…Ë÷√fdclk∑÷∆µ
+		RCC->PLLSAICFGR=tempreg;		//ËÆæÁΩÆLTDCÁöÑÂÄçÈ¢ëÂíåÂàÜÈ¢ë
+		RCC->DCKCFGR&=~(3<<16);			//Ê∏ÖÈô§ÂéüÊù•ÁöÑËÆæÁΩÆ.
+		RCC->DCKCFGR|=pllsaidivr<<16;	//ËÆæÁΩÆfdclkÂàÜÈ¢ë
 
-		RCC->CR|=1<<28;					//ø™∆ÙSAI ±÷” 
-		while(((RCC->CR&(1<<29))==0)&&(retry<0X1FFF))retry++;//µ»¥˝SAI ±÷”À¯∂®
+		RCC->CR|=1<<28;					//ÂºÄÂêØSAIÊó∂Èíü 
+		while(((RCC->CR&(1<<29))==0)&&(retry<0X1FFF))retry++;//Á≠âÂæÖSAIÊó∂ÈíüÈîÅÂÆö
 		if(retry==0X1FFF)status=2;	
  	} 
 	return status;
@@ -92,10 +92,10 @@ void RGBLCD_Init(void)
 	u8 Layer1_Pixel_Byte,Layer2_Pixel_Byte;
 	u32 save;
 	
-	RCC->APB2ENR|=1<<26;			//ø™∆ÙLTDC ±÷”
-	RCC->AHB1ENR|=1<<1;				// πƒ‹PORTB ±÷” 
-	RCC->AHB1ENR|=1<<3;				// πƒ‹PORTD ±÷”
-	RCC->AHB1ENR|=0XF<<5; 			// πƒ‹PF/PG/PH/PI ±÷”
+	RCC->APB2ENR|=1<<26;			//ÂºÄÂêØLTDCÊó∂Èíü
+	RCC->AHB1ENR|=1<<1;				//‰ΩøËÉΩPORTBÊó∂Èíü 
+	RCC->AHB1ENR|=1<<3;				//‰ΩøËÉΩPORTDÊó∂Èíü
+	RCC->AHB1ENR|=0XF<<5; 			//‰ΩøËÉΩPF/PG/PH/PIÊó∂Èíü
 	
 	GPIO_Set(GPIOH,PIN8|PIN9|PIN10|PIN11|PIN13|PIN14|PIN15,
 				GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_100M,GPIO_PUPD_PU);
@@ -192,10 +192,10 @@ void RGBLCD_Init(void)
 	
 	RGBLCD_OFF();
 	
-	RCC->AHB1ENR|=1<<23;	// πƒ‹DMA2D ±÷”
-	DMA2D->FGOR=0;			//«∞æ∞≤„∆´“∆Œ™0
-	DMA2D->OPFCCR=LAYER1_PIXEL_FORMAT;	// ‰≥ˆ—’…´∏Ò Ω
-	DMA2D->FGPFCCR=LAYER1_PIXEL_FORMAT;	//«∞æ∞≤„—’…´∏Ò Ω
+	RCC->AHB1ENR|=1<<23;	//‰ΩøËÉΩDMA2DÊó∂Èíü
+	DMA2D->FGOR=0;			//ÂâçÊôØÂ±ÇÂÅèÁßª‰∏∫0
+	DMA2D->OPFCCR=LAYER1_PIXEL_FORMAT;	//ËæìÂá∫È¢úËâ≤Ê†ºÂºè
+	DMA2D->FGPFCCR=LAYER1_PIXEL_FORMAT;	//ÂâçÊôØÂ±ÇÈ¢úËâ≤Ê†ºÂºè
 }
 
 void RGBLCD_Fill_Color(u16 X, u16 Y, u16 Width, u16 Height, u32 Color)

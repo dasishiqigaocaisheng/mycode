@@ -30,7 +30,7 @@ void Method_Set_Attenuation(struct pe4302_class* device ,float atn)
 {
 	uint8_t save=ROUND(atn*2);
 	
-	//·¶Î§ÅÐ¶Ï
+	//èŒƒå›´åˆ¤æ–­
 	if (atn<0)
 		atn=0;
 	else if (atn>31.5f)

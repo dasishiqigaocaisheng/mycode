@@ -8,7 +8,7 @@ void IS62WV51216_Init(void)
 	RCC->AHB1ENR|=1<<4;	//GPIOE
 	RCC->AHB1ENR|=1<<5;	//GPIOF
 	RCC->AHB1ENR|=1<<6;	//GPIOG
-	RCC->AHB3ENR|=1;	//FSMC时钟使能
+	RCC->AHB3ENR|=1;	//FSMC鏃堕挓浣胯兘
 	
 	GPIO_AF_Set(GPIOG,10,12);
 	
@@ -83,14 +83,14 @@ void IS62WV51216_Init(void)
 	GPIO_AF_Set(GPIOG,4,12);
 	GPIO_AF_Set(GPIOG,5,12);
 		
-	FSMC_Bank1->BTCR[4]|=1<<12;	//存储器写使能
-	FSMC_Bank1->BTCR[4]|=1<<4; 	//存储器数据宽度为16bit
+	FSMC_Bank1->BTCR[4]|=1<<12;	//瀛樺偍鍣ㄥ啓浣胯兘
+	FSMC_Bank1->BTCR[4]|=1<<4; 	//瀛樺偍鍣ㄦ暟鎹搴︿负16bit
 	
 	FSMC_Bank1->BTCR[5]=0;
-	FSMC_Bank1->BTCR[5]|=3<<8; //数据保持时间（DATAST）为9个HCLK 6*9=54ns	 	 
-	FSMC_Bank1->BTCR[5]|=0<<0; //地址保持时间（ADDSET）未用到	  	 
+	FSMC_Bank1->BTCR[5]|=3<<8; //鏁版嵁淇濇寔鏃堕棿锛圖ATAST锛変负9涓狧CLK 6*9=54ns	 	 
+	FSMC_Bank1->BTCR[5]|=0<<0; //鍦板潃淇濇寔鏃堕棿锛圓DDSET锛夋湭鐢ㄥ埌	  	 
 
-	FSMC_Bank1->BTCR[4]|=1<<0;	//区域使能
+	FSMC_Bank1->BTCR[4]|=1<<0;	//鍖哄煙浣胯兘
 }
 
 

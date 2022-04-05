@@ -5,10 +5,10 @@
 #define LAYER1_GRAM_ADDR	0xd1f44800  //BANK6_SDRAM_ADDR+32M-800*480*2
 #define LAYER2_GRAM_ADDR    0xd1e89000  //BANK6_SDRAM_ADDR+32M-800*480*4
 
-/*ÉèÖÃÄ¬ÈÏÑÕÉ«*/
+/*è®¾ç½®é»˜è®¤é¢œè‰²*/
 #define RGBLCD_Window_Default_Color_Set(color)	LTDC_Layer1->DCCR=color;LTDC->SRCR|=1
 
-/*ÉèÖÃºã¶¨AlphaÖµ*/
+/*è®¾ç½®æ’å®šAlphaå€¼*/
 #define RGBLCD_Const_Alpha_Set(alpha)			LTDC_Layer1->CACR|=alpha;LTDC->SRCR|=1
 
 #define DMA2D_Get_TCIF()    ((DMA2D->ISR>>1)&1)

@@ -4,13 +4,13 @@
 #include "Memory.h"
 #include "USART.h"
 
-/////////////ÓÃ»§ÅäÖÃÇø///////////////////
+/////////////ç”¨æˆ·é…ç½®åŒº///////////////////
 
 #include "DMA.h"
 
 #define AD7367_HEAP     HEAP0
 
-//µ¥Í¨µÀ×î¸ßÑù±¾Êı
+//å•é€šé“æœ€é«˜æ ·æœ¬æ•°
 #define MAX_SAMPLE_NUM  2048
 
 void _DMA_Set(ro periperal* dma, u32* addr, u16 num)
@@ -97,7 +97,7 @@ void Method_AD736x_Start_Sample(struct ad736x_class* dev, uint32_t fs, uint16_t 
 	uint32_t save=0;
 
 
-    //ÉèÖÃÏµÍ³¶¨Ê±Æ÷¼ÆÊ±µÄÖÜÆÚ
+    //è®¾ç½®ç³»ç»Ÿå®šæ—¶å™¨è®¡æ—¶çš„å‘¨æœŸ
     SystemTimer_Timing_Ready(1000000.0f/fs);
     if (dev->Is_FPGA_Mode==Enable)
     {
@@ -148,11 +148,11 @@ void Method_AD736x_Start_Sample(struct ad736x_class* dev, uint32_t fs, uint16_t 
     {
         if (dev->Line_Num==ONE_LINE)
         {
-            //¿ªÆôÏµÍ³¶¨Ê±Æ÷µÄµ¹¼ÆÊ±
-            //¿ªÆôÒÔºóÃ¿´Î´ïµ½ÉèÖÃµÄ¼ÆÊ±Ê±¼äºó£¬SystemTimer_Timing_Check()»á·µ»Ø1
-            //µ±¶Áµ½SystemTimer_Timing_Check()==1ºó£¬¸Ã±êÖ¾Î»»á×Ô¶¯ÇåÁã
-            //Èç¹ûÔÚµ½´ï¼ÆÊ±Ê±¼äºó£¬Ò»Ö±Î´¶ÁÈ¡SystemTimer_Timing_Check()£¬ÄÇÃ´¸Ã±êÖ¾Î»»á
-            //Ò»Ö±Îª1£¬Ö±µ½ÓÃ»§È¥¶ÁÈ¡
+            //å¼€å¯ç³»ç»Ÿå®šæ—¶å™¨çš„å€’è®¡æ—¶
+            //å¼€å¯ä»¥åæ¯æ¬¡è¾¾åˆ°è®¾ç½®çš„è®¡æ—¶æ—¶é—´åï¼ŒSystemTimer_Timing_Check()ä¼šè¿”å›1
+            //å½“è¯»åˆ°SystemTimer_Timing_Check()==1åï¼Œè¯¥æ ‡å¿—ä½ä¼šè‡ªåŠ¨æ¸…é›¶
+            //å¦‚æœåœ¨åˆ°è¾¾è®¡æ—¶æ—¶é—´åï¼Œä¸€ç›´æœªè¯»å–SystemTimer_Timing_Check()ï¼Œé‚£ä¹ˆè¯¥æ ‡å¿—ä½ä¼š
+            //ä¸€ç›´ä¸º1ï¼Œç›´åˆ°ç”¨æˆ·å»è¯»å–
             SystemTimer_Timing_Begin();
             for (i=0;i<num;i++)
             {
@@ -164,8 +164,8 @@ void Method_AD736x_Start_Sample(struct ad736x_class* dev, uint32_t fs, uint16_t 
                 GPIO_Write(dev->CS_Pin)=1;
                 ((u16*)datbuf1)[i]=save>>dev->Device_Type;
                 ((u16*)datbuf2)[i]=save&0x3fff;
-                //¶ÁÈ¡±êÖ¾Î»
-                //µÈ´ı¼ÆÊ±Ê±¼äµ½´ï
+                //è¯»å–æ ‡å¿—ä½
+                //ç­‰å¾…è®¡æ—¶æ—¶é—´åˆ°è¾¾
                 while (SystemTimer_Timing_Check()==0);
             }
         }
@@ -186,7 +186,7 @@ void Method_AD736x_Start_Sample(struct ad736x_class* dev, uint32_t fs, uint16_t 
             }
         }
     }
-    //Í£Ö¹¼ÆÊ±
+    //åœæ­¢è®¡æ—¶
     //SystemTimer_Timing_End();	
     
     if (fmt==FLOAT_Format)
@@ -211,7 +211,7 @@ void Method_AD736x_Start_Sample2(struct ad736x_class* dev, uint32_t fs, uint16_t
    /* GPIO_Write(dev->RST)=0;
     SystemTimer_Delay_Us(3);
     GPIO_Write(dev->RST)=1;*/
-    //ÉèÖÃÏµÍ³¶¨Ê±Æ÷¼ÆÊ±µÄÖÜÆÚ
+    //è®¾ç½®ç³»ç»Ÿå®šæ—¶å™¨è®¡æ—¶çš„å‘¨æœŸ
     SystemTimer_Timing_Ready(1000000.0f/fs);
     if (dev->Is_FPGA_Mode==Enable)
     {
@@ -254,11 +254,11 @@ void Method_AD736x_Start_Sample2(struct ad736x_class* dev, uint32_t fs, uint16_t
     {
         if (dev->Line_Num==ONE_LINE)
         {
-            //¿ªÆôÏµÍ³¶¨Ê±Æ÷µÄµ¹¼ÆÊ±
-            //¿ªÆôÒÔºóÃ¿´Î´ïµ½ÉèÖÃµÄ¼ÆÊ±Ê±¼äºó£¬SystemTimer_Timing_Check()»á·µ»Ø1
-            //µ±¶Áµ½SystemTimer_Timing_Check()==1ºó£¬¸Ã±êÖ¾Î»»á×Ô¶¯ÇåÁã
-            //Èç¹ûÔÚµ½´ï¼ÆÊ±Ê±¼äºó£¬Ò»Ö±Î´¶ÁÈ¡SystemTimer_Timing_Check()£¬ÄÇÃ´¸Ã±êÖ¾Î»»á
-            //Ò»Ö±Îª1£¬Ö±µ½ÓÃ»§È¥¶ÁÈ¡
+            //å¼€å¯ç³»ç»Ÿå®šæ—¶å™¨çš„å€’è®¡æ—¶
+            //å¼€å¯ä»¥åæ¯æ¬¡è¾¾åˆ°è®¾ç½®çš„è®¡æ—¶æ—¶é—´åï¼ŒSystemTimer_Timing_Check()ä¼šè¿”å›1
+            //å½“è¯»åˆ°SystemTimer_Timing_Check()==1åï¼Œè¯¥æ ‡å¿—ä½ä¼šè‡ªåŠ¨æ¸…é›¶
+            //å¦‚æœåœ¨åˆ°è¾¾è®¡æ—¶æ—¶é—´åï¼Œä¸€ç›´æœªè¯»å–SystemTimer_Timing_Check()ï¼Œé‚£ä¹ˆè¯¥æ ‡å¿—ä½ä¼š
+            //ä¸€ç›´ä¸º1ï¼Œç›´åˆ°ç”¨æˆ·å»è¯»å–
             SystemTimer_Timing_Begin();
             for (i=0;i<num;i++)
             {
@@ -272,8 +272,8 @@ void Method_AD736x_Start_Sample2(struct ad736x_class* dev, uint32_t fs, uint16_t
                 ((u16*)datbuf)[(i<<1)+1]=save&0x3fff;
                 //((u16*)datbuf1)[i]=save>>dev->Device_Type;
                 //((u16*)datbuf2)[i]=save&0x3fff;
-                //¶ÁÈ¡±êÖ¾Î»
-                //µÈ´ı¼ÆÊ±Ê±¼äµ½´ï
+                //è¯»å–æ ‡å¿—ä½
+                //ç­‰å¾…è®¡æ—¶æ—¶é—´åˆ°è¾¾
                 while (SystemTimer_Timing_Check()==0);
             }
         }
@@ -296,7 +296,7 @@ void Method_AD736x_Start_Sample2(struct ad736x_class* dev, uint32_t fs, uint16_t
             }
         }
     }
-    //Í£Ö¹¼ÆÊ±
+    //åœæ­¢è®¡æ—¶
     //SystemTimer_Timing_End();	
     
     if (fmt==FLOAT_Format)

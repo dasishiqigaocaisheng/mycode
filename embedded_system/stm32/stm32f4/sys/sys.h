@@ -3,27 +3,27 @@
 #include "stm32f4xx.h" 
 #include "Framework.h"
 //////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌĞòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßĞí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32¿ª·¢°å
-//ÏµÍ³Ê±ÖÓ³õÊ¼»¯	
-//°üÀ¨Ê±ÖÓÉèÖÃ/ÖĞ¶Ï¹ÜÀí/GPIOÉèÖÃµÈ
-//ÕıµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2015/12/4
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓĞ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖİÊĞĞÇÒíµç×Ó¿Æ¼¼ÓĞÏŞ¹«Ë¾ 2014-2024
+//æœ¬ç¨‹åºåªä¾›å­¦ä¹ ä½¿ç”¨ï¼Œæœªç»ä½œè€…è®¸å¯ï¼Œä¸å¾—ç”¨äºå…¶å®ƒä»»ä½•ç”¨é€”
+//ALIENTEK STM32å¼€å‘æ¿
+//ç³»ç»Ÿæ—¶é’Ÿåˆå§‹åŒ–	
+//åŒ…æ‹¬æ—¶é’Ÿè®¾ç½®/ä¸­æ–­ç®¡ç†/GPIOè®¾ç½®ç­‰
+//æ­£ç‚¹åŸå­@ALIENTEK
+//æŠ€æœ¯è®ºå›:www.openedv.com
+//åˆ›å»ºæ—¥æœŸ:2015/12/4
+//ç‰ˆæœ¬ï¼šV1.0
+//ç‰ˆæƒæ‰€æœ‰ï¼Œç›—ç‰ˆå¿…ç©¶ã€‚
+//Copyright(C) å¹¿å·å¸‚æ˜Ÿç¿¼ç”µå­ç§‘æŠ€æœ‰é™å…¬å¸ 2014-2024
 //All rights reserved
 //********************************************************************************
-//ĞŞ¸ÄËµÃ÷
-//¸Ä×ÔÌ½Ë÷ÕßSTM32F407¿ª·¢°åµÄ´úÂë
+//ä¿®æ”¹è¯´æ˜
+//æ”¹è‡ªæ¢ç´¢è€…STM32F407å¼€å‘æ¿çš„ä»£ç 
 //////////////////////////////////////////////////////////////////////////////////  
 
-//0,²»Ö§³ÖOS
-//1,Ö§³ÖOS
-#define SYSTEM_SUPPORT_OS		0		//¶¨ÒåÏµÍ³ÎÄ¼ş¼ĞÊÇ·ñÖ§³ÖOS
+//0,ä¸æ”¯æŒOS
+//1,æ”¯æŒOS
+#define SYSTEM_SUPPORT_OS		0		//å®šä¹‰ç³»ç»Ÿæ–‡ä»¶å¤¹æ˜¯å¦æ”¯æŒOS
 ///////////////////////////////////////////////////////////////////////////////////
-//¶¨ÒåÒ»Ğ©³£ÓÃµÄÊı¾İÀàĞÍ¶Ì¹Ø¼ü×Ö 
+//å®šä¹‰ä¸€äº›å¸¸ç”¨çš„æ•°æ®ç±»å‹çŸ­å…³é”®å­— 
 typedef uint32_t  u32;
 typedef uint16_t u16;
 typedef uint8_t  u8;
@@ -32,13 +32,13 @@ typedef volatile uint32_t  vu32;
 typedef volatile uint16_t vu16;
 typedef volatile uint8_t  vu8; 
 
-//Î»´ø²Ù×÷,ÊµÏÖ51ÀàËÆµÄGPIO¿ØÖÆ¹¦ÄÜ
-//¾ßÌåÊµÏÖË¼Ïë,²Î¿¼<<CM3È¨ÍşÖ¸ÄÏ>>µÚÎåÕÂ(87Ò³~92Ò³).M4Í¬M3ÀàËÆ,Ö»ÊÇ¼Ä´æÆ÷µØÖ·±äÁË.
-//IO¿Ú²Ù×÷ºê¶¨Òå
+//ä½å¸¦æ“ä½œ,å®ç°51ç±»ä¼¼çš„GPIOæ§åˆ¶åŠŸèƒ½
+//å…·ä½“å®ç°æ€æƒ³,å‚è€ƒ<<CM3æƒå¨æŒ‡å—>>ç¬¬äº”ç« (87é¡µ~92é¡µ).M4åŒM3ç±»ä¼¼,åªæ˜¯å¯„å­˜å™¨åœ°å€å˜äº†.
+//IOå£æ“ä½œå®å®šä¹‰
 /*#define BITBAND(addr, bitnum) ((addr & 0xF0000000)+0x2000000+((addr &0xFFFFF)<<5)+(bitnum<<2)) 
 #define MEM_ADDR(addr)  *((volatile unsigned long  *)(addr)) 
 #define BIT_ADDR(addr, bitnum)   MEM_ADDR(BITBAND(addr, bitnum)) 
-//IO¿ÚµØÖ·Ó³Éä
+//IOå£åœ°å€æ˜ å°„
 #define GPIOA_ODR_Addr    (GPIOA_BASE+20) //0x40020014
 #define GPIOB_ODR_Addr    (GPIOB_BASE+20) //0x40020414 
 #define GPIOC_ODR_Addr    (GPIOC_BASE+20) //0x40020814 
@@ -59,36 +59,36 @@ typedef volatile uint8_t  vu8;
 #define GPIOH_IDR_Addr    (GPIOH_BASE+16) //0x40021C10 
 #define GPIOI_IDR_Addr    (GPIOI_BASE+16) //0x40022010 
  
-//IO¿Ú²Ù×÷,Ö»¶Ôµ¥Ò»µÄIO¿Ú!
-//È·±£nµÄÖµĞ¡ÓÚ16!
-#define PAout(n)   BIT_ADDR(GPIOA_ODR_Addr,n)  //Êä³ö 
-#define PAin(n)    BIT_ADDR(GPIOA_IDR_Addr,n)  //ÊäÈë 
+//IOå£æ“ä½œ,åªå¯¹å•ä¸€çš„IOå£!
+//ç¡®ä¿nçš„å€¼å°äº16!
+#define PAout(n)   BIT_ADDR(GPIOA_ODR_Addr,n)  //è¾“å‡º 
+#define PAin(n)    BIT_ADDR(GPIOA_IDR_Addr,n)  //è¾“å…¥ 
 
-#define PBout(n)   BIT_ADDR(GPIOB_ODR_Addr,n)  //Êä³ö 
-#define PBin(n)    BIT_ADDR(GPIOB_IDR_Addr,n)  //ÊäÈë 
+#define PBout(n)   BIT_ADDR(GPIOB_ODR_Addr,n)  //è¾“å‡º 
+#define PBin(n)    BIT_ADDR(GPIOB_IDR_Addr,n)  //è¾“å…¥ 
 
-#define PCout(n)   BIT_ADDR(GPIOC_ODR_Addr,n)  //Êä³ö 
-#define PCin(n)    BIT_ADDR(GPIOC_IDR_Addr,n)  //ÊäÈë 
+#define PCout(n)   BIT_ADDR(GPIOC_ODR_Addr,n)  //è¾“å‡º 
+#define PCin(n)    BIT_ADDR(GPIOC_IDR_Addr,n)  //è¾“å…¥ 
 
-#define PDout(n)   BIT_ADDR(GPIOD_ODR_Addr,n)  //Êä³ö 
-#define PDin(n)    BIT_ADDR(GPIOD_IDR_Addr,n)  //ÊäÈë 
+#define PDout(n)   BIT_ADDR(GPIOD_ODR_Addr,n)  //è¾“å‡º 
+#define PDin(n)    BIT_ADDR(GPIOD_IDR_Addr,n)  //è¾“å…¥ 
 
-#define PEout(n)   BIT_ADDR(GPIOE_ODR_Addr,n)  //Êä³ö 
-#define PEin(n)    BIT_ADDR(GPIOE_IDR_Addr,n)  //ÊäÈë
+#define PEout(n)   BIT_ADDR(GPIOE_ODR_Addr,n)  //è¾“å‡º 
+#define PEin(n)    BIT_ADDR(GPIOE_IDR_Addr,n)  //è¾“å…¥
 
-#define PFout(n)   BIT_ADDR(GPIOF_ODR_Addr,n)  //Êä³ö 
-#define PFin(n)    BIT_ADDR(GPIOF_IDR_Addr,n)  //ÊäÈë
+#define PFout(n)   BIT_ADDR(GPIOF_ODR_Addr,n)  //è¾“å‡º 
+#define PFin(n)    BIT_ADDR(GPIOF_IDR_Addr,n)  //è¾“å…¥
 
-#define PGout(n)   BIT_ADDR(GPIOG_ODR_Addr,n)  //Êä³ö 
-#define PGin(n)    BIT_ADDR(GPIOG_IDR_Addr,n)  //ÊäÈë
+#define PGout(n)   BIT_ADDR(GPIOG_ODR_Addr,n)  //è¾“å‡º 
+#define PGin(n)    BIT_ADDR(GPIOG_IDR_Addr,n)  //è¾“å…¥
 
-#define PHout(n)   BIT_ADDR(GPIOH_ODR_Addr,n)  //Êä³ö 
-#define PHin(n)    BIT_ADDR(GPIOH_IDR_Addr,n)  //ÊäÈë
+#define PHout(n)   BIT_ADDR(GPIOH_ODR_Addr,n)  //è¾“å‡º 
+#define PHin(n)    BIT_ADDR(GPIOH_IDR_Addr,n)  //è¾“å…¥
 
-#define PIout(n)   BIT_ADDR(GPIOI_ODR_Addr,n)  //Êä³ö 
-#define PIin(n)    BIT_ADDR(GPIOI_IDR_Addr,n)  //ÊäÈë*/
+#define PIout(n)   BIT_ADDR(GPIOI_ODR_Addr,n)  //è¾“å‡º 
+#define PIin(n)    BIT_ADDR(GPIOI_IDR_Addr,n)  //è¾“å…¥*/
 ////////////////////////////////////////////////////////////////////////////////// 
-//Ex_NVIC_Config×¨ÓÃ¶¨Òå
+//Ex_NVIC_Configä¸“ç”¨å®šä¹‰
 #define GPIO_A 				0
 #define GPIO_B 				1
 #define GPIO_C				2
@@ -99,34 +99,34 @@ typedef volatile uint8_t  vu8;
 #define GPIO_H 				7 
 #define GPIO_I 				8 
 
-#define FTIR   				1  		//ÏÂ½µÑØ´¥·¢
-#define RTIR   				2  		//ÉÏÉıÑØ´¥·¢
+#define FTIR   				1  		//ä¸‹é™æ²¿è§¦å‘
+#define RTIR   				2  		//ä¸Šå‡æ²¿è§¦å‘
 
-//GPIOÉèÖÃ×¨ÓÃºê¶¨Òå
-#define GPIO_MODE_IN    	0		//ÆÕÍ¨ÊäÈëÄ£Ê½
-#define GPIO_MODE_OUT		1		//ÆÕÍ¨Êä³öÄ£Ê½
-#define GPIO_MODE_AF		2		//AF¹¦ÄÜÄ£Ê½
-#define GPIO_MODE_AIN		3		//Ä£ÄâÊäÈëÄ£Ê½
+//GPIOè®¾ç½®ä¸“ç”¨å®å®šä¹‰
+#define GPIO_MODE_IN    	0		//æ™®é€šè¾“å…¥æ¨¡å¼
+#define GPIO_MODE_OUT		1		//æ™®é€šè¾“å‡ºæ¨¡å¼
+#define GPIO_MODE_AF		2		//AFåŠŸèƒ½æ¨¡å¼
+#define GPIO_MODE_AIN		3		//æ¨¡æ‹Ÿè¾“å…¥æ¨¡å¼
 
-#define GPIO_SPEED_2M		0		//GPIOËÙ¶È2Mhz
-#define GPIO_SPEED_25M		1		//GPIOËÙ¶È25Mhz
-#define GPIO_SPEED_50M		2		//GPIOËÙ¶È50Mhz
-#define GPIO_SPEED_100M		3		//GPIOËÙ¶È100Mhz
+#define GPIO_SPEED_2M		0		//GPIOé€Ÿåº¦2Mhz
+#define GPIO_SPEED_25M		1		//GPIOé€Ÿåº¦25Mhz
+#define GPIO_SPEED_50M		2		//GPIOé€Ÿåº¦50Mhz
+#define GPIO_SPEED_100M		3		//GPIOé€Ÿåº¦100Mhz
 
 #define GPIO_SPEED_LOW		GPIO_SPEED_2M		
 #define GPIO_SPEED_MID		GPIO_SPEED_25M		
 #define GPIO_SPEED_FAST		GPIO_SPEED_50M		
 #define GPIO_SPEED_HIGH		GPIO_SPEED_100M		
 
-#define GPIO_PUPD_NONE		0		//²»´øÉÏÏÂÀ­
-#define GPIO_PUPD_PU		1		//ÉÏÀ­
-#define GPIO_PUPD_PD		2		//ÏÂÀ­
-#define GPIO_PUPD_RES		3		//±£Áô 
+#define GPIO_PUPD_NONE		0		//ä¸å¸¦ä¸Šä¸‹æ‹‰
+#define GPIO_PUPD_PU		1		//ä¸Šæ‹‰
+#define GPIO_PUPD_PD		2		//ä¸‹æ‹‰
+#define GPIO_PUPD_RES		3		//ä¿ç•™ 
 
-#define GPIO_OTYPE_PP		0		//ÍÆÍìÊä³ö
-#define GPIO_OTYPE_OD		1		//¿ªÂ©Êä³ö 
+#define GPIO_OTYPE_PP		0		//æ¨æŒ½è¾“å‡º
+#define GPIO_OTYPE_OD		1		//å¼€æ¼è¾“å‡º 
 
-//GPIOÒı½Å±àºÅ¶¨Òå
+//GPIOå¼•è„šç¼–å·å®šä¹‰
 #define PIN0				(1<<0)
 #define PIN1				(1<<1)
 #define PIN2				(1<<2)
@@ -164,10 +164,10 @@ typedef volatile uint8_t  vu8;
 
 ////////////////////////////////////////////////////////////////////////////////// 
 
-//ËùÓĞGPIOÊ±ÖÓÊ¹ÄÜ
+//æ‰€æœ‰GPIOæ—¶é’Ÿä½¿èƒ½
 #define GPIO_Clock_Enable() 	RCC->AHB1ENR|=0x1ff
 
-//stm32Ê±ÖÓ¿ìËÙÊ¹ÄÜ
+//stm32æ—¶é’Ÿå¿«é€Ÿä½¿èƒ½
 #define Stm32_Clock_Fast_Init()	Stm32_Clock_Init(360,25,2,8)
 
 #define GPIO_AF_Init(gpio_pin,af)					GPIO_AF_Set(_Get_GPIO_Addr(gpio_pin),GPIO_Get_Pin_Num(gpio_pin),af)
@@ -175,21 +175,21 @@ typedef volatile uint8_t  vu8;
 #define GPIO_Init(gpio_pin,mode,otype,speed,pupd)	GPIO_Set(_Get_GPIO_Addr(gpio_pin),GPIO_Get_Pin_Addr(gpio_pin),mode,otype,speed,pupd)
 
 ////////////////////////////////////////////////////////////////////////////////// 
-u8 Sys_Clock_Set(u32 plln,u32 pllm,u32 pllp,u32 pllq);		//ÏµÍ³Ê±ÖÓÉèÖÃ
-void Stm32_Clock_Init(u32 plln,u32 pllm,u32 pllp,u32 pllq); //Ê±ÖÓ³õÊ¼»¯  
-void Sys_Soft_Reset(void);      							//ÏµÍ³Èí¸´Î»
-void Sys_Standby(void);         							//´ı»úÄ£Ê½ 	
-void MY_NVIC_SetVectorTable(u32 NVIC_VectTab, u32 Offset);	//ÉèÖÃÆ«ÒÆµØÖ·
-void MY_NVIC_PriorityGroupConfig(u8 NVIC_Group);			//ÉèÖÃNVIC·Ö×é
-void MY_NVIC_Init(u8 NVIC_PreemptionPriority,u8 NVIC_SubPriority,u8 NVIC_Channel,u8 NVIC_Group);//ÉèÖÃÖĞ¶Ï
-void Ex_NVIC_Config(u8 GPIOx,u8 BITx,u8 TRIM);				//Íâ²¿ÖĞ¶ÏÅäÖÃº¯Êı(Ö»¶ÔGPIOA~I)
-void GPIO_AF_Set(GPIO_TypeDef* GPIOx,u8 BITx,u8 AFx);		//GPIO¸´ÓÃ¹¦ÄÜÉèÖÃ
-void GPIO_Set(GPIO_TypeDef* GPIOx,u32 BITx,u32 MODE,u32 OTYPE,u32 OSPEED,u32 PUPD);//GPIOÉèÖÃº¯Êı  
-//ÒÔÏÂÎª»ã±àº¯Êı
-void WFI_SET(void);		//Ö´ĞĞWFIÖ¸Áî
-void INTX_DISABLE(void);//¹Ø±ÕËùÓĞÖĞ¶Ï
-void INTX_ENABLE(void);	//¿ªÆôËùÓĞÖĞ¶Ï
-void MSR_MSP(u32 addr);	//ÉèÖÃ¶ÑÕ»µØÖ· 
+u8 Sys_Clock_Set(u32 plln,u32 pllm,u32 pllp,u32 pllq);		//ç³»ç»Ÿæ—¶é’Ÿè®¾ç½®
+void Stm32_Clock_Init(u32 plln,u32 pllm,u32 pllp,u32 pllq); //æ—¶é’Ÿåˆå§‹åŒ–  
+void Sys_Soft_Reset(void);      							//ç³»ç»Ÿè½¯å¤ä½
+void Sys_Standby(void);         							//å¾…æœºæ¨¡å¼ 	
+void MY_NVIC_SetVectorTable(u32 NVIC_VectTab, u32 Offset);	//è®¾ç½®åç§»åœ°å€
+void MY_NVIC_PriorityGroupConfig(u8 NVIC_Group);			//è®¾ç½®NVICåˆ†ç»„
+void MY_NVIC_Init(u8 NVIC_PreemptionPriority,u8 NVIC_SubPriority,u8 NVIC_Channel,u8 NVIC_Group);//è®¾ç½®ä¸­æ–­
+void Ex_NVIC_Config(u8 GPIOx,u8 BITx,u8 TRIM);				//å¤–éƒ¨ä¸­æ–­é…ç½®å‡½æ•°(åªå¯¹GPIOA~I)
+void GPIO_AF_Set(GPIO_TypeDef* GPIOx,u8 BITx,u8 AFx);		//GPIOå¤ç”¨åŠŸèƒ½è®¾ç½®
+void GPIO_Set(GPIO_TypeDef* GPIOx,u32 BITx,u32 MODE,u32 OTYPE,u32 OSPEED,u32 PUPD);//GPIOè®¾ç½®å‡½æ•°  
+//ä»¥ä¸‹ä¸ºæ±‡ç¼–å‡½æ•°
+void WFI_SET(void);		//æ‰§è¡ŒWFIæŒ‡ä»¤
+void INTX_DISABLE(void);//å…³é—­æ‰€æœ‰ä¸­æ–­
+void INTX_ENABLE(void);	//å¼€å¯æ‰€æœ‰ä¸­æ–­
+void MSR_MSP(u32 addr);	//è®¾ç½®å †æ ˆåœ°å€ 
 #endif
 
 

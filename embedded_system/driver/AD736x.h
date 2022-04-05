@@ -1,28 +1,28 @@
 #ifndef _AD736X_H_
 #define _AD736X_H_
 
-//´úÂë¿ò¼Ü
+//ä»£ç æ¡†æ¶
 #include "Framework.h"
 
-//ÊÇAD7366»¹ÊÇAD7367£¿
-//Á½ÕßµÄÇø±ğÊÇ12bit/14bit
+//æ˜¯AD7366è¿˜æ˜¯AD7367ï¼Ÿ
+//ä¸¤è€…çš„åŒºåˆ«æ˜¯12bit/14bit
 typedef enum
 {
 	AD7366=12,
 	AD7367=14
 } ad736x_device_type_type;
 
-//Êä³öÏßÊıÁ¿
+//è¾“å‡ºçº¿æ•°é‡
 typedef enum
 {
-	ONE_LINE,     //µ¥Ïß
-	TWO_LINE      //Ë«Ïß
+	ONE_LINE,     //å•çº¿
+	TWO_LINE      //åŒçº¿
 } ad736x_line_num_type;
 
 
 typedef struct ad736x_class
 {
-    //Æ÷¼şÀàĞÍ£¬Ò²¾ÍÊÇ£ºAD7366»òAD7367
+    //å™¨ä»¶ç±»å‹ï¼Œä¹Ÿå°±æ˜¯ï¼šAD7366æˆ–AD7367
 	ro ad736x_device_type_type 	Device_Type;
     
     
@@ -31,51 +31,51 @@ typedef struct ad736x_class
 
     ro periperal                DMA;
 		
-    //Ë«Ïß»òµ¥Ïß
+    //åŒçº¿æˆ–å•çº¿
 	ro ad736x_line_num_type		Line_Num;
 			
-    //CNVSTÒı½Å
+    //CNVSTå¼•è„š
 	ro gpio_type				CNVST_Pin;
 	
-    //BUSYÒı½Å
+    //BUSYå¼•è„š
 	ro gpio_type				BUSY_Pin;
 	
-    //CSÒı½Å
+    //CSå¼•è„š
 	ro gpio_type				CS_Pin;
 	
-    //SCLKÒı½Å
+    //SCLKå¼•è„š
 	ro gpio_type				SCLK_Pin;
 	
-    //DOUTAÒı½Å
+    //DOUTAå¼•è„š
 	ro gpio_type				DOUTA_Pin;
 	
-    //DOUTBÒı½Å
+    //DOUTBå¼•è„š
 	ro gpio_type				DOUTB_Pin;
     
     ro gpio_type                START;
     
     ro gpio_type                RST;
     
-    //Æô¶¯Ò»´Î×ª»»
+    //å¯åŠ¨ä¸€æ¬¡è½¬æ¢
     void(*AD736x_Start_Sample)(struct ad736x_class* dev, uint32_t fs, uint16_t num, void* datbuf1, void* datbuf2, data_format_type fmt);
     
-    //Æô¶¯Ò»´Î×ª»»
+    //å¯åŠ¨ä¸€æ¬¡è½¬æ¢
     void(*AD736x_Start_Sample2)(struct ad736x_class* dev, uint32_t fs, uint16_t num, void* datbuf, data_format_type fmt);
 } ad736x;
 
 /***************************************************************************
-*¹¦ÄÜ£ºad736x¹¹Ôìº¯Êı                                                      *
-*²ÎÊı£º1.dev£ºÀàµÄÊµÀı                                                     *
-*      2.dev_t£ºÆ÷¼şÀàĞÍ                                                   *
-*      3.ln_num£ºÊı¾İÏßÊıÁ¿                                                *
-*      4.cnvst£ºCNVSTÒı½Å                                                  *
-*      5.bsy£ºBUSYÒı½Å                                                     *
-*      6.cs£ºCSÒı½Å                                                        *
-*      7.sclk£ºSCLKÒı½Å                                                    *
-*      8.¿É±ä²ÎÊı£º¿É±ä²ÎÊıµÄÄÚÈİÓëÊı¾İÏßÊıÁ¿ÓĞ¹Ø                          *
-*        µ¥Êı¾İÏß£¨ln_num==ONE_LINE£©£ºgpio_type douta ´ú±íDOUTAÒı½Å       *
-*        Ë«Êı¾İÏß£¨ln_num==TWO_LINE£©£ºgpio_type douta, gpio_type doutb    *
-*        ·Ö±ğ´ú±íDOUTAÒı½ÅºÍDOUTBÒı½Å                                      *
+*åŠŸèƒ½ï¼šad736xæ„é€ å‡½æ•°                                                      *
+*å‚æ•°ï¼š1.devï¼šç±»çš„å®ä¾‹                                                     *
+*      2.dev_tï¼šå™¨ä»¶ç±»å‹                                                   *
+*      3.ln_numï¼šæ•°æ®çº¿æ•°é‡                                                *
+*      4.cnvstï¼šCNVSTå¼•è„š                                                  *
+*      5.bsyï¼šBUSYå¼•è„š                                                     *
+*      6.csï¼šCSå¼•è„š                                                        *
+*      7.sclkï¼šSCLKå¼•è„š                                                    *
+*      8.å¯å˜å‚æ•°ï¼šå¯å˜å‚æ•°çš„å†…å®¹ä¸æ•°æ®çº¿æ•°é‡æœ‰å…³                          *
+*        å•æ•°æ®çº¿ï¼ˆln_num==ONE_LINEï¼‰ï¼šgpio_type douta ä»£è¡¨DOUTAå¼•è„š       *
+*        åŒæ•°æ®çº¿ï¼ˆln_num==TWO_LINEï¼‰ï¼šgpio_type douta, gpio_type doutb    *
+*        åˆ†åˆ«ä»£è¡¨DOUTAå¼•è„šå’ŒDOUTBå¼•è„š                                      *
 ****************************************************************************/
 void AD736x_Prepare(struct ad736x_class* dev, ad736x_device_type_type dev_t, ad736x_line_num_type ln_num,
 					gpio_type cnvst, gpio_type bsy, gpio_type cs, gpio_type sclk, ...);

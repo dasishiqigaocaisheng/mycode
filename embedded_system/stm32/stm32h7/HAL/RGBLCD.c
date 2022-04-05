@@ -1,354 +1,481 @@
 #include "RGBLCD.h"
 #include "Framework.h"
+#include "GPIO.h"
 
-#define ZHENGDIAN_1024x600
+//#define FANKE_STM32F429
+//#define APOLLO_STM32H743
+#define FANKE_STM32H743
 
-#define ARGB8888	0
-#define RGB888		1
-#define RGB565		2
-#define ARGB1555	3
-#define ARGB4444	4
-#define L8			5
-#define AL44		6
-#define AL88		7
+#define FANKE_800x480
+//#define ZHENGDIAN_1024x600
 
-#define LAYER1_GRAM_ADDR	0xd1f44800  //BANK6_SDRAM_ADDR+32M-800*480*2
+#define ARGB8888 0
+#define RGB888 1
+#define RGB565 2
+#define ARGB1555 3
+#define ARGB4444 4
+#define L8 5
+#define AL44 6
+#define AL88 7
 
 #if defined FANKE_800x480
-#define SCREEN_WIDTH	800
-#define HS_PULSE_WIDTH	1
-#define HS_BLANKING		80
-#define HS_FRONT_PORCH	200
 
-#define SCREEN_HEIGHT	480
-#define VS_PULSE_WIDTH	1
-#define VS_BLANKING		40
-#define VS_FRONT_PORCH	22
+#define SCREEN_WIDTH 800
+#define HS_PULSE_WIDTH 1
+#define HS_BLANKING 80
+#define HS_FRONT_PORCH 200
+
+#define SCREEN_HEIGHT 480
+#define VS_PULSE_WIDTH 1
+#define VS_BLANKING 40
+#define VS_FRONT_PORCH 22
+
 #elif defined ZHENGDIAN_1024x600
-#define SCREEN_WIDTH	1024
-#define HS_PULSE_WIDTH	20
-#define HS_BLANKING		140
-#define HS_FRONT_PORCH	160
 
-#define SCREEN_HEIGHT	600
-#define VS_PULSE_WIDTH	3
-#define VS_BLANKING		20
-#define VS_FRONT_PORCH	12
+#define SCREEN_WIDTH 1024
+#define HS_PULSE_WIDTH 20
+#define HS_BLANKING 140
+#define HS_FRONT_PORCH 160
+
+#define SCREEN_HEIGHT 600
+#define VS_PULSE_WIDTH 3
+#define VS_BLANKING 20
+#define VS_FRONT_PORCH 12
+
 #endif
 
-#define LAYER1_PIXEL_FORMAT	RGB565
+#if defined FANKE_STM32H743
 
-#if defined FANKE_STM32F429
-#define LCD_BL_PIN      GPIOD_13
+#define R0 GPIOG_13
+#define R1 GPIOA_2
+#define R2 GPIOH_8
+#define R3 GPIOH_9
+#define R4 GPIOH_10
+#define R5 GPIOH_11
+#define R6 GPIOH_12
+#define R7 GPIOG_6
+
+#define G0 GPIOE_5
+#define G1 GPIOE_6
+#define G2 GPIOH_13
+#define G3 GPIOH_14
+#define G4 GPIOH_15
+#define G5 GPIOI_0
+#define G6 GPIOI_1
+#define G7 GPIOI_2
+
+#define B0 GPIOG_14
+#define B1 GPIOG_12
+#define B2 GPIOD_6
+#define B3 GPIOA_8
+#define B4 GPIOI_4
+#define B5 GPIOI_5
+#define B6 GPIOI_6
+#define B7 GPIOI_7
+
+#define BL GPIOH_6
+
+#define CLK GPIOG_7
+#define DE GPIOF_10
+#define VS GPIOI_9
+#define HS GPIOI_10
+
 #elif defined APOLLO_STM32H743
-#define LCD_BL_PIN      GPIOB_5
+
+#define R0 GPIOH_9
+#define R1 GPIOH_9
+#define R2 GPIOH_9
+#define R3 GPIOH_9
+#define R4 GPIOH_10
+#define R5 GPIOH_11
+#define R6 GPIOH_12
+#define R7 GPIOG_6
+
+#define G0 GPIOH_13
+#define G1 GPIOH_13
+#define G2 GPIOH_13
+#define G3 GPIOH_14
+#define G4 GPIOH_15
+#define G5 GPIOI_0
+#define G6 GPIOI_1
+#define G7 GPIOI_2
+
+#define B0 GPIOG_11
+#define B1 GPIOG_11
+#define B2 GPIOG_11
+#define B3 GPIOG_11
+#define B4 GPIOI_4
+#define B5 GPIOI_5
+#define B6 GPIOI_6
+#define B7 GPIOI_7
+
+#define BL GPIOB_5
+
+#define CLK GPIOG_7
+#define DE GPIOF_10
+#define VS GPIOI_9
+#define HS GPIOI_10
+
 #endif
 
-#if !defined USE_STM32H7
-/*LTDC ±÷”≥ı ºªØ*/
-u8 _RGBLCD_Clock_Init(u32 pllsain, u32 pllsair, u32 pllsaidivr);
+#define LAYER1_PIXEL_FORMAT RGB565
 
-//LTDC ±÷”(Fdclk)…Ë÷√∫Ø ˝
-//Fvco=Fin*pllsain; 
-//Fdclk=Fvco/pllsair/2*2^pllsaidivr=Fin*pllsain/pllsair/2*2^pllsaidivr;
-//Fvco:VCO∆µ¬ 
-//Fin: ‰»Î ±÷”∆µ¬ “ª∞„Œ™1Mhz(¿¥◊‘œµÕ≥ ±÷”PLLM∑÷∆µ∫Ûµƒ ±÷”,º˚ ±÷” ˜Õº)
-//pllsain:SAI ±÷”±∂∆µœµ ˝N,»°÷µ∑∂Œß:50~432.  
-//pllsair:SAI ±÷”µƒ∑÷∆µœµ ˝R,»°÷µ∑∂Œß:2~7
-//pllsaidivr:LCD ±÷”∑÷∆µœµ ˝,»°÷µ∑∂Œß:0~3,∂‘”¶∑÷∆µ2^(pllsaidivr+1) 
-//ºŸ…Ë:Õ‚≤øæß’ÒŒ™25M,pllm=25µƒ ±∫Ú,Fin=1Mhz.
-//¿˝»Á:“™µ√µΩ20MµƒLTDC ±÷”,‘Úø…“‘…Ë÷√:pllsain=400,pllsair=5,pllsaidivr=1
-//Fdclk=1*396/3/2*2^1=396/12=33Mhz
-//∑µªÿ÷µ:0,≥…π¶;1, ß∞‹°£
-u8 _RGBLCD_Clock_Init(u32 pllsain,u32 pllsair,u32 pllsaidivr)
-{ 
-	u16 retry=0;
-	u8 status=0;
-	u32 tempreg=0;
-	RCC->CR&=~(1<<28);					//πÿ±’SAI ±÷” 
-	while(((RCC->CR&(1<<29)))&&(retry<0X1FFF))retry++;//µ»¥˝SAI ±÷” ßÀ¯
- 	if(retry==0X1FFF)status=1;			//LTDC ±÷”πÿ±’ ß∞‹
-	else   
-	{ 
-		tempreg|=pllsain<<6;
-		tempreg|=pllsair<<28;
-		RCC->PLLSAICFGR=tempreg;		//…Ë÷√LTDCµƒ±∂∆µ∫Õ∑÷∆µ
-		RCC->DCKCFGR&=~(3<<16);			//«Â≥˝‘≠¿¥µƒ…Ë÷√.
-		RCC->DCKCFGR|=pllsaidivr<<16;	//…Ë÷√fdclk∑÷∆µ
-
-		RCC->CR|=1<<28;					//ø™∆ÙSAI ±÷” 
-		while(((RCC->CR&(1<<29))==0)&&(retry<0X1FFF))retry++;//µ»¥˝SAI ±÷”À¯∂®
-		if(retry==0X1FFF)status=2;	
- 	} 
-	return status;
-} 
-#else
-//LTDC  ±÷”(Fdclk)…Ë÷√∫Ø ˝
+//LTDC Êó∂Èíü(Fdclk)ËÆæÁΩÆÂáΩÊï∞
 //Fvco=Fs*(pll3n/pll3m);
 //Fr=Fvco/pll3r=Fs*(pll3n/(pll3m*pll3r));
 //Fdclk=Fr;
-//Fvco:VCO ∆µ¬ 
-//Fr:PLL3 µƒ r ∑÷∆µ ‰≥ˆ ±÷”∆µ¬ 
-//Fs:PLL3  ‰»Î ±÷”∆µ¬ ,ø…“‘ « HSI,CSI,HSE µ».
-//Fdclk:LTDC µƒ ‰»Î ±÷”
-//pll3n:PLL3 ±∂∆µœµ ˝(PLL ±∂∆µ),»°÷µ∑∂Œß:4~512.
-//pll3m:PLL3 ‘§∑÷∆µœµ ˝(Ω¯ PLL ÷Æ«∞µƒ∑÷∆µ),»°÷µ∑∂Œß:2~63.
-//pll3r:PLL3 µƒ r ∑÷∆µœµ ˝(PLL ÷Æ∫Ûµƒ∑÷∆µ),»°÷µ∑∂Œß:1~128.
-//“ÚŒ™ LTDC ∫Õ SAI π≤”√ pll3,À˘“‘,µ± π”√ SAI µƒ ±∫Ú,ª·«–ªª≤ªÕ¨µƒ pll3n(“ª∞„ª·
-//¥Û”⁄ 300),µº÷¬ LTDC µƒ plln “≤±‰ªØ¡À,“Ú¥À’‚¿Ô…Ë÷√Œ™ 300,µ√µΩµƒœÒÀÿ ±÷”‘⁄
-//∫Û√Ê SAI –ﬁ∏ƒ pll3n µƒ ±∫Ú,÷ªª·¥Û,≤ªª·–°.≤ªª·ΩµµÕ LCD µƒÀ¢–¬∆µ¬ .
-//“Ú¥À,LTDC,Œ“√«“ª∞„…Ë÷√ pll3m=25,pll3n=300,’‚—˘,ø…“‘µ√µΩ Fvco=300Mhz 
-//»ª∫Û,÷ª–Ë“™Õ®π˝–ﬁ∏ƒ pll3r,¿¥∆•≈‰≤ªÕ¨µƒ“∫æß∆¡ ±–Úº¥ø….
-//¿˝»Á:“™µ√µΩ 33M µƒ LTDC  ±÷”,‘Úø…“‘…Ë÷√:pll3n=300,pll3m=25,pll3r=9
+//Fvco:VCO È¢ëÁéá
+//Fr:PLL3 ÁöÑ r ÂàÜÈ¢ëËæìÂá∫Êó∂ÈíüÈ¢ëÁéá
+//Fs:PLL3 ËæìÂÖ•Êó∂ÈíüÈ¢ëÁéá,ÂèØ‰ª•ÊòØ HSI,CSI,HSE Á≠â.
+//Fdclk:LTDC ÁöÑËæìÂÖ•Êó∂Èíü
+//pll3n:PLL3 ÂÄçÈ¢ëÁ≥ªÊï∞(PLL ÂÄçÈ¢ë),ÂèñÂÄºËåÉÂõ¥:4~512.
+//pll3m:PLL3 È¢ÑÂàÜÈ¢ëÁ≥ªÊï∞(Ëøõ PLL ‰πãÂâçÁöÑÂàÜÈ¢ë),ÂèñÂÄºËåÉÂõ¥:2~63.
+//pll3r:PLL3 ÁöÑ r ÂàÜÈ¢ëÁ≥ªÊï∞(PLL ‰πãÂêéÁöÑÂàÜÈ¢ë),ÂèñÂÄºËåÉÂõ¥:1~128.
+//Âõ†‰∏∫ LTDC Âíå SAI ÂÖ±Áî® pll3,ÊâÄ‰ª•,ÂΩì‰ΩøÁî® SAI ÁöÑÊó∂ÂÄô,‰ºöÂàáÊç¢‰∏çÂêåÁöÑ pll3n(‰∏ÄËà¨‰ºö
+//Â§ß‰∫é 300),ÂØºËá¥ LTDC ÁöÑ plln ‰πüÂèòÂåñ‰∫Ü,Âõ†Ê≠§ËøôÈáåËÆæÁΩÆ‰∏∫ 300,ÂæóÂà∞ÁöÑÂÉèÁ¥†Êó∂ÈíüÂú®
+//ÂêéÈù¢ SAI ‰øÆÊîπ pll3n ÁöÑÊó∂ÂÄô,Âè™‰ºöÂ§ß,‰∏ç‰ºöÂ∞è.‰∏ç‰ºöÈôç‰Ωé LCD ÁöÑÂà∑Êñ∞È¢ëÁéá.
+//Âõ†Ê≠§,LTDC,Êàë‰ª¨‰∏ÄËà¨ËÆæÁΩÆ pll3m=25,pll3n=300,ËøôÊ†∑,ÂèØ‰ª•ÂæóÂà∞ Fvco=300Mhz
+//ÁÑ∂Âêé,Âè™ÈúÄË¶ÅÈÄöËøá‰øÆÊîπ pll3r,Êù•ÂåπÈÖç‰∏çÂêåÁöÑÊ∂≤Êô∂Â±èÊó∂Â∫èÂç≥ÂèØ.
+//‰æãÂ¶Ç:Ë¶ÅÂæóÂà∞ 33M ÁöÑ LTDC Êó∂Èíü,ÂàôÂèØ‰ª•ËÆæÁΩÆ:pll3n=300,pll3m=25,pll3r=9
 //Fdclk=300*(25/25)/9=300/9=33.33Mhz
-//∑µªÿ÷µ:0,≥…π¶;1, ß∞‹°£
-u8 _RGBLCD_Clock_Init(u32 pll3n,u32 pll3m,u32 pll3r)
+//ËøîÂõûÂÄº:0,ÊàêÂäü;1,Â§±Ë¥•„ÄÇ
+u8 _RGBLCD_Clock_Init(u32 pll3n, u32 pll3m, u32 pll3r)
 {
-    u16 retry=0;
-    u8 status=0;
-    RCC->CR&=~(1<<28); //πÿ±’ PLL3  ±÷”
-    while(((RCC->CR&(1<<29)))&&(retry<0X1FFF))retry++;//µ»¥˝ PLL3  ±÷” ßÀ¯
-    if(retry==0X1FFF)
-        status=1; //PLL3  ±÷”πÿ±’ ß∞‹
+    u16 retry = 0;
+    u8 status = 0;
+    RCC->CR &= ~(1 << 28); //ÂÖ≥Èó≠ PLL3 Êó∂Èíü
+    while (((RCC->CR & (1 << 29))) && (retry < 0X1FFF))
+        retry++; //Á≠âÂæÖ PLL3 Êó∂ÈíüÂ§±ÈîÅ
+    if (retry == 0X1FFF)
+        status = 1; //PLL3 Êó∂ÈíüÂÖ≥Èó≠Â§±Ë¥•
     else
     {
-        RCC->PLLCKSELR&=~(0X3F<<20); //«Â≥˝ DIVM3[5:0]‘≠¿¥µƒ…Ë÷√
-        RCC->PLLCKSELR|=pll3m<<20; //DIVM3[5:0]=25,…Ë÷√ PLL3 µƒ‘§∑÷∆µœµ ˝
-        RCC->PLL3DIVR&=~(0X1FF<<0); //«Â≥˝ DIVN3[8:0]‘≠¿¥µƒ…Ë÷√
-        RCC->PLL3DIVR|=(pll3n-1)<<0; //DIVN3[8:0]=pll3n-1,…Ë÷√ PLL3 µƒ±∂∆µœµ ˝
-        RCC->PLL3DIVR&=~(0X7F<<24); //«Â≥˝ DIVR2[6:0]‘≠¿¥µƒ…Ë÷√
-        RCC->PLL3DIVR|=(pll3r-1)<<24; //DIVR3[8:0]=pll3r-1,…Ë÷√ PLL3 µƒ∑÷∆µœµ ˝
-        RCC->PLLCFGR&=~(0X0F<<8); //«Â PLL3RGE[1:0]/VCOSEL/FRACEN …Ë÷√
-        RCC->PLLCFGR|=0<<10; //PLL3RGE[1:0]=0, ‰»Î∆µ¬ ‘⁄ 1~2Mhz ÷Æº‰
-        RCC->PLLCFGR|=0<<9; //PLL3VCOSEL=0, VCO ∑∂Œß,192~836Mhz
-        RCC->PLLCFGR|=1<<24; //DIVR3EN=1, πƒ‹ pll3_r_ck
-        RCC->CR|=1<<28; //PLL3ON=1, πƒ‹ PLL3
-        while(((RCC->CR&(1<<29))==0)&&(retry<0X1FFF))
-            retry++; //µ»¥˝ PLL3 À¯∂®
-        if(retry==0X1FFF)
-            status=2;
+        RCC->PLLCKSELR &= ~(0X3F << 20);    //Ê∏ÖÈô§ DIVM3[5:0]ÂéüÊù•ÁöÑËÆæÁΩÆ
+        RCC->PLLCKSELR |= pll3m << 20;      //DIVM3[5:0]=25,ËÆæÁΩÆ PLL3 ÁöÑÈ¢ÑÂàÜÈ¢ëÁ≥ªÊï∞
+        RCC->PLL3DIVR &= ~(0X1FF << 0);     //Ê∏ÖÈô§ DIVN3[8:0]ÂéüÊù•ÁöÑËÆæÁΩÆ
+        RCC->PLL3DIVR |= (pll3n - 1) << 0;  //DIVN3[8:0]=pll3n-1,ËÆæÁΩÆ PLL3 ÁöÑÂÄçÈ¢ëÁ≥ªÊï∞
+        RCC->PLL3DIVR &= ~(0X7F << 24);     //Ê∏ÖÈô§ DIVR2[6:0]ÂéüÊù•ÁöÑËÆæÁΩÆ
+        RCC->PLL3DIVR |= (pll3r - 1) << 24; //DIVR3[8:0]=pll3r-1,ËÆæÁΩÆ PLL3 ÁöÑÂàÜÈ¢ëÁ≥ªÊï∞
+        RCC->PLLCFGR &= ~(0X0F << 8);       //Ê∏Ö PLL3RGE[1:0]/VCOSEL/FRACEN ËÆæÁΩÆ
+        RCC->PLLCFGR |= 0 << 10;            //PLL3RGE[1:0]=0,ËæìÂÖ•È¢ëÁéáÂú® 1~2Mhz ‰πãÈó¥
+        RCC->PLLCFGR |= 0 << 9;             //PLL3VCOSEL=0, VCO ËåÉÂõ¥,192~836Mhz
+        RCC->PLLCFGR |= 1 << 24;            //DIVR3EN=1,‰ΩøËÉΩ pll3_r_ck
+        RCC->CR |= 1 << 28;                 //PLL3ON=1,‰ΩøËÉΩ PLL3
+        while (((RCC->CR & (1 << 29)) == 0) && (retry < 0X1FFF))
+            retry++; //Á≠âÂæÖ PLL3 ÈîÅÂÆö
+        if (retry == 0X1FFF)
+            status = 2;
     }
     return status;
-} 
-#endif
+}
 
-#if !defined USE_STM32H7
 void RGBLCD_ON(void)
 {
-	GPIO_Write(LCD_BL_PIN)=1;
+    GPIO_Write(BL, 1);
 }
 
 void RGBLCD_OFF(void)
 {
-	GPIO_Write(LCD_BL_PIN)=0;
+    GPIO_Write(BL, 0);
 }
-#else
-void RGBLCD_ON(void)
-{
-	GPIO_Write(LCD_BL_PIN,1);
-}
-
-void RGBLCD_OFF(void)
-{
-	GPIO_Write(LCD_BL_PIN,0);
-}
-
-#endif
-
 
 void RGBLCD_Window_Range_Set(u16 X, u16 Y, u16 Width, u16 Height)
 {
-	u32 hor_save=0,ver_save=0;
-	
-	hor_save|=((LTDC->BPCR&0x0fff000)>>16)+1+X;
-	hor_save|=(((LTDC->BPCR&0x0fff000)>>16)+X+Width)<<16;
-	ver_save|=(LTDC->BPCR&0x7ff)+1+Y;
-	ver_save|=((LTDC->BPCR&0x7ff)+Y+Height)<<16;
-	LTDC_Layer1->WHPCR=hor_save;
-	LTDC_Layer1->WVPCR=ver_save;
+    u32 hor_save = 0, ver_save = 0;
 
+    hor_save |= ((LTDC->BPCR & 0x0fff000) >> 16) + 1 + X;
+    hor_save |= (((LTDC->BPCR & 0x0fff000) >> 16) + X + Width) << 16;
+    ver_save |= (LTDC->BPCR & 0x7ff) + 1 + Y;
+    ver_save |= ((LTDC->BPCR & 0x7ff) + Y + Height) << 16;
+    LTDC_Layer1->WHPCR = hor_save;
+    LTDC_Layer1->WVPCR = ver_save;
 }
 
 void RGBLCD_Init(void)
 {
-	u8 Layer1_Pixel_Byte,Layer2_Pixel_Byte;
-	u32 save;
-	
-    #if !defined USE_STM32H7
-	RCC->APB2ENR|=1<<26;			//ø™∆ÙLTDC ±÷”
-	#else
-    RCC->APB3ENR|=1<<3;
-    #endif
-    
-	#if defined FANKE_STM32F429
-	GPIO_Set(GPIOH,PIN8|PIN9|PIN10|PIN11|PIN13|PIN14|PIN15,
-				GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);
-	GPIO_Set(GPIOI,PIN0|PIN1|PIN2|PIN4|PIN5|PIN6|PIN7|PIN9|PIN10,
-				GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);
-	GPIO_Set(GPIOD,PIN6,
-				GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);
-	GPIO_Set(GPIOD,PIN13,
-				GPIO_MODE_OUT,GPIO_OTYPE_PP,GPIO_SPEED_LOW,GPIO_PUPD_PU);
-	GPIO_Set(GPIOG,PIN6|PIN7,
-				GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);
-	GPIO_Set(GPIOB,PIN1,
-				GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);
-	GPIO_Set(GPIOF,PIN10,
-				GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);
-	
-	GPIO_AF_Set(GPIOH,8,14);
-	GPIO_AF_Set(GPIOH,9,14);
-	GPIO_AF_Set(GPIOH,10,14);
-	GPIO_AF_Set(GPIOH,11,14);
-	GPIO_AF_Set(GPIOB,1,14);
-	GPIO_AF_Set(GPIOG,6,14);
-	
-	GPIO_AF_Set(GPIOH,13,14);
-	GPIO_AF_Set(GPIOH,14,14);
-	GPIO_AF_Set(GPIOH,15,14);
-	GPIO_AF_Set(GPIOI,0,14);
-	GPIO_AF_Set(GPIOI,1,14);
-	GPIO_AF_Set(GPIOI,2,14);
-	
-	GPIO_AF_Set(GPIOD,6,14);
-	GPIO_AF_Set(GPIOG,11,14);
-	GPIO_AF_Set(GPIOI,4,14);
-	GPIO_AF_Set(GPIOI,5,14);
-	GPIO_AF_Set(GPIOI,6,14);
-	GPIO_AF_Set(GPIOI,7,14);
-	
-	GPIO_AF_Set(GPIOG,7,14);
-	GPIO_AF_Set(GPIOF,10,14);
-	GPIO_AF_Set(GPIOI,9,14);
-	GPIO_AF_Set(GPIOI,10,14);
-	#elif defined APOLLO_STM32H743
-    
-    GPIO_Set(GPIOB,PIN5,GPIO_MODE_OUT,GPIO_OTYPE_PP,GPIO_SPEED_MID,GPIO_PUPD_PU);				//PB5 Õ∆ÕÏ ‰≥ˆ,øÿ÷∆±≥π‚
-	GPIO_Set(GPIOF,PIN10,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);				//PF10		
-	GPIO_Set(GPIOG,3<<6|1<<11,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);			//PG6/7/11
-	GPIO_Set(GPIOH,0X7F<<9,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);			//PH9~15
-	GPIO_Set(GPIOI,7<<0|0XF<<4|3<<9,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);	//PI0~2/4~7/9/10
-	 
- 	GPIO_AF_Set(GPIOF,10,14);		//PF10,AF14
-	
- 	GPIO_AF_Set(GPIOG,6,14);		//PG6,AF14
- 	GPIO_AF_Set(GPIOG,7,14);		//PG7,AF14
- 	GPIO_AF_Set(GPIOG,11,14);		//PG11,AF14
-	
- 	GPIO_AF_Set(GPIOH,9,14);		//PH9,AF14
- 	GPIO_AF_Set(GPIOH,10,14);		//PH10,AF14
- 	GPIO_AF_Set(GPIOH,11,14);		//PH11,AF14
- 	GPIO_AF_Set(GPIOH,12,14);		//PH12,AF14
- 	GPIO_AF_Set(GPIOH,13,14);		//PH13,AF14
- 	GPIO_AF_Set(GPIOH,14,14);		//PH14,AF14
- 	GPIO_AF_Set(GPIOH,15,14);		//PH15,AF14
-	
- 	GPIO_AF_Set(GPIOI,0,14);		//PI0,AF14
- 	GPIO_AF_Set(GPIOI,1,14);		//PI1,AF14
- 	GPIO_AF_Set(GPIOI,2,14);		//PI2,AF14
- 	GPIO_AF_Set(GPIOI,4,14);		//PI4,AF14
- 	GPIO_AF_Set(GPIOI,5,14);		//PI5,AF14
- 	GPIO_AF_Set(GPIOI,6,14);		//PI6,AF14
- 	GPIO_AF_Set(GPIOI,7,14);		//PI7,AF14
- 	GPIO_AF_Set(GPIOI,9,14);		//PI9,AF14
- 	GPIO_AF_Set(GPIOI,10,14);		//PI10,AF14
-    
-    #endif
-    
-	if (LAYER1_PIXEL_FORMAT==ARGB8888)
-		Layer1_Pixel_Byte=4;
-	else if (LAYER1_PIXEL_FORMAT==RGB888)
-		Layer1_Pixel_Byte=3;
-	else if (LAYER1_PIXEL_FORMAT==RGB565)
-		Layer1_Pixel_Byte=2;
-	else if (LAYER1_PIXEL_FORMAT==ARGB1555)
-		Layer1_Pixel_Byte=2;
-	else if (LAYER1_PIXEL_FORMAT==ARGB4444)
-		Layer1_Pixel_Byte=2;
-	else
-		Layer1_Pixel_Byte=1;
-	
-    #if !defined USE_STM32H7
-	_RGBLCD_Clock_Init(396,3,1);
-	#else
-    _RGBLCD_Clock_Init(300,25,6);
-    #endif
-	save=((HS_PULSE_WIDTH-1)<<16)+VS_PULSE_WIDTH-1;;
-	LTDC->SSCR=save;
-	
-	save=((HS_PULSE_WIDTH+HS_BLANKING-1)<<16)+VS_PULSE_WIDTH+VS_BLANKING-1;
-	LTDC->BPCR=save;
-	
-	save=((HS_PULSE_WIDTH+HS_BLANKING+SCREEN_WIDTH-1)<<16)+VS_PULSE_WIDTH+VS_BLANKING+SCREEN_HEIGHT-1;
-	LTDC->AWCR=save;
-	
-	save=((HS_PULSE_WIDTH+HS_BLANKING+SCREEN_WIDTH+HS_FRONT_PORCH-1)<<16)+VS_PULSE_WIDTH+VS_BLANKING+SCREEN_HEIGHT+VS_FRONT_PORCH-1;
-	LTDC->TWCR=save;
-	
-	LTDC->BCCR|=0xff0000;
-	
-	LTDC_Layer1->CACR=0xff;
-	
-	save=(4<<8)+5;
-	LTDC_Layer1->BFCR=save;
-	
-	RGBLCD_Window_Default_Color_Set(0xff000000);
-	
-	LTDC_Layer1->CFBAR=LAYER1_GRAM_ADDR;
-	
-	save=((SCREEN_WIDTH*Layer1_Pixel_Byte)<<16)+SCREEN_WIDTH*Layer1_Pixel_Byte+3;
-	LTDC_Layer1->CFBLR=save;
-	
-	LTDC_Layer1->CFBLNR=SCREEN_HEIGHT;
-	
-	LTDC_Layer1->PFCR|=LAYER1_PIXEL_FORMAT;
-	
-	RGBLCD_Window_Range_Set(0,0,800,480);
+    u8 Layer1_Pixel_Byte, Layer2_Pixel_Byte;
+    u32 save;
 
-	LTDC_Layer1->CR|=1;
+    RCC->APB3ENR |= 1 << 3;
 
-	LTDC->SRCR|=1<<1;
-	LTDC->GCR|=1;
-	
-	RGBLCD_OFF();
-	
-    #if !defined USE_STM32H7
-	RCC->AHB1ENR|=1<<23;	// πƒ‹DMA2D ±÷”
-    #else
-    RCC->AHB3ENR|=1<<4;	
-    #endif
-	DMA2D->FGOR=0;			//«∞æ∞≤„∆´“∆Œ™0
-	DMA2D->OPFCCR=LAYER1_PIXEL_FORMAT;	// ‰≥ˆ—’…´∏Ò Ω
-	DMA2D->FGPFCCR=LAYER1_PIXEL_FORMAT;	//«∞æ∞≤„—’…´∏Ò Ω
+#if defined FANKE_STM32F429
+
+    GPIO_Set(GPIOH, PIN8 | PIN9 | PIN10 | PIN11 | PIN13 | PIN14 | PIN15,
+             GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_SPEED_HIGH, GPIO_PUPD_PU);
+    GPIO_Set(GPIOI, PIN0 | PIN1 | PIN2 | PIN4 | PIN5 | PIN6 | PIN7 | PIN9 | PIN10,
+             GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_SPEED_HIGH, GPIO_PUPD_PU);
+    GPIO_Set(GPIOD, PIN6,
+             GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_SPEED_HIGH, GPIO_PUPD_PU);
+    GPIO_Set(GPIOD, PIN13,
+             GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_SPEED_LOW, GPIO_PUPD_PU);
+    GPIO_Set(GPIOG, PIN6 | PIN7,
+             GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_SPEED_HIGH, GPIO_PUPD_PU);
+    GPIO_Set(GPIOB, PIN1,
+             GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_SPEED_HIGH, GPIO_PUPD_PU);
+    GPIO_Set(GPIOF, PIN10,
+             GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_SPEED_HIGH, GPIO_PUPD_PU);
+
+    GPIO_AF_Set(GPIOH, 8, 14);
+    GPIO_AF_Set(GPIOH, 9, 14);
+    GPIO_AF_Set(GPIOH, 10, 14);
+    GPIO_AF_Set(GPIOH, 11, 14);
+    GPIO_AF_Set(GPIOB, 1, 14);
+    GPIO_AF_Set(GPIOG, 6, 14);
+
+    GPIO_AF_Set(GPIOH, 13, 14);
+    GPIO_AF_Set(GPIOH, 14, 14);
+    GPIO_AF_Set(GPIOH, 15, 14);
+    GPIO_AF_Set(GPIOI, 0, 14);
+    GPIO_AF_Set(GPIOI, 1, 14);
+    GPIO_AF_Set(GPIOI, 2, 14);
+
+    GPIO_AF_Set(GPIOD, 6, 14);
+    GPIO_AF_Set(GPIOG, 11, 14);
+    GPIO_AF_Set(GPIOI, 4, 14);
+    GPIO_AF_Set(GPIOI, 5, 14);
+    GPIO_AF_Set(GPIOI, 6, 14);
+    GPIO_AF_Set(GPIOI, 7, 14);
+
+    GPIO_AF_Set(GPIOG, 7, 14);
+    GPIO_AF_Set(GPIOF, 10, 14);
+    GPIO_AF_Set(GPIOI, 9, 14);
+    GPIO_AF_Set(GPIOI, 10, 14);
+
+#elif defined APOLLO_STM32H743
+
+    GPIO_Set(R3, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R4, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R5, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R6, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R7, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+
+    GPIO_Set(G2, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G3, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G4, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G5, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G6, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G7, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+
+    GPIO_Set(B3, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B4, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B5, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B6, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B7, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+
+    GPIO_Set(BL, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+
+    GPIO_Set(CLK, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(DE, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(VS, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(HS, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+
+    GPIO_AF_Set(R3, 14);
+    GPIO_AF_Set(R4, 14);
+    GPIO_AF_Set(R5, 14);
+    GPIO_AF_Set(R6, 14);
+    GPIO_AF_Set(R7, 14);
+
+    GPIO_AF_Set(G2, 14);
+    GPIO_AF_Set(G3, 14);
+    GPIO_AF_Set(G4, 14);
+    GPIO_AF_Set(G5, 14);
+    GPIO_AF_Set(G6, 14);
+    GPIO_AF_Set(G7, 14);
+
+    GPIO_AF_Set(B3, 14);
+    GPIO_AF_Set(B4, 14);
+    GPIO_AF_Set(B5, 14);
+    GPIO_AF_Set(B6, 14);
+    GPIO_AF_Set(B7, 14);
+
+    GPIO_AF_Set(CLK, 14);
+    GPIO_AF_Set(DE, 14);
+    GPIO_AF_Set(VS, 14);
+    GPIO_AF_Set(HS, 14);
+
+#elif defined FANKE_STM32H743
+
+    GPIO_Set(R0, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R1, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R2, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R3, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R4, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R5, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R6, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(R7, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+
+    GPIO_Set(G0, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G1, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G2, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G3, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G4, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G5, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G6, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(G7, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+
+    GPIO_Set(B0, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B1, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B2, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B3, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B4, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B5, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B6, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(B7, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+
+    GPIO_Set(BL, GPIO_MODE_OUT, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+
+    GPIO_Set(CLK, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(DE, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(VS, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+    GPIO_Set(HS, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_ULTRAL, GPIO_PUPD_PU);
+
+    GPIO_AF_Set(R3, 14);
+    GPIO_AF_Set(R4, 14);
+    GPIO_AF_Set(R5, 14);
+    GPIO_AF_Set(R6, 14);
+    GPIO_AF_Set(R7, 14);
+
+    GPIO_AF_Set(G2, 14);
+    GPIO_AF_Set(G3, 14);
+    GPIO_AF_Set(G4, 14);
+    GPIO_AF_Set(G5, 14);
+    GPIO_AF_Set(G6, 14);
+    GPIO_AF_Set(G7, 14);
+
+    GPIO_AF_Set(B3, 14);
+    GPIO_AF_Set(B4, 14);
+    GPIO_AF_Set(B5, 14);
+    GPIO_AF_Set(B6, 14);
+    GPIO_AF_Set(B7, 14);
+
+    GPIO_AF_Set(CLK, 14);
+    GPIO_AF_Set(DE, 14);
+    GPIO_AF_Set(VS, 14);
+    GPIO_AF_Set(HS, 14);
+
+    GPIO_Write(R0, 0);
+    GPIO_Write(R1, 0);
+    GPIO_Write(R2, 0);
+
+    GPIO_Write(G0, 0);
+    GPIO_Write(G1, 0);
+
+    GPIO_Write(B0, 0);
+    GPIO_Write(B1, 0);
+    GPIO_Write(B2, 0);
+
+#endif
+
+    if (LAYER1_PIXEL_FORMAT == ARGB8888)
+        Layer1_Pixel_Byte = 4;
+    else if (LAYER1_PIXEL_FORMAT == RGB888)
+        Layer1_Pixel_Byte = 3;
+    else if (LAYER1_PIXEL_FORMAT == RGB565)
+        Layer1_Pixel_Byte = 2;
+    else if (LAYER1_PIXEL_FORMAT == ARGB1555)
+        Layer1_Pixel_Byte = 2;
+    else if (LAYER1_PIXEL_FORMAT == ARGB4444)
+        Layer1_Pixel_Byte = 2;
+    else
+        Layer1_Pixel_Byte = 1;
+
+    _RGBLCD_Clock_Init(300, 25, 6);
+
+    save = ((HS_PULSE_WIDTH - 1) << 16) + VS_PULSE_WIDTH - 1;
+    ;
+    LTDC->SSCR = save;
+
+    save = ((HS_PULSE_WIDTH + HS_BLANKING - 1) << 16) + VS_PULSE_WIDTH + VS_BLANKING - 1;
+    LTDC->BPCR = save;
+
+    save = ((HS_PULSE_WIDTH + HS_BLANKING + SCREEN_WIDTH - 1) << 16) + VS_PULSE_WIDTH + VS_BLANKING + SCREEN_HEIGHT - 1;
+    LTDC->AWCR = save;
+
+    save = ((HS_PULSE_WIDTH + HS_BLANKING + SCREEN_WIDTH + HS_FRONT_PORCH - 1) << 16) + VS_PULSE_WIDTH + VS_BLANKING + SCREEN_HEIGHT + VS_FRONT_PORCH - 1;
+    LTDC->TWCR = save;
+
+    LTDC->BCCR |= 0xff0000;
+
+    LTDC_Layer1->CACR = 0xff;
+
+    save = (4 << 8) + 5;
+    LTDC_Layer1->BFCR = save;
+
+    RGBLCD_Window_Default_Color_Set(0xff000000);
+
+    LTDC_Layer1->CFBAR = LAYER1_GRAM_ADDR;
+
+    save = ((SCREEN_WIDTH * Layer1_Pixel_Byte) << 16) + SCREEN_WIDTH * Layer1_Pixel_Byte + 3;
+    LTDC_Layer1->CFBLR = save;
+
+    LTDC_Layer1->CFBLNR = SCREEN_HEIGHT;
+
+    LTDC_Layer1->PFCR |= LAYER1_PIXEL_FORMAT;
+
+    RGBLCD_Window_Range_Set(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    LTDC_Layer1->CR |= 1;
+
+    LTDC->SRCR |= 1 << 1;
+    LTDC->GCR |= 1;
+
+    RGBLCD_OFF();
+
+    RCC->AHB3ENR |= 1 << 4;               //‰ΩøËÉΩDMA2DÊó∂Èíü
+    DMA2D->FGOR = 0;                      //ÂâçÊôØÂ±ÇÂÅèÁßª‰∏∫0
+    DMA2D->OPFCCR = LAYER1_PIXEL_FORMAT;  //ËæìÂá∫È¢úËâ≤Ê†ºÂºè
+    DMA2D->FGPFCCR = LAYER1_PIXEL_FORMAT; //ÂâçÊôØÂ±ÇÈ¢úËâ≤Ê†ºÂºè
 }
 
 void RGBLCD_Fill_Color(u16 X, u16 Y, u16 Width, u16 Height, u32 Color)
 {
-	u32 save=0;
-	
-	while ((DMA2D->CR&1)==1);
-	DMA2D->IFCR|=1<<1;
-	DMA2D->CR|=3<<16;
-	DMA2D->OCOLR=Color;
-	DMA2D->OOR=SCREEN_WIDTH-Width;
-	save=(Width<<16)+Height;
-	DMA2D->NLR=save;
-	DMA2D->OMAR=LAYER1_GRAM_ADDR+Y*SCREEN_WIDTH*2+X*2;
-	DMA2D->CR|=1;
+    u32 save = 0;
+
+    while ((DMA2D->CR & 1) == 1)
+        ;
+    DMA2D->IFCR |= 1 << 1;
+    DMA2D->CR |= 3 << 16;
+    DMA2D->OCOLR = Color;
+    DMA2D->OOR = SCREEN_WIDTH - Width;
+    save = (Width << 16) + Height;
+    DMA2D->NLR = save;
+    DMA2D->OMAR = LAYER1_GRAM_ADDR + Y * SCREEN_WIDTH * 2 + X * 2;
+    DMA2D->CR |= 1;
 }
 
-void RGBLCD_GRAM_Transfer(u16 X, u16 Y, u16 Width, u16 Height, void* Addr)
+void RGBLCD_GRAM_Transfer(u16 X, u16 Y, u16 Width, u16 Height, void *Src, void *Dst)
 {
-	u32 save=0;
-	
-	
-	DMA2D->IFCR|=1<<1;
-	DMA2D->CR&=~(3<<16);
-	DMA2D->FGMAR=(u32)Addr;
-	DMA2D->OOR=SCREEN_WIDTH-Width;
-	DMA2D->OMAR=LAYER1_GRAM_ADDR+Y*SCREEN_WIDTH*2+X*2;
-	save=(Width<<16)+Height;
-	DMA2D->NLR=save;
-	DMA2D->CR|=1;
-    while ((DMA2D->CR&1)==1);
+    u32 save = 0;
+
+    while ((DMA2D->CR & 1) == 1)
+        ;
+    DMA2D->IFCR |= 1 << 1;
+    DMA2D->CR &= ~(3 << 16);
+    DMA2D->FGMAR = (u32)Src;
+    DMA2D->OOR = SCREEN_WIDTH - Width;
+    DMA2D->OMAR = (u32)Dst + Y * SCREEN_WIDTH * 2 + X * 2;
+    save = (Width << 16) + Height;
+    DMA2D->NLR = save;
+    DMA2D_Clear_TCIF();
+    DMA2D->CR |= 1;
+    while ((DMA2D->CR & 1) == 1)
+        ;
+    DMA2D_Clear_TCIF();
+}
+
+void RGBLCD_GRAM_Transfer_Begin(u16 X, u16 Y, u16 Width, u16 Height, void *Src, void *Dst)
+{
+    u32 save = 0;
+
+    while ((DMA2D->CR & 1) == 1)
+        ;
+    DMA2D->IFCR |= 1 << 1;
+    DMA2D->CR &= ~(3 << 16);
+    DMA2D->FGMAR = (u32)Src;
+    DMA2D->OOR = SCREEN_WIDTH - Width;
+    DMA2D->OMAR = (u32)Dst + Y * SCREEN_WIDTH * 2 + X * 2;
+    save = (Width << 16) + Height;
+    DMA2D->NLR = save;
+    DMA2D_Clear_TCIF();
+    DMA2D->CR |= 1;
 }

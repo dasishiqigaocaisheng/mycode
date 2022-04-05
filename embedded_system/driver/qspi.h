@@ -2,24 +2,24 @@
 #define __QSPI_H
 #include "sys.h"
 //////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌĞòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßĞí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32H7¿ª·¢°å
-//QSPI Çı¶¯´úÂë	   
-//ÕıµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2018/6/14
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓĞ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖİÊĞĞÇÒíµç×Ó¿Æ¼¼ÓĞÏŞ¹«Ë¾ 2014-2024
+//æœ¬ç¨‹åºåªä¾›å­¦ä¹ ä½¿ç”¨ï¼Œæœªç»ä½œè€…è®¸å¯ï¼Œä¸å¾—ç”¨äºå…¶å®ƒä»»ä½•ç”¨é€”
+//ALIENTEK STM32H7å¼€å‘æ¿
+//QSPI é©±åŠ¨ä»£ç 	   
+//æ­£ç‚¹åŸå­@ALIENTEK
+//æŠ€æœ¯è®ºå›:www.openedv.com
+//åˆ›å»ºæ—¥æœŸ:2018/6/14
+//ç‰ˆæœ¬ï¼šV1.0
+//ç‰ˆæƒæ‰€æœ‰ï¼Œç›—ç‰ˆå¿…ç©¶ã€‚
+//Copyright(C) å¹¿å·å¸‚æ˜Ÿç¿¼ç”µå­ç§‘æŠ€æœ‰é™å…¬å¸ 2014-2024
 //All rights reserved									  
 ////////////////////////////////////////////////////////////////////////////////// 	 
 
 
-u8 QSPI_Wait_Flag(u32 flag,u8 sta,u32 wtime);					//QSPIµÈ´ıÄ³¸ö×´Ì¬
-u8 QSPI_Init(void);												//³õÊ¼»¯QSPI
-void QSPI_Send_CMD(u8 cmd,u32 addr,u8 mode,u8 dmcycle);			//QSPI·¢ËÍÃüÁî
-u8 QSPI_Receive(u8* buf,u32 datalen);							//QSPI½ÓÊÕÊı¾İ
-u8 QSPI_Transmit(u8* buf,u32 datalen);							//QSPI·¢ËÍÊı¾İ
+u8 QSPI_Wait_Flag(u32 flag,u8 sta,u32 wtime);					//QSPIç­‰å¾…æŸä¸ªçŠ¶æ€
+u8 QSPI_Init(void);												//åˆå§‹åŒ–QSPI
+void QSPI_Send_CMD(u8 cmd,u32 addr,u8 mode,u8 dmcycle);			//QSPIå‘é€å‘½ä»¤
+u8 QSPI_Receive(u8* buf,u32 datalen);							//QSPIæ¥æ”¶æ•°æ®
+u8 QSPI_Transmit(u8* buf,u32 datalen);							//QSPIå‘é€æ•°æ®
 
 #endif
 

@@ -1,8 +1,8 @@
 #ifndef _IS61LV51216_H_
 #define _IS61LV51216_H_
 /*
-IS62WV51216��512K*16Bit��ÿ����ַ��Ӧһ��16λ��
-�������ӣ�
+IS62WV51216：512K*16Bit，每个地址对应一个16位数
+引脚连接：
 PD14---IO0		PF0----A0
 PD15---IO1		PF1----A1
 PD0----IO2		PF2----A2
@@ -31,10 +31,10 @@ PG10---NE3
 
 */
 
-/*FSMC_Bank1�洢����3���׵�ַ*/
+/*FSMC_Bank1存储区域3的首地址*/
 #define EXTERN_SRAM_ADDR ((volatile unsigned short*)0x68000000)
 
-/*��ʼ��FSMC*/
+/*初始化FSMC*/
 void IS62WV51216_Init(void);
 
 #endif

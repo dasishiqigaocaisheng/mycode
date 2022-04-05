@@ -16,10 +16,10 @@
 
 /***********************************************************************/
 /*                                                                     */
-/*                              CR1¼Ä´æÆ÷                              */
+/*                              CR1å¯„å­˜å™¨                              */
 /*                                                                     */
 /***********************************************************************/
-/*****************************ÅäÖÃ²ÎÊý¶¨Òå******************************/
+/*****************************é…ç½®å‚æ•°å®šä¹‰******************************/
 #define CR1_ClockDivison_None  0
 #define CR1_ClockDivison_2     1
 #define CR1_ClockDivison_4     2
@@ -34,7 +34,7 @@
 
 #define CR1_UpdateReuqest_All   0
 #define CR1_UpdateRequest_OnlyOverflow  1
-/******************************¼Ä´æÆ÷Ð´²Ù×÷*****************************/
+/******************************å¯„å­˜å™¨å†™æ“ä½œ*****************************/
 #define STM32Timer_CR1_UIFRemap_W(x,y)              BitClearSet((x)->CR1,11,Mask1Bit,y)
 #define STM32Timer_CR1_ClockDivision_W(x,y)         BitClearSet((x)->CR1,8,Mask2Bit,y)
 #define STM32Timer_CR1_ARRAutoReload_W(x,y)         BitClearSet((x)->CR1,7,Mask1Bit,y)
@@ -43,7 +43,7 @@
 #define STM32Timer_CR1_OnePulse_W(x,y)              BitClearSet((x)->CR1,3,Mask1Bit,y)
 #define STM32Timer_CR1_UpdateRequest_W(x,y)         BitClearSet((x)->CR1,1,Mask1Bit,y)
 #define STM32Timer_CR1_CounterEnable_W(x,y)         BitClearSet((x)->CR1,0,Mask1Bit,y)
-/******************************¼Ä´æÆ÷¶Á²Ù×÷*****************************/
+/******************************å¯„å­˜å™¨è¯»æ“ä½œ*****************************/
 #define STM32Timer_CR1_UIFRemap_R(x)                BitRead((x)->CR1,11,Mask1Bit)
 #define STM32Timer_CR1_ClockDivision_R(x)           BitRead((x)->CR1,8,Mask2Bit)
 #define STM32Timer_CR1_ARRAutoReload_R(x)           BitRead((x)->CR1,7,Mask1Bit)
@@ -59,10 +59,10 @@
 
 /***********************************************************************/
 /*                                                                     */
-/*                              CR2¼Ä´æÆ÷                              */
+/*                              CR2å¯„å­˜å™¨                              */
 /*                                                                     */
 /***********************************************************************/
-/*****************************ÅäÖÃ²ÎÊý¶¨Òå******************************/
+/*****************************é…ç½®å‚æ•°å®šä¹‰******************************/
 #define CR2_MasterMode_Reset    0
 #define CR2_MasterMode_Enable   1
 #define CR2_MasterMode_Update   2
@@ -85,12 +85,12 @@
 
 #define CR2_CaptureEvent_DMA         0
 #define CR2_CompareEvent_DMA         1
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*****************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*****************************/
 #define STM32Timer_CR2_MasterMode2_W(x,y)       BitClearSet((x)->CR2,20,Mask4Bit,y)
 #define STM32Timer_CR2_TI1Select_W(x,y)         BitClearSet((x)->CR2,7,Mask1Bit,y)
 #define STM32Timer_CR2_MasterMode1_W(x,y)       BitClearSet((x)->CR2,4,Mask3Bit,y)
 #define STM32Timer_CR2_CaptureCompareDMA_W(x,y) BitClearSet((x)->CR2,3,Mask1Bit,y)
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*****************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*****************************/
 #define STM32Timer_CR2_MasterMode2_R(x)         BitRead((x)->CR2,20,Mask4Bit)
 #define STM32Timer_CR2_TI1Select_R(x)           BitRead((x)->CR2,7,Mask1Bit)
 #define STM32Timer_CR2_MasterMode1_R(x)         BitRead((x)->CR2,4,Mask3Bit)
@@ -104,10 +104,10 @@
 
 /***********************************************************************/
 /*                                                                     */
-/*                              SMCR¼Ä´æÆ÷                             */
+/*                              SMCRå¯„å­˜å™¨                             */
 /*                                                                     */
 /***********************************************************************/
-/*****************************ÅäÖÃ²ÎÊý¶¨Òå******************************/
+/*****************************é…ç½®å‚æ•°å®šä¹‰******************************/
 #define SMCR_TriggerSelect_ITR0   0
 #define SMCR_TriggerSelect_ITR1   1
 #define SMCR_TriggerSelect_ITR2   2
@@ -151,7 +151,7 @@
 #define SMCR_ExternalTriggerFilter_fDTS32_5 13
 #define SMCR_ExternalTriggerFilter_fDTS32_6 14
 #define SMCR_ExternalTriggerFilter_fDTS32_8 15
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*****************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*****************************/
 #define STM32Timer_SMCR_TriggerSelect_W(x,y)                BitClearSet((x)->CR2,20,y>>3);BitClearSet((x)->SMCR,4,Mask3Bit,y)
 #define STM32Timer_SMCR_SlaveModeSelect_W(x,y)              BitClearSet((x)->SMCR,16,Mask1Bit,y>>3);BitClearSet((x)->SMCR,0,Mask3Bit,y)
 #define STM32Timer_SMCR_ExternalTriggerPolar_W(x,y)         BitClearSet((x)->SMCR,15,Mask1Bit,y)
@@ -159,7 +159,7 @@
 #define STM32Timer_SMCR_ExternalTriggerPrescaler_W(x,y)     BitClearSet((x)->SMCR,12,Mask2Bit,y)
 #define STM32Timer_SMCR_ExternalTriggerFilter_W(x,y)        BitClearSet((x)->SMCR,8,Mask4Bit,y)
 #define STM32Timer_SMCR_MasterSlaveMode_W(x,y)              BitClearSet((x)->SMCR,7,Mask1Bit,y)
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*****************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*****************************/
 #define STM32Timer_SMCR_TriggerSelect_R(x)                  ((BitRead((x)->CR2,20,Mask2Bit)<<3)+BitRead((x)->SMCR,4,Mask3Bit))
 #define STM32Timer_SMCR_SlaveModeSelect_R(x)                ((BitRead((x)->SMCR,16,Mask1Bit)<<3)+BitRead((x)->SMCR,0,Mask3Bit))
 #define STM32Timer_SMCR_ExternalTriggerPolar_R(x)           BitRead((x)->SMCR,15,Mask1Bit)
@@ -182,10 +182,10 @@
 
 /***********************************************************************/
 /*                                                                     */
-/*                              DIER¼Ä´æÆ÷                             */
+/*                              DIERå¯„å­˜å™¨                             */
 /*                                                                     */
 /***********************************************************************/
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_DIER_TriggerDMARequestEnable_W(x,y)    BitClearSet((x)->DIER,14,Mask1Bit,y)
 #define STM32Timer_DIER_COMDMARequestEnable_W(x,y)        BitClearSet((x)->DIER,13,Mask1Bit,y)
 #define STM32Timer_DIER_CC4DMARequestEnable_W(x,y)        BitClearSet((x)->DIER,12,Mask1Bit,y)
@@ -201,7 +201,7 @@
 #define STM32Timer_DIER_CC2InterruptEnable_W(x,y)         BitClearSet((x)->DIER,2,Mask1Bit,y)
 #define STM32Timer_DIER_CC1InterruptEnable_W(x,y)         BitClearSet((x)->DIER,1,Mask1Bit,y)
 #define STM32Timer_DIER_UpdateInterruptEnable_W(x,y)      BitClearSet((x)->DIER,0,Mask1Bit,y)
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*******************************/
 #define STM32Timer_DIER_TriggerDMARequestEnable_R(x)    BitRead((x)->DIER,14,Mask1Bit)
 #define STM32Timer_DIER_COMDMARequestEnable_R(x)        BitRead((x)->DIER,13,Mask1Bit)
 #define STM32Timer_DIER_CC4DMARequestEnable_R(x)        BitRead((x)->DIER,12,Mask1Bit)
@@ -233,10 +233,10 @@
 
 /***********************************************************************/
 /*                                                                     */
-/*                              SR¼Ä´æÆ÷                               */
+/*                              SRå¯„å­˜å™¨                               */
 /*                                                                     */
 /***********************************************************************/
-/****************************¼Ä´æÆ÷ÇåÁã²Ù×÷*****************************/
+/****************************å¯„å­˜å™¨æ¸…é›¶æ“ä½œ*****************************/
 #define STM32Timer_SR_Compare6InterruptFlag_C(x)     BitClear((x)->SR,17,Mask1Bit)
 #define STM32Timer_SR_Compare5InterruptFlag_C(x)     BitClear((x)->SR,15,Mask1Bit)
 #define STM32Timer_SR_SystemBreakInterruptFlag_C(x)  BitClear((x)->SR,13,Mask1Bit)
@@ -253,7 +253,7 @@
 #define STM32Timer_SR_CC2InterruptFlag_C(x)         BitClear((x)->SR,2,Mask1Bit)
 #define STM32Timer_SR_CC1InterruptFlag_C(x)         BitClear((x)->SR,1,Mask1Bit)
 #define STM32Timer_SR_UpdateInterruptFlag_C(x)      BitClear((x)->SR,0,Mask1Bit)
-/****************************¼Ä´æÆ÷¶Á²Ù×÷******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ******************************/
 #define STM32Timer_SR_Compare6InterruptFlag_R(x)     BitRead((x)->SR,17,Mask1Bit)
 #define STM32Timer_SR_Compare5InterruptFlag_R(x)     BitRead((x)->SR,15,Mask1Bit)
 #define STM32Timer_SR_SystemBreakInterruptFlag_R(x)  BitRead((x)->SR,13,Mask1Bit)
@@ -293,10 +293,10 @@
 
 /***********************************************************************/
 /*                                                                     */
-/*                              EGR¼Ä´æÆ÷                              */
+/*                              EGRå¯„å­˜å™¨                              */
 /*                                                                     */
 /***********************************************************************/
-/****************************¼Ä´æÆ÷ÖÃÎ»²Ù×÷*****************************/
+/****************************å¯„å­˜å™¨ç½®ä½æ“ä½œ*****************************/
 #define STM32Timer_EGR_Break2Generate_S(x)      BitSet((x)->GER,8,Mask1Bit,Enable)
 #define STM32Timer_EGR_BreakGenerate_S(x)       BitSet((x)->GER,7,Mask1Bit,Enable)
 #define STM32Timer_EGR_TriggerGenerate_S(x)     BitSet((x)->GER,6,Mask1Bit,Enable)
@@ -333,10 +333,10 @@
 
 /***********************************************************************/
 /*                                                                     */
-/*                              CCMR1¼Ä´æÆ÷                            */
+/*                              CCMR1å¯„å­˜å™¨                            */
 /*                                                                     */
 /***********************************************************************/
-/*****************************ÅäÖÃ²ÎÊý¶¨Òå******************************/
+/*****************************é…ç½®å‚æ•°å®šä¹‰******************************/
 #define CCMR1_OutputCompareMode_Freaze   0
 #define CCMR1_OutputCompareMode_MatchValid 1
 #define CCMR1_OutputCompareMode_MatchInvalid  2
@@ -378,7 +378,7 @@
 #define CCMR1_InputCapturePrescaler_4    2
 #define CCMR1_InputCapturePrescaler_8    3
 
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_CCMR1_OC2Mode_W(x,y)             BitClearSet((x)->CCMR1,24,Mask1Bit,y>>3);BitClearSet((x)->CCMR1,12,Mask3Bit,y)
 #define STM32Timer_CCMR1_OC2ClearEnable_W(x,y)      BitClearSet((x)->CCMR1,15,Mask1Bit,y)
 #define STM32Timer_CCMR1_OC2PreloadEnable_W(x,y)    BitClearSet((x)->CCMR1,11,Mask1Bit,y)
@@ -393,7 +393,7 @@
 #define STM32Timer_CCMR1_IC2Prescaler_W(x,y)          BitClearSet((x)->CCMR1,10,Mask2Bit,y)
 #define STM32Timer_CCMR1_IC1Filter_W(x,y)           BitClearSet((x)->CCMR1,4,Mask4Bit,y)
 #define STM32Timer_CCMR1_IC1Prescaler_W(x,y)        BitClearSet((x)->CCMR1,2,Mask2Bit,y)
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*******************************/
 #define STM32Timer_CCMR1_OC2Mode_R(x)           ((BitRead((x)->CCMR1,24,Mask1Bit)<<3)+BitRead((x)->CCMR1,12,Mask3Bit))
 #define STM32Timer_CCMR1_OC2ClearEnable_R(x)    BitRead((x)->CCMR1,15,Mask1Bit)
 #define STM32Timer_CCMR1_OC2PreloadEnable_R(x)  BitRead((x)->CCMR1,11,Mask1Bit)
@@ -415,10 +415,10 @@
 
 /***********************************************************************/
 /*                                                                     */
-/*                              CCMR2¼Ä´æÆ÷                            */
+/*                              CCMR2å¯„å­˜å™¨                            */
 /*                                                                     */
 /***********************************************************************/
-/*****************************ÅäÖÃ²ÎÊý¶¨Òå******************************/
+/*****************************é…ç½®å‚æ•°å®šä¹‰******************************/
 #define CCMR2_OutputCompareMode_Freaze   0
 #define CCMR2_OutputCompareMode_MatchValid 1
 #define CCMR2_OutputCompareMode_MatchInvalid  2
@@ -460,7 +460,7 @@
 #define CCMR2_InputCapturePrescaler_4    2
 #define CCMR2_InputCapturePrescaler_8    3
 
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_CCMR2_OC2Mode_W(x,y)   BitClearSet((x)->CCMR2,24,Mask1Bit,y>>3);BitClearSet((x)->CCMR2,12,Mask3Bit,y)
 #define STM32Timer_CCMR2_OC2ClearEnable_W(x,y)    BitClearSet((x)->CCMR2,15,Mask1Bit,y)
 #define STM32Timer_CCMR2_OC2PreloadEnable_W(x,y)  BitClearSet((x)->CCMR2,11,Mask1Bit,y)
@@ -475,7 +475,7 @@
 #define STM32Timer_CCMR2_IC2Prescaler_W(x,y)          BitClearSet((x)->CCMR2,10,Mask2Bit,y)
 #define STM32Timer_CCMR2_IC1Filter_W(x,y)           BitClearSet((x)->CCMR2,4,Mask4Bit,y)
 #define STM32Timer_CCMR2_IC1Prescaler_W(x,y)        BitClearSet((x)->CCMR2,2,Mask2Bit,y)
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*******************************/
 #define STM32Timer_CCMR2_OC2Mode_R(x)   ((BitRead((x)->CCMR2,24,Mask1Bit)<<3)+BitRead((x)->CCMR2,12,Mask3Bit))
 #define STM32Timer_CCMR2_OC2ClearEnable_R(x)    BitRead((x)->CCMR2,15,Mask1Bit)
 #define STM32Timer_CCMR2_OC2PreloadEnable_R(x)  BitRead((x)->CCMR2,11,Mask1Bit)
@@ -500,13 +500,13 @@
 
 /***********************************************************************/
 /*                                                                     */
-/*                              CCER¼Ä´æÆ÷                             */
+/*                              CCERå¯„å­˜å™¨                             */
 /*                                                                     */
 /***********************************************************************/
-/*****************************ÅäÖÃ²ÎÊý¶¨Òå******************************/
+/*****************************é…ç½®å‚æ•°å®šä¹‰******************************/
 #define CCER_POSITIVE 0
 #define CCER_NEGATIVE 1
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_CCER_CC6Polarity_W(x,y)    BitClearSet((x)->CCER,21,Mask1Bit,y)
 #define STM32Timer_CCER_CC6OutputEnable_W(x,y)  BitClearSet((x)->CCER,20,Mask1Bit,y)
 #define STM32Timer_CCER_CC5Polarity_W(x,y)      BitClearSet((x)->CCER,17,Mask1Bit,y)
@@ -534,7 +534,7 @@
 #define STM32Timer_CCER_IC2CaptureEnable_W(x,y) BitClearSet((x)->CCER,4,Mask1Bit,y)
 #define STM32Timer_CCER_IC1Polarity_W(x,y)      BitClearSet((x)->CCER,3,Mask1Bit,y>>1);BitClearSet((x)->CCER,1,Mask1Bit,y)
 #define STM32Timer_CCER_IC1CaptureEnable_W(x,y) BitClearSet((x)->CCER,0,Mask1Bit,y)
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*****************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*****************************/
 #define STM32Timer_CCER_CC6Polarity_R(x)    BitRead((x)->CCER,21,Mask1Bit)
 #define STM32Timer_CCER_CC6OutputEnable_R(x)  BitRead((x)->CCER,20,Mask1Bit)
 #define STM32Timer_CCER_CC5Polarity_R(x)      BitRead((x)->CCER,17,Mask1Bit)
@@ -572,77 +572,77 @@
 
 /***********************************************************************/
 /*                                                                     */
-/*                             CNT¼Ä´æÆ÷                               */
+/*                             CNTå¯„å­˜å™¨                               */
 /*                                                                     */
 /***********************************************************************/
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_CNT_W(x,y)  ((x==TIM2)||(x==TIM5))?(x)->CNT=y&Mask32Bit:(x)->CNT=y&Mask16Bit
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*******************************/
 #define STM32Timer_CNT_R(x)  ((x==TIM2)||(x==TIM5))?BitRead((x)->CNT,0,Mask32Bit):BitRead((x)->CNT,0,Mask16Bit)
 
 /***********************************************************************/
 /*                                                                     */
-/*                            PSC¼Ä´æÆ÷                                */
+/*                            PSCå¯„å­˜å™¨                                */
 /*                                                                     */
 /***********************************************************************/
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_PSC_R(x) BitRead((x)->PSC,0,Mask16Bit)
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*******************************/
 #define STM32Timer_PSC_W(x,y)   (x)->PSC=y&Mask16Bit
 
 
 /***********************************************************************/
 /*                                                                     */
-/*                            ARR¼Ä´æÆ÷                                */
+/*                            ARRå¯„å­˜å™¨                                */
 /*                                                                     */
 /***********************************************************************/
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_ARR_W(x,y)  ((x==TIM2)||(x==TIM5))?(x)->ARR=y&Mask32Bit:(x)->ARR=y&Mask16Bit
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*******************************/
 #define STM32Timer_ARR_R(x)  ((x==TIM2)||(x==TIM5))?BitRead((x)->ARR,0,Mask32Bit):BitRead((x)->ARR,0,Mask16Bit)
 
 
 /***********************************************************************/
 /*                                                                     */
-/*                            CCR1¼Ä´æÆ÷                               */
+/*                            CCR1å¯„å­˜å™¨                               */
 /*                                                                     */
 /***********************************************************************/
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_CCR1_W(x,y)  ((x==TIM2)||(x==TIM5))?(x)->CCR1=y&Mask32Bit:(x)->CCR1=y&Mask16Bit
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*******************************/
 #define STM32Timer_CCR1_R(x)  ((x==TIM2)||(x==TIM5))?BitRead((x)->CCR1,0,Mask32Bit):BitRead((x)->CCR1,0,Mask16Bit)
 
 
 /***********************************************************************/
 /*                                                                     */
-/*                            CCR2¼Ä´æÆ÷                               */
+/*                            CCR2å¯„å­˜å™¨                               */
 /*                                                                     */
 /***********************************************************************/
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_CCR2_W(x,y)  ((x==TIM2)||(x==TIM5))?(x)->CCR2=y&Mask32Bit:(x)->CCR2=y&Mask16Bit
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*******************************/
 #define STM32Timer_CCR2_R(x)  ((x==TIM2)||(x==TIM5))?BitRead((x)->CCR2,0,Mask32Bit):BitRead((x)->CCR2,0,Mask16Bit)
 
 
 /***********************************************************************/
 /*                                                                     */
-/*                            CCR3¼Ä´æÆ÷                               */
+/*                            CCR3å¯„å­˜å™¨                               */
 /*                                                                     */
 /***********************************************************************/
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_CCR3_W(x,y)  ((x==TIM2)||(x==TIM5))?(x)->CCR3=y&Mask32Bit:(x)->CCR3=y&Mask16Bit
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*******************************/
 #define STM32Timer_CCR3_R(x)  ((x==TIM2)||(x==TIM5))?BitRead((x)->CCR3,0,Mask32Bit):BitRead((x)->CCR3,0,Mask16Bit)
 
 
 /***********************************************************************/
 /*                                                                     */
-/*                            CCR4¼Ä´æÆ÷                               */
+/*                            CCR4å¯„å­˜å™¨                               */
 /*                                                                     */
 /***********************************************************************/
-/****************************¼Ä´æÆ÷Ð´²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨å†™æ“ä½œ*******************************/
 #define STM32Timer_CCR4_W(x,y)  ((x==TIM2)||(x==TIM5))?(x)->CCR4=y&Mask32Bit:(x)->CCR4=y&Mask16Bit
-/****************************¼Ä´æÆ÷¶Á²Ù×÷*******************************/
+/****************************å¯„å­˜å™¨è¯»æ“ä½œ*******************************/
 #define STM32Timer_CCR4_R(x)  ((x==TIM2)||(x==TIM5))?BitRead((x)->CCR4,0,Mask32Bit):BitRead((x)->CCR4,0,Mask16Bit)
 
 

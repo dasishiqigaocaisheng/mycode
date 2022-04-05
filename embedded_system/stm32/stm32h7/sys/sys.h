@@ -3,31 +3,31 @@
 #include "stm32h7xx.h" 
 #include "Framework.h"
 //////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌĞòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßĞí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32H7¿ª·¢°å
-//ÏµÍ³Ê±ÖÓ³õÊ¼»¯	
-//°üÀ¨Ê±ÖÓÉèÖÃ/ÖĞ¶Ï¹ÜÀí/GPIOÉèÖÃµÈ
-//ÕıµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2018/6/6
-//°æ±¾£ºV1.1
-//°æÈ¨ËùÓĞ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖİÊĞĞÇÒíµç×Ó¿Æ¼¼ÓĞÏŞ¹«Ë¾ 2014-2024
+//æœ¬ç¨‹åºåªä¾›å­¦ä¹ ä½¿ç”¨ï¼Œæœªç»ä½œè€…è®¸å¯ï¼Œä¸å¾—ç”¨äºå…¶å®ƒä»»ä½•ç”¨é€”
+//ALIENTEK STM32H7å¼€å‘æ¿
+//ç³»ç»Ÿæ—¶é’Ÿåˆå§‹åŒ–	
+//åŒ…æ‹¬æ—¶é’Ÿè®¾ç½®/ä¸­æ–­ç®¡ç†/GPIOè®¾ç½®ç­‰
+//æ­£ç‚¹åŸå­@ALIENTEK
+//æŠ€æœ¯è®ºå›:www.openedv.com
+//åˆ›å»ºæ—¥æœŸ:2018/6/6
+//ç‰ˆæœ¬ï¼šV1.1
+//ç‰ˆæƒæ‰€æœ‰ï¼Œç›—ç‰ˆå¿…ç©¶ã€‚
+//Copyright(C) å¹¿å·å¸‚æ˜Ÿç¿¼ç”µå­ç§‘æŠ€æœ‰é™å…¬å¸ 2014-2024
 //All rights reserved
 //********************************************************************************
-//ĞŞ¸ÄËµÃ÷
+//ä¿®æ”¹è¯´æ˜
 //V1.1 20180806
-//1,ĞŞ¸ÄPLL2µÄ±¶ÆµÏµÊıÎª440,pll2_r_ck=220Mhz
-//2,ĞÂÔö¶Ôpll2_p_ckµÄ·ÖÆµÉèÖÃ,2·ÖÆµ,µÃµ½220MµÄÊ±ÖÓÆµÂÊ
-//3,ĞŞ¸Äpll1_q_ckµÄ×¢ÊÍ,¸ÄÎª4·ÖÆµ,200MhzµÄÆµÂÊËµÃ÷
+//1,ä¿®æ”¹PLL2çš„å€é¢‘ç³»æ•°ä¸º440,pll2_r_ck=220Mhz
+//2,æ–°å¢å¯¹pll2_p_ckçš„åˆ†é¢‘è®¾ç½®,2åˆ†é¢‘,å¾—åˆ°220Mçš„æ—¶é’Ÿé¢‘ç‡
+//3,ä¿®æ”¹pll1_q_ckçš„æ³¨é‡Š,æ”¹ä¸º4åˆ†é¢‘,200Mhzçš„é¢‘ç‡è¯´æ˜
 //////////////////////////////////////////////////////////////////////////////////  
 
 
-//0,²»Ö§³ÖOS
-//1,Ö§³ÖOS
-#define SYSTEM_SUPPORT_OS		0		//¶¨ÒåÏµÍ³ÎÄ¼ş¼ĞÊÇ·ñÖ§³ÖOS
+//0,ä¸æ”¯æŒOS
+//1,æ”¯æŒOS
+#define SYSTEM_SUPPORT_OS		0		//å®šä¹‰ç³»ç»Ÿæ–‡ä»¶å¤¹æ˜¯å¦æ”¯æŒOS
 ///////////////////////////////////////////////////////////////////////////////////
-//¶¨ÒåÒ»Ğ©³£ÓÃµÄÊı¾İÀàĞÍ¶Ì¹Ø¼ü×Ö 
+//å®šä¹‰ä¸€äº›å¸¸ç”¨çš„æ•°æ®ç±»å‹çŸ­å…³é”®å­— 
 typedef uint32_t  u32;
 typedef uint16_t u16;
 typedef uint8_t  u8;
@@ -37,7 +37,7 @@ typedef volatile uint16_t vu16;
 typedef volatile uint8_t  vu8; 
 
 ////////////////////////////////////////////////////////////////////////////////// 
-//Ex_NVIC_Config×¨ÓÃ¶¨Òå
+//Ex_NVIC_Configä¸“ç”¨å®šä¹‰
 #define GPIO_A 				0
 #define GPIO_B 				1
 #define GPIO_C				2
@@ -50,98 +50,29 @@ typedef volatile uint8_t  vu8;
 #define GPIO_J 				9 
 #define GPIO_K 				10 
 
-#define FTIR   				1  		//ÏÂ½µÑØ´¥·¢
-#define RTIR   				2  		//ÉÏÉıÑØ´¥·¢
+#define FTIR   				1  		//ä¸‹é™æ²¿è§¦å‘
+#define RTIR   				2  		//ä¸Šå‡æ²¿è§¦å‘
 
-//GPIOÉèÖÃ×¨ÓÃºê¶¨Òå
-#define GPIO_MODE_IN    	0		//ÆÕÍ¨ÊäÈëÄ£Ê½
-#define GPIO_MODE_OUT		1		//ÆÕÍ¨Êä³öÄ£Ê½
-#define GPIO_MODE_AF		2		//AF¹¦ÄÜÄ£Ê½
-#define GPIO_MODE_AIN		3		//Ä£ÄâÊäÈëÄ£Ê½
-
-#define GPIO_SPEED_LOW		0		//GPIOËÙ¶È(µÍËÙ,12M)
-#define GPIO_SPEED_MID		1		//GPIOËÙ¶È(ÖĞËÙ,60M)
-#define GPIO_SPEED_FAST		2		//GPIOËÙ¶È(¿ìËÙ,85M)
-#define GPIO_SPEED_HIGH		3		//GPIOËÙ¶È(¸ßËÙ,100M)  
-
-#define GPIO_PUPD_NONE		0		//²»´øÉÏÏÂÀ­
-#define GPIO_PUPD_PU		1		//ÉÏÀ­
-#define GPIO_PUPD_PD		2		//ÏÂÀ­
-#define GPIO_PUPD_RES		3		//±£Áô 
-
-#define GPIO_OTYPE_PP		0		//ÍÆÍìÊä³ö
-#define GPIO_OTYPE_OD		1		//¿ªÂ©Êä³ö 
-
-//GPIOÒı½ÅÎ»ÖÃ¶¨Òå
-#define PIN0				1<<0
-#define PIN1				1<<1
-#define PIN2				1<<2
-#define PIN3				1<<3
-#define PIN4				1<<4
-#define PIN5				1<<5
-#define PIN6				1<<6
-#define PIN7				1<<7
-#define PIN8				1<<8
-#define PIN9				1<<9
-#define PIN10				1<<10
-#define PIN11				1<<11
-#define PIN12				1<<12
-#define PIN13				1<<13
-#define PIN14				1<<14
-#define PIN15				1<<15 
-
-#define AF_MCO_SWD_SWCLK    0
-#define AF_RTC              0
-#define AF_TIM1_2_16_17		1
-#define AF_LPTIM1           1
-#define AF_TIM3_4_5_12		2
-#define AF_HRTIM1_SAI1      2
-#define AF_TIM8     		3
-#define AF_LPTIM2_3_4_5     3
-#define AF_HRTIM1           3
-#define AF_LPUART1          3
-#define AF_I2C_1_2_3		4
-#define AF_TIM15            4
-#define AF_SPI1_2_3_4_5_6	5
-#define AF_SPI3				6
-#define AF_USART1_2_3		7
-#define AF_USART4_5_6		8
-#define AF_CAN1_2			9
-#define AF_TIM12_13_14		9
-#define AF_OTG_FS_OTG_HS	10
-#define AF_ETH				11
-#define AF_FMC				12
-#define AF_SDIO_OTG_HS_1	12
-#define AF_DCMI				13
-#define AF_LCD              14
-#define AF_EVENTOUT			15
 ////////////////////////////////////////////////////////////////////////////////// 
 
-#define Stm32_Clock_Fast_Init()	Stm32_Clock_Init(160,5,2,4)//ÉèÖÃÊ±ÖÓ,400Mhz
+#define Stm32_Clock_Fast_Init()	Stm32_Clock_Init(160,5,2,4)//è®¾ç½®æ—¶é’Ÿ,400Mhz
 #define GPIO_Clock_Enable() 	RCC->AHB4ENR|=0x3ff
 
-#define GPIO_AF_Init(gpio_pin,af)					GPIO_AF_Set(_Get_GPIO_Addr(gpio_pin),GPIO_Get_Pin_Num(gpio_pin),af)
+u8 Sys_Clock_Set(u32 plln,u32 pllm,u32 pllp,u32 pllq);		//ç³»ç»Ÿæ—¶é’Ÿè®¾ç½®
+void Stm32_Clock_Init(u32 plln,u32 pllm,u32 pllp,u32 pllq); //æ—¶é’Ÿåˆå§‹åŒ–  
+void Sys_Soft_Reset(void);      							//ç³»ç»Ÿè½¯å¤ä½
+void Cache_Enable(void);									//ä½¿èƒ½catch
+void Sys_Standby(void);         							//å¾…æœºæ¨¡å¼ 	
+void MY_NVIC_SetVectorTable(u32 NVIC_VectTab, u32 Offset);	//è®¾ç½®åç§»åœ°å€
+void MY_NVIC_PriorityGroupConfig(u8 NVIC_Group);			//è®¾ç½®NVICåˆ†ç»„
+void MY_NVIC_Init(u8 NVIC_PreemptionPriority,u8 NVIC_SubPriority,u8 NVIC_Channel,u8 NVIC_Group);//è®¾ç½®ä¸­æ–­
+void Ex_NVIC_Config(u8 GPIOx,u8 BITx,u8 TRIM);				//å¤–éƒ¨ä¸­æ–­é…ç½®å‡½æ•°(åªå¯¹GPIOA~I)
 
-#define GPIO_Init(gpio_pin,mode,otype,speed,pupd)	GPIO_Set(_Get_GPIO_Addr(gpio_pin),GPIO_Get_Pin_Addr(gpio_pin),mode,otype,speed,pupd)
-
-u8 Sys_Clock_Set(u32 plln,u32 pllm,u32 pllp,u32 pllq);		//ÏµÍ³Ê±ÖÓÉèÖÃ
-void Stm32_Clock_Init(u32 plln,u32 pllm,u32 pllp,u32 pllq); //Ê±ÖÓ³õÊ¼»¯  
-void Sys_Soft_Reset(void);      							//ÏµÍ³Èí¸´Î»
-void Cache_Enable(void);									//Ê¹ÄÜcatch
-void Sys_Standby(void);         							//´ı»úÄ£Ê½ 	
-void MY_NVIC_SetVectorTable(u32 NVIC_VectTab, u32 Offset);	//ÉèÖÃÆ«ÒÆµØÖ·
-void MY_NVIC_PriorityGroupConfig(u8 NVIC_Group);			//ÉèÖÃNVIC·Ö×é
-void MY_NVIC_Init(u8 NVIC_PreemptionPriority,u8 NVIC_SubPriority,u8 NVIC_Channel,u8 NVIC_Group);//ÉèÖÃÖĞ¶Ï
-void Ex_NVIC_Config(u8 GPIOx,u8 BITx,u8 TRIM);				//Íâ²¿ÖĞ¶ÏÅäÖÃº¯Êı(Ö»¶ÔGPIOA~I)
-void GPIO_AF_Set(GPIO_TypeDef* GPIOx,u8 BITx,u8 AFx);		//GPIO¸´ÓÃ¹¦ÄÜÉèÖÃ
-void GPIO_Set(GPIO_TypeDef* GPIOx,u32 BITx,u32 MODE,u32 OTYPE,u32 OSPEED,u32 PUPD);//GPIOÉèÖÃº¯Êı 
-//void GPIO_Pin_Set(GPIO_TypeDef* GPIOx,u16 pinx,u8 status);	//ÉèÖÃÄ³¸öIO¿ÚµÄÊä³ö×´Ì¬
-//u8 GPIO_Pin_Get(GPIO_TypeDef* GPIOx,u16 pinx);				//¶ÁÈ¡Ä³¸öIO¿ÚµÄÊäÈë×´Ì¬
-//ÒÔÏÂÎª»ã±àº¯Êı
-void WFI_SET(void);		//Ö´ĞĞWFIÖ¸Áî
-void INTX_DISABLE(void);//¹Ø±ÕËùÓĞÖĞ¶Ï
-void INTX_ENABLE(void);	//¿ªÆôËùÓĞÖĞ¶Ï
-void MSR_MSP(u32 addr);	//ÉèÖÃ¶ÑÕ»µØÖ· 
+//ä»¥ä¸‹ä¸ºæ±‡ç¼–å‡½æ•°
+void WFI_SET(void);		//æ‰§è¡ŒWFIæŒ‡ä»¤
+void INTX_DISABLE(void);//å…³é—­æ‰€æœ‰ä¸­æ–­
+void INTX_ENABLE(void);	//å¼€å¯æ‰€æœ‰ä¸­æ–­
+void MSR_MSP(u32 addr);	//è®¾ç½®å †æ ˆåœ°å€ 
 #endif
 
 

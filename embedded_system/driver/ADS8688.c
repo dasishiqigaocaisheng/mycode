@@ -3,14 +3,14 @@
 #include "Timer.h"
 #include "delay.h"
 
-/*Ä£¿éÒı½ÅÎ»ÖÃ
+/*æ¨¡å—å¼•è„šä½ç½®
 SDI		RST
 CLK		CS
 SDO		GND
 DAISY	GND
 GND		V+
 */
-////////ÓÃ»§ÅäÖÃÇø//////////
+////////ç”¨æˆ·é…ç½®åŒº//////////
 #define USED_SPI	SPI2
 #define AF_NUM		AF_SPI1_2
 #define MOSI		GPIOB_15
@@ -136,15 +136,15 @@ void ADS8688_Init(void)
 	
 	//CPOL=1,CPHA=0
 	u16 save=0;
-	save|=1<<9;	//Èí¼ş´ÓÆ÷¼ş¹ÜÀí
+	save|=1<<9;	//è½¯ä»¶ä»å™¨ä»¶ç®¡ç†
 	save|=1<<8;	//SSI=1
-	save|=1<<11;//16bitÊı¾İÖ¡
-	save|=0<<7;	//ÏÈ·¢ËÍMSB
-	save|=2<<3;	//²¨ÌØÂÊfpclk/16
-	save|=1<<2;	//Ö÷Ä£Ê½
-	save|=1<<1;	//¿ÕÏĞÊ±¸ßµçÆ½
-	save|=0;	//µÚÒ»¸öÊ±ÖÓ±ßÑØ²É¼¯Êı¾İ
-	save|=1<<6;	//SPIÊ¹ÄÜ
+	save|=1<<11;//16bitæ•°æ®å¸§
+	save|=0<<7;	//å…ˆå‘é€MSB
+	save|=2<<3;	//æ³¢ç‰¹ç‡fpclk/16
+	save|=1<<2;	//ä¸»æ¨¡å¼
+	save|=1<<1;	//ç©ºé—²æ—¶é«˜ç”µå¹³
+	save|=0;	//ç¬¬ä¸€ä¸ªæ—¶é’Ÿè¾¹æ²¿é‡‡é›†æ•°æ®
+	save|=1<<6;	//SPIä½¿èƒ½
 	USED_SPI->CR1=save;
 	
 	delay_ms(10);

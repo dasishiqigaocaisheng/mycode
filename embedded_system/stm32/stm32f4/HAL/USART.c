@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-//´®¿Ú½ÓÊÕ³¬Ê±ãĞÖµ
+//ä¸²å£æ¥æ”¶è¶…æ—¶é˜ˆå€¼
 #define USART_TIME_OUT_VALUE	1000000
 
 /*#if defined STM32F407xx
@@ -15,63 +15,63 @@
 #define APB2_MAX_CLOCK 90000000.0f
 #endif*/
 
-/*¶¨Òå_USART_Send_IntegerÖĞSend_Mode²ÎÊıµÄºê*/
-#define USART_INT_FORMAT_DEC 	1	//ÓĞ·ûºÅÊ®½øÖÆ
-#define USART_INT_FORMAT_UDEC	2	//ÎŞ·ûºÅÊ®½øÖÆ
-#define USART_INT_FORMAT_HEX 	3	//Ê®Áù½øÖÆ
+/*å®šä¹‰_USART_Send_Integerä¸­Send_Modeå‚æ•°çš„å®*/
+#define USART_INT_FORMAT_DEC 	1	//æœ‰ç¬¦å·åè¿›åˆ¶
+#define USART_INT_FORMAT_UDEC	2	//æ— ç¬¦å·åè¿›åˆ¶
+#define USART_INT_FORMAT_HEX 	3	//åå…­è¿›åˆ¶
 
-/*¶¨Òå¸ñÊ½»¯Êä³ö×ªÒÆ×Ö·ûÀàĞÍ*/
-#define IO_TYPE_DEC_INT		1	//%d£ºÓĞ·ûºÅÊ®½øÖÆÕûÊı
-#define IO_TYPE_HEX_INT		2	//%x£ºÊ®Áù½øÖÆÕûÊı
-#define IO_TYPE_DEC_UINT	3	//%u£ºÎŞ·ûºÅÊ®½øÖÆÕûÊı
-#define IO_TYPE_FLOAT		4	//%f»ò%.xf£ºµ¥¾«¶È¸¡µãÊı
-#define IO_TYPE_STRING		5	//%s£º×Ö·û´®
-#define IO_TYPE_PERCENT		6	//%%£º°Ù·ÖºÅ
+/*å®šä¹‰æ ¼å¼åŒ–è¾“å‡ºè½¬ç§»å­—ç¬¦ç±»å‹*/
+#define IO_TYPE_DEC_INT		1	//%dï¼šæœ‰ç¬¦å·åè¿›åˆ¶æ•´æ•°
+#define IO_TYPE_HEX_INT		2	//%xï¼šåå…­è¿›åˆ¶æ•´æ•°
+#define IO_TYPE_DEC_UINT	3	//%uï¼šæ— ç¬¦å·åè¿›åˆ¶æ•´æ•°
+#define IO_TYPE_FLOAT		4	//%fæˆ–%.xfï¼šå•ç²¾åº¦æµ®ç‚¹æ•°
+#define IO_TYPE_STRING		5	//%sï¼šå­—ç¬¦ä¸²
+#define IO_TYPE_PERCENT		6	//%%ï¼šç™¾åˆ†å·
 
-u8 Time_Out_Enable[3];//USART1/2/3ÊÇ·ñÊ¹ÄÜ³¬Ê±¼ì²â
-char USART_Cache[USART_CACHE_SIZE];//Scanf½ÓÊÕ»º´æ
+u8 Time_Out_Enable[3];//USART1/2/3æ˜¯å¦ä½¿èƒ½è¶…æ—¶æ£€æµ‹
+char USART_Cache[USART_CACHE_SIZE];//Scanfæ¥æ”¶ç¼“å­˜
 Usart_IRQHandler USART1_Interrupt_CallbackFunc;
 Usart_IRQHandler USART2_Interrupt_CallbackFunc;
 Usart_IRQHandler USART3_Interrupt_CallbackFunc;
 
-/*×ªÒå×Ö·û²ÎÊı½á¹¹Ìå*/
+/*è½¬ä¹‰å­—ç¬¦å‚æ•°ç»“æ„ä½“*/
 typedef struct 
 {
-	u8 Parament_Type;	//×Ö·ûÀàĞÍ
-	u8 Float_Dec_Num;	//Èç¹ûÊÇ¸¡µãÊı£¬ÄÇÃ´¸Ã¸¡µãÊıÒªÏÔÊ¾µÄĞ¡ÊıÎ»Êı
+	u8 Parament_Type;	//å­—ç¬¦ç±»å‹
+	u8 Float_Dec_Num;	//å¦‚æœæ˜¯æµ®ç‚¹æ•°ï¼Œé‚£ä¹ˆè¯¥æµ®ç‚¹æ•°è¦æ˜¾ç¤ºçš„å°æ•°ä½æ•°
 } IO_Parament_Type;
 
-/*·¢ËÍÒ»¸ö×Ö½Ú*/
+/*å‘é€ä¸€ä¸ªå­—èŠ‚*/
 void _USART_Send_Byte(USART_TypeDef* USART, u8 DATA);
 
-/*¸ñÊ½»¯·¢ËÍÒ»¸öÕûÊı*/
+/*æ ¼å¼åŒ–å‘é€ä¸€ä¸ªæ•´æ•°*/
 void _USART_Send_Integer(USART_TypeDef* USART, u8 Send_Mode, int DATA1, u32 DATA2);
 
-/*¸ñÊ½»¯·¢ËÍÒ»¸öµ¥¾«¶È¸¡µãÊı*/
+/*æ ¼å¼åŒ–å‘é€ä¸€ä¸ªå•ç²¾åº¦æµ®ç‚¹æ•°*/
 void _USART_Send_Float(USART_TypeDef* USART, float DATA, u8 ACCURACY);
 
-/*¸ñÊ½»¯·¢ËÍÒ»¸ö×Ö·û´®*/
+/*æ ¼å¼åŒ–å‘é€ä¸€ä¸ªå­—ç¬¦ä¸²*/
 void _USART_Send_String(USART_TypeDef* USART, char *DATA);
 
-/*½ÓÊÕÒ»¸ö×Ö½Ú*/
+/*æ¥æ”¶ä¸€ä¸ªå­—èŠ‚*/
 u8 _USART_Receive_Byte(USART_TypeDef* USART, u8* Data);
 
-/*´Ó¸ñÊ½»¯Êı¾İÁ÷ÖĞ»ñÈ¡Ò»¸öÕûÊı*/
+/*ä»æ ¼å¼åŒ–æ•°æ®æµä¸­è·å–ä¸€ä¸ªæ•´æ•°*/
 short _USART_Get_Integer(char* Cache, u8 Receive_Mode, int* DATA1, u32* DATA2);
 
-/*´Ó¸ñÊ½»¯Êı¾İÁ÷ÖĞ»ñÈ¡Ò»¸öµ¥¾«¶È¸¡µãÊı*/
+/*ä»æ ¼å¼åŒ–æ•°æ®æµä¸­è·å–ä¸€ä¸ªå•ç²¾åº¦æµ®ç‚¹æ•°*/
 short _USART_Get_Float(char* Cache, u8 Bits, float* DATA);
 
-/*´Ó¸ñÊ½»¯Êı¾İÁ÷ÖĞ»ñÈ¡Ò»¸ö×Ö·û´®*/
+/*ä»æ ¼å¼åŒ–æ•°æ®æµä¸­è·å–ä¸€ä¸ªå­—ç¬¦ä¸²*/
 short _USART_Get_String(char* Cache, char* DATA);
 
-/*ÅĞ¶Ï×ªÒÆ×Ö·ûÀàĞÍ²¢»ñµÃ²ÎÊı£¬·µ»Ø×ªÒÆ×Ö·ûÕ¼ÓÃµÄ×Ö½ÚÊı-1*/
+/*åˆ¤æ–­è½¬ç§»å­—ç¬¦ç±»å‹å¹¶è·å¾—å‚æ•°ï¼Œè¿”å›è½¬ç§»å­—ç¬¦å ç”¨çš„å­—èŠ‚æ•°-1*/
 u8 _USART_IO_Parament_Assert(char* Address, IO_Parament_Type* Parament_Info);
 
 void USART_Init(USART_TypeDef* USART, u32 Boundrate)
 {
-	u16 USARTDIV_Int;	//USARTDIVÕûÊı²¿·Ö
-	u8 USARTDIV_Dec;	//USARTDIVĞ¡Êı²¿·Ö
+	u16 USARTDIV_Int;	//USARTDIVæ•´æ•°éƒ¨åˆ†
+	u8 USARTDIV_Dec;	//USARTDIVå°æ•°éƒ¨åˆ†
 	float USARTDIV;
 	
 	if (USART==USART1)
@@ -88,36 +88,36 @@ void USART_Init(USART_TypeDef* USART, u32 Boundrate)
 	
 	if (USART==USART1)
 	{
-		RCC->AHB1ENR|=1<<0;   		//Ê¹ÄÜPORTA¿ÚÊ±ÖÓ  
-		RCC->APB2ENR|=1<<4;  		//Ê¹ÄÜ´®¿Ú1Ê±ÖÓ 
-		GPIO_Set(GPIOA,PIN9|PIN10,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_50M,GPIO_PUPD_PU);//PA9,PA10,¸´ÓÃ¹¦ÄÜ,ÉÏÀ­Êä³ö
+		RCC->AHB1ENR|=1<<0;   		//ä½¿èƒ½PORTAå£æ—¶é’Ÿ  
+		RCC->APB2ENR|=1<<4;  		//ä½¿èƒ½ä¸²å£1æ—¶é’Ÿ 
+		GPIO_Set(GPIOA,PIN9|PIN10,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_50M,GPIO_PUPD_PU);//PA9,PA10,å¤ç”¨åŠŸèƒ½,ä¸Šæ‹‰è¾“å‡º
 		GPIO_AF_Set(GPIOA,9,7);		//PA9,AF7
 		GPIO_AF_Set(GPIOA,10,7);	//PA10,AF7  	   
 	}
 	else if (USART==USART2)
 	{
-		RCC->AHB1ENR|=1<<0;   		//Ê¹ÄÜPORTA¿ÚÊ±ÖÓ  
-		RCC->APB1ENR|=1<<17;  		//Ê¹ÄÜ´®¿Ú2Ê±ÖÓ 
-		GPIO_Set(GPIOA,PIN2|PIN3,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_50M,GPIO_PUPD_PU);//PA2,PA3,¸´ÓÃ¹¦ÄÜ,ÉÏÀ­Êä³ö
+		RCC->AHB1ENR|=1<<0;   		//ä½¿èƒ½PORTAå£æ—¶é’Ÿ  
+		RCC->APB1ENR|=1<<17;  		//ä½¿èƒ½ä¸²å£2æ—¶é’Ÿ 
+		GPIO_Set(GPIOA,PIN2|PIN3,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_50M,GPIO_PUPD_PU);//PA2,PA3,å¤ç”¨åŠŸèƒ½,ä¸Šæ‹‰è¾“å‡º
 		GPIO_AF_Set(GPIOA,2,7);		//PA2,AF7
 		GPIO_AF_Set(GPIOA,3,7);		//PA3,AF7  	   
 	}
 	else if (USART==USART3)
 	{
-		RCC->AHB1ENR|=1<<1;			//Ê¹ÄÜPORTB¿ÚÊ±ÖÓ  
-		RCC->APB1ENR|=1<<18;		//Ê¹ÄÜUSART3Ê±ÖÓ
-		GPIO_Set(GPIOB,PIN10|PIN11,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_50M,GPIO_PUPD_PU);//PB10,PB11,¸´ÓÃ¹¦ÄÜ,ÉÏÀ­Êä³ö
+		RCC->AHB1ENR|=1<<1;			//ä½¿èƒ½PORTBå£æ—¶é’Ÿ  
+		RCC->APB1ENR|=1<<18;		//ä½¿èƒ½USART3æ—¶é’Ÿ
+		GPIO_Set(GPIOB,PIN10|PIN11,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_50M,GPIO_PUPD_PU);//PB10,PB11,å¤ç”¨åŠŸèƒ½,ä¸Šæ‹‰è¾“å‡º
 		GPIO_AF_Set(GPIOB,10,7);		//PB10,AF7
 		GPIO_AF_Set(GPIOB,11,7);		//PB11,AF7 
 	}
 	
-	USART->BRR=USARTDIV_Int; 	//²¨ÌØÂÊÉèÖÃ	 
-	USART->CR1&=~(1<<15); 		//ÉèÖÃOVER8=0 
-	USART->CR1|=1<<2;  		//´®¿Ú½ÓÊÕÊ¹ÄÜ
-	USART->CR1|=1<<3;  		//´®¿Ú·¢ËÍÊ¹ÄÜ
-	USART->CR1|=1<<13;  		//´®¿ÚÊ¹ÄÜ
+	USART->BRR=USARTDIV_Int; 	//æ³¢ç‰¹ç‡è®¾ç½®	 
+	USART->CR1&=~(1<<15); 		//è®¾ç½®OVER8=0 
+	USART->CR1|=1<<2;  		//ä¸²å£æ¥æ”¶ä½¿èƒ½
+	USART->CR1|=1<<3;  		//ä¸²å£å‘é€ä½¿èƒ½
+	USART->CR1|=1<<13;  		//ä¸²å£ä½¿èƒ½
 		
-	USARTDIV_Dec=USART->SR;	//Çå³ı·¢ËÍÍê³É±êÖ¾
+	USARTDIV_Dec=USART->SR;	//æ¸…é™¤å‘é€å®Œæˆæ ‡å¿—
 }
 
 void USART_Time_Out_Set(USART_TypeDef* USART, u8 Enable)
@@ -182,7 +182,7 @@ void _USART_Send_Integer(USART_TypeDef* USART,u8 Send_Mode, int DATA1, u32 DATA2
 	signed char i;
 	u8 DATA_Bits[10];
 		
-	if (Send_Mode==USART_INT_FORMAT_HEX)//Èç¹ûÊÇÊ®Áù½øÖÆÄ£Ê½
+	if (Send_Mode==USART_INT_FORMAT_HEX)//å¦‚æœæ˜¯åå…­è¿›åˆ¶æ¨¡å¼
 	{
 		_USART_Send_Byte(USART,'0');
 		_USART_Send_Byte(USART,'x');
@@ -194,14 +194,14 @@ void _USART_Send_Integer(USART_TypeDef* USART,u8 Send_Mode, int DATA1, u32 DATA2
 	}
 	else
 	{
-		if (Send_Mode==USART_INT_FORMAT_DEC)//Èç¹ûÊÇÓĞ·ûºÅÄ£Ê½
+		if (Send_Mode==USART_INT_FORMAT_DEC)//å¦‚æœæ˜¯æœ‰ç¬¦å·æ¨¡å¼
 		{
-			if (DATA1<0)//·ûºÅÅĞ¶Ï
+			if (DATA1<0)//ç¬¦å·åˆ¤æ–­
 			{
 				_USART_Send_Byte(USART,'-');
 				DATA1*=-1;
 			}
-			//ÓĞ·ûºÅÊı
+			//æœ‰ç¬¦å·æ•°
 			DATA_Bits[9]=DATA1/1000000000;
 			DATA_Bits[8]=(DATA1%1000000000)/100000000;
 			DATA_Bits[7]=(DATA1%100000000)/10000000;
@@ -213,9 +213,9 @@ void _USART_Send_Integer(USART_TypeDef* USART,u8 Send_Mode, int DATA1, u32 DATA2
 			DATA_Bits[1]=(DATA1%100)/10;
 			DATA_Bits[0]=DATA1%10;
 		}
-		else if (Send_Mode==USART_INT_FORMAT_UDEC)//Èç¹ûÊÇÎŞ·ûºÅÄ£Ê½
+		else if (Send_Mode==USART_INT_FORMAT_UDEC)//å¦‚æœæ˜¯æ— ç¬¦å·æ¨¡å¼
 		{
-			//ºöÂÔ·ûºÅÎ»
+			//å¿½ç•¥ç¬¦å·ä½
 			DATA_Bits[9]=(u32)DATA2/1000000000;
 			DATA_Bits[8]=((u32)DATA2%1000000000)/100000000;
 			DATA_Bits[7]=((u32)DATA2%100000000)/10000000;
@@ -228,7 +228,7 @@ void _USART_Send_Integer(USART_TypeDef* USART,u8 Send_Mode, int DATA1, u32 DATA2
 			DATA_Bits[0]=(u32)DATA2%10;
 		}
 			
-		for (i=9;i>0;i--)//Ñ°ÕÒ×î¸ß·ÇÁãÎ»
+		for (i=9;i>0;i--)//å¯»æ‰¾æœ€é«˜éé›¶ä½
 		{
 			if (DATA_Bits[i]!=0)
 				break;
@@ -243,18 +243,18 @@ void _USART_Send_Float(USART_TypeDef* USART, float DATA, u8 ACCURACY)
 {
 	u8 i;
 
-	if (DATA<0)//·ûºÅÅĞ¶Ï
+	if (DATA<0)//ç¬¦å·åˆ¤æ–­
 	{
 		_USART_Send_Byte(USART,'-');
 		DATA*=-1;
 	}
 		
-	_USART_Send_Integer(USART,USART_INT_FORMAT_UDEC,NULL,(u32)DATA);//·¢ËÍÕûÊı²¿·Ö
+	_USART_Send_Integer(USART,USART_INT_FORMAT_UDEC,NULL,(u32)DATA);//å‘é€æ•´æ•°éƒ¨åˆ†
 	_USART_Send_Byte(USART,'.');	
 	
 	ACCURACY&=0x07;
 	DATA-=(int)DATA;
-	for (i=0;i<ACCURACY;i++)//·¢ËÍĞ¡Êı²¿·Ö
+	for (i=0;i<ACCURACY;i++)//å‘é€å°æ•°éƒ¨åˆ†
 	{
 		DATA*=10;
 		_USART_Send_Byte(USART,(int)DATA+0x30);
@@ -284,7 +284,7 @@ u8 _USART_IO_Parament_Assert(char* Address, IO_Parament_Type* Parament_Info)
 		case 'f':
 		{
 			Parament_Info->Parament_Type=IO_TYPE_FLOAT;
-			Parament_Info->Float_Dec_Num=3;//Î´Ö¸¶¨Ğ¡ÊıÎ»Êı£¬Ä¬ÈÏ3Î»
+			Parament_Info->Float_Dec_Num=3;//æœªæŒ‡å®šå°æ•°ä½æ•°ï¼Œé»˜è®¤3ä½
 			return 1;
 		}
 		case '.':
@@ -327,14 +327,14 @@ void USART_Printf(USART_TypeDef* USART, char* Format_String, ...)
 	va_start(Parament_List,Format_String);
 	
 	i=0;
-	while (Format_String[i]!='\0')//Öğ×Ö½Ú¼ì²â
+	while (Format_String[i]!='\0')//é€å­—èŠ‚æ£€æµ‹
 	{
 		if (Format_String[i]!='%')
 		{
 			USART->DR=Format_String[i];
 			while (((USART->SR>>6)&1)==0);
 		}
-		else//·¢ÏÖ×ªÒå×Ö·û
+		else//å‘ç°è½¬ä¹‰å­—ç¬¦
 		{
 			save=_USART_IO_Parament_Assert(Format_String+i,&Para_Info);
 			switch (Para_Info.Parament_Type)
@@ -418,11 +418,11 @@ short _USART_Get_Integer(char* Cache, u8 Receive_Mode, int* DATA1, u32* DATA2)
 {
 	int i;
 	
-	//ÓĞ·ûºÅÊ®½øÖÆÕûÊı
+	//æœ‰ç¬¦å·åè¿›åˆ¶æ•´æ•°
 	if (Receive_Mode==USART_INT_FORMAT_DEC)
 	{
 		*DATA1=0;
-		//Èç¹ûÊÇ¸ºÊı
+		//å¦‚æœæ˜¯è´Ÿæ•°
 		if (Cache[0]=='-')
 		{
 			for (i=1;(Cache[i]<='9')&&(Cache[i]>='0');i++)
@@ -432,13 +432,13 @@ short _USART_Get_Integer(char* Cache, u8 Receive_Mode, int* DATA1, u32* DATA2)
 			}	
 			*DATA1*=-1;
 			
-			//Èç¹û¶ÁÈëÁË0¸öÊı·µ»ØÒì³£
+			//å¦‚æœè¯»å…¥äº†0ä¸ªæ•°è¿”å›å¼‚å¸¸
 			if (i==1)
 				return -1;
 			else
 				return i-1;
 		}
-		else//Èç¹ûÊÇÕıÊı
+		else//å¦‚æœæ˜¯æ­£æ•°
 		{
 			for (i=0;(Cache[i]<='9')&&(Cache[i]>='0');i++)
 			{
@@ -449,7 +449,7 @@ short _USART_Get_Integer(char* Cache, u8 Receive_Mode, int* DATA1, u32* DATA2)
 			return i-1;
 		}
 	}
-	else if (Receive_Mode==USART_INT_FORMAT_UDEC)//ÎŞ·ûºÅÊ®½øÖÆÕûÊı
+	else if (Receive_Mode==USART_INT_FORMAT_UDEC)//æ— ç¬¦å·åè¿›åˆ¶æ•´æ•°
 	{
 		*DATA2=0;
 		for (i=0;(Cache[i]>='0')&&(Cache[i]<='9');i++)
@@ -460,10 +460,10 @@ short _USART_Get_Integer(char* Cache, u8 Receive_Mode, int* DATA1, u32* DATA2)
 		
 		return i-1;
 	}
-	else if (Receive_Mode==USART_INT_FORMAT_HEX)//Ê®Áù½øÖÆ
+	else if (Receive_Mode==USART_INT_FORMAT_HEX)//åå…­è¿›åˆ¶
 	{
 		*DATA2=0;
-		//Èç¹û²»ÊÇ0x»ò0X¿ªÍ·Ôò½áÊø
+		//å¦‚æœä¸æ˜¯0xæˆ–0Xå¼€å¤´åˆ™ç»“æŸ
 		if (!((Cache[0]=='0')&&((Cache[1]=='x')||(Cache[1]=='X'))))
 			return -1;
 		
@@ -478,7 +478,7 @@ short _USART_Get_Integer(char* Cache, u8 Receive_Mode, int* DATA1, u32* DATA2)
 				*DATA2+=Cache[i]-0x57;
 		}
 		
-		//Èç¹û¶ÁÈëÁË0¸öÊı·µ»ØÒì³£
+		//å¦‚æœè¯»å…¥äº†0ä¸ªæ•°è¿”å›å¼‚å¸¸
 		if (i==2)
 			return -1;
 		else
@@ -496,7 +496,7 @@ short _USART_Get_Float(char* Cache, u8 Bits, float* DATA)
 	float Dec_Part=0;
 	
 	*DATA=0;
-	//Èç¹ûÊÇ¸ºÊı
+	//å¦‚æœæ˜¯è´Ÿæ•°
 	if (Cache[0]=='-')
 	{
 		for (i=1;(Cache[i]<='9')&&(Cache[i]>='0');i++)
@@ -505,12 +505,12 @@ short _USART_Get_Float(char* Cache, u8 Bits, float* DATA)
 			*DATA+=Cache[i]-0x30;
 		}
 		
-		//Èç¹û¶ÁÈëÁË0¸öÊı·µ»ØÒì³£
+		//å¦‚æœè¯»å…¥äº†0ä¸ªæ•°è¿”å›å¼‚å¸¸
 		if (i==1)
 			return -1;
 		
 		*DATA*=-1;
-		//Èç¹ûÓĞĞ¡Êıµã
+		//å¦‚æœæœ‰å°æ•°ç‚¹
 		if (Cache[i]=='.')
 		{
 			for (i++;(Cache[i]<='9')&&(Cache[i]>='0')&&(save1<Bits);i++)
@@ -526,7 +526,7 @@ short _USART_Get_Float(char* Cache, u8 Bits, float* DATA)
 			
 			*DATA-=Dec_Part;
 			
-			//Ìø¹ıÎ´¶ÁÈ¡µÄĞ¡ÊıÎ»
+			//è·³è¿‡æœªè¯»å–çš„å°æ•°ä½
 			for (i+=save2+1;(Cache[i]<='9')&&(Cache[i]>='0');i++);
 			
 			return i-1;
@@ -560,7 +560,7 @@ short _USART_Get_Float(char* Cache, u8 Bits, float* DATA)
 			
 			*DATA+=Dec_Part;
 			
-			//Ìø¹ıÎ´¶ÁÈ¡µÄĞ¡ÊıÎ»
+			//è·³è¿‡æœªè¯»å–çš„å°æ•°ä½
 			for (i+=save2+1;(Cache[i]<='9')&&(Cache[i]>='0');i++);
 			
 			return i-1;
@@ -576,7 +576,7 @@ short _USART_Get_String(char* Cache, char* DATA)
 {
 	int i;
 	
-	//¶ÁÈ¡ËùÓĞ¾ßÓĞÊµ¼ÊÒâÒåµÄ×Ö·û£¬Ò²¾ÍÊÇ´Ó'!'¿ªÊ¼µÄ×Ö·û
+	//è¯»å–æ‰€æœ‰å…·æœ‰å®é™…æ„ä¹‰çš„å­—ç¬¦ï¼Œä¹Ÿå°±æ˜¯ä»'!'å¼€å§‹çš„å­—ç¬¦
 	for (i=0;Cache[i]>=0x21;i++)
 		DATA[i]=Cache[i];
 	Cache[i]='\0';
@@ -598,14 +598,14 @@ u8 USART_Scanf(USART_TypeDef* USART, char* Format_String, ...)
 	if (length==0)
 		return num;
 	
-	//Ìø¹ı¿ªÍ·ËùÓĞµÄ¿Õ°××Ö·û
+	//è·³è¿‡å¼€å¤´æ‰€æœ‰çš„ç©ºç™½å­—ç¬¦
 	while ((USART_Cache[i]<=0x20)&&(i<length))
 		i++;
 	
-	//±éÀú¸ñÊ½»¯×Ö·û´®µÄÃ¿Ò»¸ö×Ö·û
+	//éå†æ ¼å¼åŒ–å­—ç¬¦ä¸²çš„æ¯ä¸€ä¸ªå­—ç¬¦
 	for (j=0;(Format_String[j]!='\0')&&(i<length);j++,i++)
 	{
-		//Èç¹û·¢ÏÖ%
+		//å¦‚æœå‘ç°%
 		if (Format_String[j]=='%')
 		{
 			save1=_USART_IO_Parament_Assert(Format_String+j,&Para_Info);
@@ -669,7 +669,7 @@ u8 USART_Scanf(USART_TypeDef* USART, char* Format_String, ...)
 			i+=save2;
 			j+=save1;
 		}
-		else//²»ÊÇ%ÔòÓë½ÓÊÕµÄ×Ö·ûÏà±È½Ï
+		else//ä¸æ˜¯%åˆ™ä¸æ¥æ”¶çš„å­—ç¬¦ç›¸æ¯”è¾ƒ
 		{
 			if (Format_String[j]!=USART_Cache[i])
 				return num;
@@ -705,10 +705,10 @@ u32 USART_Receive_Data_Flow_EndwithCharacter(USART_TypeDef* USART, void *DATA, c
 		time_out=_USART_Receive_Byte(USART,&((u8*)DATA)[i]);
 		if (time_out==1)
 			return 0;
-		if (((u8*)DATA)[i]==END)//¼ì²âµ½½áÊø×Ö·û
+		if (((u8*)DATA)[i]==END)//æ£€æµ‹åˆ°ç»“æŸå­—ç¬¦
 			j++;
-		else		//¼ì²âµ½·Ç½áÊø×Ö·û
-			j=0;	//ÀÛ¼ÓÆ÷ÇåÁã
+		else		//æ£€æµ‹åˆ°éç»“æŸå­—ç¬¦
+			j=0;	//ç´¯åŠ å™¨æ¸…é›¶
 		i++;
 	} while (j!=Repeat_Time);
 	
@@ -742,25 +742,25 @@ void USART_Test(USART_TypeDef* USART)
 	u8 i,Length;
 	u8 Rec_Buf[16];
 	
-	USART_Printf(USART,"\n/************´®¿Ú²âÊÔ¿ªÊ¼************/\n");
-	USART_Printf(USART,"·¢ËÍÊ®½øÖÆÕûÊı-20120712£º%d\n",-20120712);
-	USART_Printf(USART,"·¢ËÍÊ®Áù½øÖÆÕûÊı0x012abcf9£º%x\n",0x012abcf9);
-	USART_Printf(USART,"·¢ËÍ¸¡µãÊı2012.0712£º%.4f\n",2012.0712f);
-	USART_Printf(USART,"·¢ËÍ×Ö·û´®¡°USART Test.¡±£º%s\n","USART Test.");
-	USART_Printf(USART,"ÏÖÔÚ¿ªÊ¼½ÓÊÕ²âÊÔ\nÏÖÔÚ·¢ËÍ4¸ö×Ö½Ú....");
+	USART_Printf(USART,"\n/************ä¸²å£æµ‹è¯•å¼€å§‹************/\n");
+	USART_Printf(USART,"å‘é€åè¿›åˆ¶æ•´æ•°-20120712ï¼š%d\n",-20120712);
+	USART_Printf(USART,"å‘é€åå…­è¿›åˆ¶æ•´æ•°0x012abcf9ï¼š%x\n",0x012abcf9);
+	USART_Printf(USART,"å‘é€æµ®ç‚¹æ•°2012.0712ï¼š%.4f\n",2012.0712f);
+	USART_Printf(USART,"å‘é€å­—ç¬¦ä¸²â€œUSART Test.â€ï¼š%s\n","USART Test.");
+	USART_Printf(USART,"ç°åœ¨å¼€å§‹æ¥æ”¶æµ‹è¯•\nç°åœ¨å‘é€4ä¸ªå­—èŠ‚....");
 	USART_Receive_Data_Flow_EndwithLenth(USART,Rec_Buf,4);
-	USART_Printf(USART,"½ÓÊÕÍê±Ï\n");
-	USART_Printf(USART,"½ÓÊÕµÄÊı¾İ£º");
+	USART_Printf(USART,"æ¥æ”¶å®Œæ¯•\n");
+	USART_Printf(USART,"æ¥æ”¶çš„æ•°æ®ï¼š");
 	for (i=0;i<4;i++)
 		USART_Printf(USART,"%x  ",Rec_Buf[i]);
-	USART_Printf(USART,"\nÏÖÔÚ·¢ËÍÒÔÁ½¸ö0x12½áÎ²µÄÊı¾İÁ÷....\n");
+	USART_Printf(USART,"\nç°åœ¨å‘é€ä»¥ä¸¤ä¸ª0x12ç»“å°¾çš„æ•°æ®æµ....\n");
 	Length=USART_Receive_Data_Flow_EndwithCharacter(USART,Rec_Buf,0x12,2);
-	USART_Printf(USART,"½ÓÊÕÍê±Ï\n");
-	USART_Printf(USART,"½ÓÊÕµÄÊı¾İ£º");
+	USART_Printf(USART,"æ¥æ”¶å®Œæ¯•\n");
+	USART_Printf(USART,"æ¥æ”¶çš„æ•°æ®ï¼š");
 	for (i=0;i<Length;i++)
 		USART_Printf(USART,"%x  ",Rec_Buf[i]);
-	USART_Printf(USART,"\n·¢ËÍ0xffÒÔ½áÊø²âÊÔ\n");
+	USART_Printf(USART,"\nå‘é€0xffä»¥ç»“æŸæµ‹è¯•\n");
 	while (_USART_Receive_Byte(USART)!=0xff);
-	USART_Printf(USART,"/************´®¿Ú²âÊÔ½áÊø************/\n");
+	USART_Printf(USART,"/************ä¸²å£æµ‹è¯•ç»“æŸ************/\n");
 }
 #endif

@@ -1,270 +1,266 @@
 #include "sys.h"
-//#include "delay.h"
+#include "GPIO.h"
 #include "USART.h"
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
 
-//´®¿Ú½ÓÊÕ³¬Ê±ãÐÖµ
-#define USART_TIME_OUT_VALUE	1000000
+//ä¸²å£æŽ¥æ”¶è¶…æ—¶é˜ˆå€¼
+#define USART_TIME_OUT_VALUE 1000000
 
+char *STATUS_FLAG_TRUE = "true";
+char *STATUS_FLAG_FALSE = "false";
 
-/*¶¨Òå_USART_Send_IntegerÖÐSend_Mode²ÎÊýµÄºê*/
-/*#define USART_INT_FORMAT_DEC 	1	//ÓÐ·ûºÅÊ®½øÖÆ
-#define USART_INT_FORMAT_UDEC	2	//ÎÞ·ûºÅÊ®½øÖÆ
-#define USART_INT_FORMAT_HEX 	3	//Ê®Áù½øÖÆ*/
-
-/*¶¨Òå¸ñÊ½»¯Êä³ö×ªÒÆ×Ö·ûÀàÐÍ*/
-/*#define IO_TYPE_DEC_INT		1	//%d£ºÓÐ·ûºÅÊ®½øÖÆÕûÊý
-#define IO_TYPE_HEX_INT		2	//%x£ºÊ®Áù½øÖÆÕûÊý
-#define IO_TYPE_DEC_UINT	3	//%u£ºÎÞ·ûºÅÊ®½øÖÆÕûÊý
-#define IO_TYPE_FLOAT		4	//%f»ò%.xf£ºµ¥¾«¶È¸¡µãÊý
-#define IO_TYPE_STRING		5	//%s£º×Ö·û´®
-#define IO_TYPE_PERCENT		6	//%%£º°Ù·ÖºÅ*/
-
-u8 Time_Out_Enable[3];//USART1/2/3ÊÇ·ñÊ¹ÄÜ³¬Ê±¼ì²â
-char USART_Cache[USART_CACHE_SIZE];//Scanf½ÓÊÕ»º´æ
+u8 Time_Out_Enable[3];				// USART1/2/3æ˜¯å¦ä½¿èƒ½è¶…æ—¶æ£€æµ‹
+char USART_Cache[USART_CACHE_SIZE]; // ScanfæŽ¥æ”¶ç¼“å­˜
+char USART_Cache2[USART_CACHE_SIZE];
 Usart_IRQHandler USART1_Interrupt_CallbackFunc;
 Usart_IRQHandler USART2_Interrupt_CallbackFunc;
 Usart_IRQHandler USART3_Interrupt_CallbackFunc;
 
-/*×ªÒå×Ö·û²ÎÊý½á¹¹Ìå*/
-typedef struct 
+/*è½¬ä¹‰å­—ç¬¦å‚æ•°ç»“æž„ä½“*/
+typedef struct
 {
-	u8 Parament_Type;	//×Ö·ûÀàÐÍ
-	u8 Float_Dec_Num;	//Èç¹ûÊÇ¸¡µãÊý£¬ÄÇÃ´¸Ã¸¡µãÊýÒªÏÔÊ¾µÄÐ¡ÊýÎ»Êý
+	u8 Parament_Type; //å­—ç¬¦ç±»åž‹
+	u8 Float_Dec_Num; //å¦‚æžœæ˜¯æµ®ç‚¹æ•°ï¼Œé‚£ä¹ˆè¯¥æµ®ç‚¹æ•°è¦æ˜¾ç¤ºçš„å°æ•°ä½æ•°
 } IO_Parament_Type;
 
-/*·¢ËÍÒ»¸ö×Ö½Ú*/
-//void _USART_Send_Byte(USART_TypeDef* USART, u8 DATA);
+/*å‘é€ä¸€ä¸ªå­—èŠ‚*/
+// void _USART_Send_Byte(USART_TypeDef* USART, u8 DATA);
 #if !defined USE_STM32H7
-#define _USART_Send_Byte(usart,data)    {usart->DR=data; \
-                                        while (((usart->SR>>6)&1)==0);}
+#define _USART_Send_Byte(usart, data)       \
+	{                                       \
+		usart->DR = data;                   \
+		while (((usart->SR >> 6) & 1) == 0) \
+			;                               \
+	}
 #else
-#define _USART_Send_Byte(usart,data)    {usart->TDR=data; \
-                                        while (((usart->ISR>>6)&1)==0);}
+#define _USART_Send_Byte(usart, data)        \
+	{                                        \
+		usart->TDR = data;                   \
+		while (((usart->ISR >> 6) & 1) == 0) \
+			;                                \
+	}
 #endif
 
-/*¸ñÊ½»¯·¢ËÍÒ»¸ö×Ö·û´®*/
-void _USART_Send_String(USART_TypeDef* USART, char *DATA);
+/*æ ¼å¼åŒ–å‘é€ä¸€ä¸ªå­—ç¬¦ä¸²*/
+void _USART_Send_String(USART_TypeDef *USART, char *DATA);
 
-/*½ÓÊÕÒ»¸ö×Ö½Ú*/
-u8 _USART_Receive_Byte(USART_TypeDef* USART, u8* Data);
+/*æŽ¥æ”¶ä¸€ä¸ªå­—èŠ‚*/
+u8 _USART_Receive_Byte(USART_TypeDef *USART, u8 *Data);
 
-void _USART_Send_String(USART_TypeDef* USART, char *DATA)
+void _USART_Send_String(USART_TypeDef *USART, char *DATA)
 {
 	u32 i;
-	
-	for (i=0;DATA[i]!='\0';i++)
-        _USART_Send_Byte(USART,((u8*)DATA)[i]);
-    
+
+	for (i = 0; DATA[i] != '\0'; i++)
+		_USART_Send_Byte(USART, ((u8 *)DATA)[i]);
 }
 
-void USART_Init(USART_TypeDef* USART, u32 Boundrate)
+void USART_Init(USART_TypeDef *USART, u32 Boundrate)
 {
-    u32 USARTDIV_Int;
-    
-    if (USART==USART1)
-		USARTDIV_Int=APB2_MAX_CLOCK/Boundrate;
-	else if (USART==USART2)
-		USARTDIV_Int=APB1_MAX_CLOCK/Boundrate;
-	else if (USART==USART3)
-		USARTDIV_Int=APB1_MAX_CLOCK/Boundrate;
-	if (USART==USART1)
+	u32 USARTDIV_Int;
+
+	if (USART == USART1)
+		USARTDIV_Int = APB2_MAX_CLOCK / Boundrate;
+	else if (USART == USART2)
+		USARTDIV_Int = APB1_MAX_CLOCK / Boundrate;
+	else if (USART == USART3)
+		USARTDIV_Int = APB1_MAX_CLOCK / Boundrate;
+	if (USART == USART1)
 	{
-		RCC->AHB1ENR|=1<<0;   		//Ê¹ÄÜPORTA¿ÚÊ±ÖÓ  
-		RCC->APB2ENR|=1<<4;  		//Ê¹ÄÜ´®¿Ú1Ê±ÖÓ 
-		GPIO_Set(GPIOA,PIN9|PIN10,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_MID,GPIO_PUPD_PU);//PA9,PA10,¸´ÓÃ¹¦ÄÜ,ÉÏÀ­Êä³ö
-		GPIO_AF_Set(GPIOA,9,7);		//PA9,AF7
-		GPIO_AF_Set(GPIOA,10,7);	//PA10,AF7	 
+		RCC->AHB1ENR |= 1 << 0; //ä½¿èƒ½PORTAå£æ—¶é’Ÿ
+		RCC->APB2ENR |= 1 << 4; //ä½¿èƒ½ä¸²å£1æ—¶é’Ÿ
+		GPIO_Set(GPIOA_9, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_MID, GPIO_PUPD_PU);
+		GPIO_Set(GPIOA_10, GPIO_MODE_AF, 0, 0, GPIO_PUPD_PU);
+		GPIO_AF_Set(GPIOA_9, 7);  // PA9,AF7
+		GPIO_AF_Set(GPIOA_10, 7); // PA10,AF7
 	}
-	else if (USART==USART2)
+	else if (USART == USART2)
 	{
-		RCC->AHB1ENR|=1<<0;   		//Ê¹ÄÜPORTA¿ÚÊ±ÖÓ  
-        #if defined USE_STM32H7
-		RCC->APB1LENR|=1<<17;  		//Ê¹ÄÜ´®¿Ú2Ê±ÖÓ 
-        #else
-        RCC->APB1ENR|=1<<17;  		//Ê¹ÄÜ´®¿Ú2Ê±ÖÓ 
-        #endif
-        
-		GPIO_Set(GPIOA,PIN2|PIN3,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_MID,GPIO_PUPD_PU);//PA2,PA3,¸´ÓÃ¹¦ÄÜ,ÉÏÀ­Êä³ö
-		GPIO_AF_Set(GPIOA,2,7);		//PA2,AF7
-		GPIO_AF_Set(GPIOA,3,7);		//PA3,AF7  	   
+		RCC->AHB1ENR |= 1 << 0; //ä½¿èƒ½PORTAå£æ—¶é’Ÿ
+#if defined USE_STM32H7
+		RCC->APB1LENR |= 1 << 17; //ä½¿èƒ½ä¸²å£2æ—¶é’Ÿ
+#else
+		RCC->APB1ENR |= 1 << 17; //ä½¿èƒ½ä¸²å£2æ—¶é’Ÿ
+#endif
+		GPIO_Set(GPIOA_2, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_MID, GPIO_PUPD_PU);
+		GPIO_Set(GPIOA_3, GPIO_MODE_AF, 0, 0, GPIO_PUPD_PU);
+		GPIO_AF_Set(GPIOA_2, 7); // PA2,AF7
+		GPIO_AF_Set(GPIOA_3, 7); // PA3,AF7
 	}
-	else if (USART==USART3)
+	else if (USART == USART3)
 	{
-		RCC->AHB1ENR|=1<<1;			//Ê¹ÄÜPORTB¿ÚÊ±ÖÓ  
-        #if defined USE_STM32H7
-		RCC->APB1LENR|=1<<18;		//Ê¹ÄÜUSART3Ê±ÖÓ
-        #else
-        RCC->APB1ENR|=1<<18;		//Ê¹ÄÜUSART3Ê±ÖÓ
-        #endif
-		GPIO_Set(GPIOB,PIN10|PIN11,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_MID,GPIO_PUPD_PU);//PB10,PB11,¸´ÓÃ¹¦ÄÜ,ÉÏÀ­Êä³ö
-		GPIO_AF_Set(GPIOB,10,7);		//PB10,AF7
-		GPIO_AF_Set(GPIOB,11,7);		//PB11,AF7 
+		RCC->AHB1ENR |= 1 << 1; //ä½¿èƒ½PORTBå£æ—¶é’Ÿ
+#if defined USE_STM32H7
+		RCC->APB1LENR |= 1 << 18; //ä½¿èƒ½USART3æ—¶é’Ÿ
+#else
+		RCC->APB1ENR |= 1 << 18; //ä½¿èƒ½USART3æ—¶é’Ÿ
+#endif
+		GPIO_Set(GPIOB_10, GPIO_MODE_AF, GPIO_OTYPE_PP, GPIO_OSPEED_MID, GPIO_PUPD_PU);
+		GPIO_Set(GPIOB_11, GPIO_MODE_AF, 0, 0, GPIO_PUPD_PU);
+		GPIO_AF_Set(GPIOB_10, 7); // PB10,AF7
+		GPIO_AF_Set(GPIOB_11, 7); // PB11,AF7
 	}
-	
-	USART->BRR=USARTDIV_Int; 	//²¨ÌØÂÊÉèÖÃ	 
-	USART->CR1&=~(1<<15); 		//ÉèÖÃOVER8=0 
-	USART->CR1|=1<<2;  		//´®¿Ú½ÓÊÕÊ¹ÄÜ
-	USART->CR1|=1<<3;  		//´®¿Ú·¢ËÍÊ¹ÄÜ
-    USART->CR1|=1;
+
+	USART->BRR = USARTDIV_Int; //æ³¢ç‰¹çŽ‡è®¾ç½®
+	USART->CR1 &= ~(1 << 15);  //è®¾ç½®OVER8=0
+	USART->CR1 |= 1 << 2;	   //ä¸²å£æŽ¥æ”¶ä½¿èƒ½
+	USART->CR1 |= 1 << 3;	   //ä¸²å£å‘é€ä½¿èƒ½
+	USART->CR1 |= 1;
 }
 
-void USART_Time_Out_Set(USART_TypeDef* USART, u8 Enable)
+void USART_Time_Out_Set(USART_TypeDef *USART, u8 Enable)
 {
-	if (USART==USART1)
-		Time_Out_Enable[0]=Enable;
-	else if (USART==USART2)
-		Time_Out_Enable[1]=Enable;
-	else if (USART==USART3)
-		Time_Out_Enable[2]=Enable;
+	if (USART == USART1)
+		Time_Out_Enable[0] = Enable;
+	else if (USART == USART2)
+		Time_Out_Enable[1] = Enable;
+	else if (USART == USART3)
+		Time_Out_Enable[2] = Enable;
 }
 
-void USART_Interrupt_Set(USART_TypeDef* USART, u8 Group, u8 PrePriority, u8 SubPriority, Usart_IRQHandler CallbackFunc)
+void USART_Interrupt_Set(USART_TypeDef *USART, u8 Group, u8 PrePriority, u8 SubPriority, Usart_IRQHandler CallbackFunc)
 {
-	if (USART==USART1)
+	if (USART == USART1)
 	{
-		MY_NVIC_Init(PrePriority,SubPriority,USART1_IRQn,Group);
-		USART1_Interrupt_CallbackFunc=CallbackFunc;
+		MY_NVIC_Init(PrePriority, SubPriority, USART1_IRQn, Group);
+		USART1_Interrupt_CallbackFunc = CallbackFunc;
 	}
-	else if (USART==USART2)
+	else if (USART == USART2)
 	{
-		MY_NVIC_Init(PrePriority,SubPriority,USART2_IRQn,Group);
-		USART2_Interrupt_CallbackFunc=CallbackFunc;
+		MY_NVIC_Init(PrePriority, SubPriority, USART2_IRQn, Group);
+		USART2_Interrupt_CallbackFunc = CallbackFunc;
 	}
-	else if (USART==USART3)
+	else if (USART == USART3)
 	{
-		MY_NVIC_Init(PrePriority,SubPriority,USART3_IRQn,Group);
-		USART3_Interrupt_CallbackFunc=CallbackFunc;
+		MY_NVIC_Init(PrePriority, SubPriority, USART3_IRQn, Group);
+		USART3_Interrupt_CallbackFunc = CallbackFunc;
 	}
 }
 
-
-	
-void USART_Send_Data_Flow(USART_TypeDef* USART, void* DATA, u32 Length)
+void USART_Send_Data_Flow(USART_TypeDef *USART, void *DATA, u32 Length)
 {
 	u32 i;
-	
-	for (i=0;i<Length;i++)
-        _USART_Send_Byte(USART,((u8*)DATA)[i]);
+
+	for (i = 0; i < Length; i++)
+		_USART_Send_Byte(USART, ((u8 *)DATA)[i]);
 }
 
-
-
-void USART_Printf(USART_TypeDef* USART, char* Format_String, ...)
+void USART_Printf(USART_TypeDef *USART, char *Format_String, ...)
 {
 	u8 save;
 	u32 i;
-    va_list vl;
-    
-    va_start(vl,Format_String);
-    i=vsprintf(USART_Cache,Format_String,vl);
-    USART_Cache[i]='\0';
-    _USART_Send_String(USART,USART_Cache);
-    va_end(vl);
+	va_list vl;
+	va_start(vl, Format_String);
+	i = vsprintf(USART_Cache, Format_String, vl);
+	//USART_Cache2[i] = '\0';
+	_USART_Send_String(USART, USART_Cache);
+	va_end(vl);
 }
 
-u8 _USART_Receive_Byte(USART_TypeDef* USART, u8* Data)
-{	
-	u8 Time_Out;
-	u32 i=0;
-	
-	if (USART==USART1)
-		Time_Out=Time_Out_Enable[0];
-	else if (USART==USART2)
-		Time_Out=Time_Out_Enable[1];
-	else if (USART==USART3)
-		Time_Out=Time_Out_Enable[2];
-	
-    #if !defined USE_STM32H7
-	if (Time_Out==1)
-	{
-		while ((((USART->SR>>5)&1)==0)&&(i<USART_TIME_OUT_VALUE))
-			i++;
-		if (i==USART_TIME_OUT_VALUE)
-			return 1;
-		else
-		{
-			*Data=USART->DR;
-			return 0;
-		}
-	}
-	else
-	{
-		while (((USART->SR>>5)&1)==0);
-		*Data=USART->DR;
-		return 0;
-	}
-    #else
-    if (Time_Out==1)
-	{
-		while ((((USART->ISR>>5)&1)==0)&&(i<USART_TIME_OUT_VALUE))
-			i++;
-		if (i==USART_TIME_OUT_VALUE)
-			return 1;
-		else
-		{
-			*Data=USART->RDR;
-			return 0;
-		}
-	}
-	else
-	{
-		while (((USART->ISR>>5)&1)==0);
-		*Data=USART->RDR;
-		return 0;
-	}
-    #endif
-}
-
-int USART_Scanf(USART_TypeDef* USART, char* Format_String, ...)
+u8 _USART_Receive_Byte(USART_TypeDef *USART, u8 *Data)
 {
-    int len;
-    va_list vl;
-    
-    va_start(vl,Format_String);
-    len=USART_Receive_Data_Flow_EndwithCharacter(USART,USART_Cache,0x0a,1);
-    USART_Cache[len]='\0';
-    len=vsscanf(USART_Cache,Format_String,vl);
-    va_end(vl);
-    
-    return len;
+	u8 Time_Out;
+	u32 i = 0;
+
+	if (USART == USART1)
+		Time_Out = Time_Out_Enable[0];
+	else if (USART == USART2)
+		Time_Out = Time_Out_Enable[1];
+	else if (USART == USART3)
+		Time_Out = Time_Out_Enable[2];
+
+#if !defined USE_STM32H7
+	if (Time_Out == 1)
+	{
+		while ((((USART->SR >> 5) & 1) == 0) && (i < USART_TIME_OUT_VALUE))
+			i++;
+		if (i == USART_TIME_OUT_VALUE)
+			return 1;
+		else
+		{
+			*Data = USART->DR;
+			return 0;
+		}
+	}
+	else
+	{
+		while (((USART->SR >> 5) & 1) == 0)
+			;
+		*Data = USART->DR;
+		return 0;
+	}
+#else
+	if (Time_Out == 1)
+	{
+		while ((((USART->ISR >> 5) & 1) == 0) && (i < USART_TIME_OUT_VALUE))
+			i++;
+		if (i == USART_TIME_OUT_VALUE)
+			return 1;
+		else
+		{
+			*Data = USART->RDR;
+			return 0;
+		}
+	}
+	else
+	{
+		while (((USART->ISR >> 5) & 1) == 0)
+			;
+		*Data = USART->RDR;
+		return 0;
+	}
+#endif
 }
 
-u8 USART_Receive_Data_Flow_EndwithLength(USART_TypeDef* USART, void *DATA, u32 Length)
+int USART_Scanf(USART_TypeDef *USART, char *Format_String, ...)
+{
+	int len;
+	va_list vl;
+
+	va_start(vl, Format_String);
+	len = USART_Receive_Data_Flow_EndwithCharacter(USART, USART_Cache, 0x0a, 1);
+	USART_Cache[len] = '\0';
+	len = vsscanf(USART_Cache, Format_String, vl);
+	va_end(vl);
+
+	return len;
+}
+
+u8 USART_Receive_Data_Flow_EndwithLength(USART_TypeDef *USART, void *DATA, u32 Length)
 {
 	u8 time_out;
 	u32 i;
 
-	for (i=0;i<Length;i++)
+	for (i = 0; i < Length; i++)
 	{
-		time_out=_USART_Receive_Byte(USART,&((u8*)DATA)[i]);
-		if (time_out==1)
+		time_out = _USART_Receive_Byte(USART, &((u8 *)DATA)[i]);
+		if (time_out == 1)
 			return 0;
 	}
 	return Length;
 }
 
-u32 USART_Receive_Data_Flow_EndwithCharacter(USART_TypeDef* USART, void *DATA, char END, u8 Repeat_Time)
+u32 USART_Receive_Data_Flow_EndwithCharacter(USART_TypeDef *USART, void *DATA, char END, u8 Repeat_Time)
 {
-	u8 j,time_out;
+	u8 j, time_out;
 	u32 i;
 
-	i=0;
-	j=0;
+	i = 0;
+	j = 0;
 	do
 	{
-		time_out=_USART_Receive_Byte(USART,&((u8*)DATA)[i]);
-		if (time_out==1)
+		time_out = _USART_Receive_Byte(USART, &((u8 *)DATA)[i]);
+		if (time_out == 1)
 			return 0;
-		if (((u8*)DATA)[i]==END)//¼ì²âµ½½áÊø×Ö·û
+		if (((u8 *)DATA)[i] == END) //æ£€æµ‹åˆ°ç»“æŸå­—ç¬¦
 			j++;
-		else		//¼ì²âµ½·Ç½áÊø×Ö·û
-			j=0;	//ÀÛ¼ÓÆ÷ÇåÁã
+		else	   //æ£€æµ‹åˆ°éžç»“æŸå­—ç¬¦
+			j = 0; //ç´¯åŠ å™¨æ¸…é›¶
 		i++;
-	} while (j!=Repeat_Time);
-	
+	} while (j != Repeat_Time);
+
 	return i;
 }
 
@@ -290,33 +286,33 @@ void USART3_IRQHandler(void)
 }
 
 #ifdef USART_DEBUG
-void USART_Test(USART_TypeDef* USART)
+void USART_Test(USART_TypeDef *USART)
 {
-	u8 i,Length;
+	u8 i, Length;
 	u8 Rec_Buf[16];
-	
-	USART_Printf(USART,"\n/************´®¿Ú²âÊÔ¿ªÊ¼************/\n");
-	USART_Printf(USART,"·¢ËÍÊ®½øÖÆÕûÊý-20120712£º%d\n",-20120712);
-	USART_Printf(USART,"·¢ËÍÊ®Áù½øÖÆÕûÊý0x012abcf9£º%x\n",0x012abcf9);
-	USART_Printf(USART,"·¢ËÍ¸¡µãÊý2012.0712£º%.4f\n",2012.0712f);
-	USART_Printf(USART,"·¢ËÍ×Ö·û´®¡°USART Test.¡±£º%s\n","USART Test.");
-	USART_Printf(USART,"ÏÖÔÚ¿ªÊ¼½ÓÊÕ²âÊÔ\nÏÖÔÚ·¢ËÍ4¸ö×Ö½Ú....");
-	USART_Receive_Data_Flow_EndwithLength(USART,Rec_Buf,4);
-	USART_Printf(USART,"½ÓÊÕÍê±Ï\n");
-	USART_Printf(USART,"½ÓÊÕµÄÊý¾Ý£º");
-	for (i=0;i<4;i++)
-		USART_Printf(USART,"%x  ",Rec_Buf[i]);
-	USART_Printf(USART,"\nÏÖÔÚ·¢ËÍÒÔÁ½¸ö0x12½áÎ²µÄÊý¾ÝÁ÷....\n");
-	Length=USART_Receive_Data_Flow_EndwithCharacter(USART,Rec_Buf,0x12,2);
-	USART_Printf(USART,"½ÓÊÕÍê±Ï\n");
-	USART_Printf(USART,"½ÓÊÕµÄÊý¾Ý£º");
-	for (i=0;i<Length;i++)
-		USART_Printf(USART,"%x  ",Rec_Buf[i]);
-	USART_Printf(USART,"\n·¢ËÍ0xffÒÔ½áÊø²âÊÔ\n");
+
+	USART_Printf(USART, "\n/************ä¸²å£æµ‹è¯•å¼€å§‹************/\n");
+	USART_Printf(USART, "å‘é€åè¿›åˆ¶æ•´æ•°-20120712ï¼š%d\n", -20120712);
+	USART_Printf(USART, "å‘é€åå…­è¿›åˆ¶æ•´æ•°0x012abcf9ï¼š%x\n", 0x012abcf9);
+	USART_Printf(USART, "å‘é€æµ®ç‚¹æ•°2012.0712ï¼š%.4f\n", 2012.0712f);
+	USART_Printf(USART, "å‘é€å­—ç¬¦ä¸²â€œUSART Test.â€ï¼š%s\n", "USART Test.");
+	USART_Printf(USART, "çŽ°åœ¨å¼€å§‹æŽ¥æ”¶æµ‹è¯•\nçŽ°åœ¨å‘é€4ä¸ªå­—èŠ‚....");
+	USART_Receive_Data_Flow_EndwithLength(USART, Rec_Buf, 4);
+	USART_Printf(USART, "æŽ¥æ”¶å®Œæ¯•\n");
+	USART_Printf(USART, "æŽ¥æ”¶çš„æ•°æ®ï¼š");
+	for (i = 0; i < 4; i++)
+		USART_Printf(USART, "%x  ", Rec_Buf[i]);
+	USART_Printf(USART, "\nçŽ°åœ¨å‘é€ä»¥ä¸¤ä¸ª0x12ç»“å°¾çš„æ•°æ®æµ....\n");
+	Length = USART_Receive_Data_Flow_EndwithCharacter(USART, Rec_Buf, 0x12, 2);
+	USART_Printf(USART, "æŽ¥æ”¶å®Œæ¯•\n");
+	USART_Printf(USART, "æŽ¥æ”¶çš„æ•°æ®ï¼š");
+	for (i = 0; i < Length; i++)
+		USART_Printf(USART, "%x  ", Rec_Buf[i]);
+	USART_Printf(USART, "\nå‘é€0xffä»¥ç»“æŸæµ‹è¯•\n");
 	do
-    {
-        _USART_Receive_Byte(USART,&i);
-    }while (i!=0xff);
-	USART_Printf(USART,"/************´®¿Ú²âÊÔ½áÊø************/\n");
+	{
+		_USART_Receive_Byte(USART, &i);
+	} while (i != 0xff);
+	USART_Printf(USART, "/************ä¸²å£æµ‹è¯•ç»“æŸ************/\n");
 }
 #endif

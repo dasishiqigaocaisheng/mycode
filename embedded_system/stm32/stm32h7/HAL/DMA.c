@@ -101,60 +101,60 @@ void DMA_StreamController_Set(tranplan* tp)
 {
 	if ((tp->Start.Type==TRANPORT_TYPE_MEM)&&(tp->End.Type==TRANPORT_TYPE_PER))
 	{
-		//´æ´¢Æ÷µ½ÍâÉè
+		//å­˜å‚¨å™¨åˆ°å¤–è®¾
 		tp->Executor.Stream->CR|=1<<6;
 		tp->Executor.Stream->M0AR=(u32)tp->Start.Address;
 		tp->Executor.Stream->PAR=(u32)tp->End.Address;
 		
-		//ÉèÖÃ´æ´¢Æ÷Êý¾Ý´óÐ¡
+		//è®¾ç½®å­˜å‚¨å™¨æ•°æ®å¤§å°
 		tp->Executor.Stream->CR|=(tp->Start.WordLength-1)<<13;
-		//´æ´¢Æ÷ÊÇ·ñµÝÔö
+		//å­˜å‚¨å™¨æ˜¯å¦é€’å¢ž
 		if (!tp->Start.IsFixed)
 			tp->Executor.Stream->CR|=1<<10;
 				
-		//ÉèÖÃÍâÉèÊý¾Ý´óÐ¡
+		//è®¾ç½®å¤–è®¾æ•°æ®å¤§å°
 		tp->Executor.Stream->CR|=(tp->End.WordLength-1)<<11;
-		//ÍâÉèÊÇ·ñµÝÔö
+		//å¤–è®¾æ˜¯å¦é€’å¢ž
 		if (!tp->End.IsFixed)
 			tp->Executor.Stream->CR|=1<<9;
 	}
 	else if ((tp->Start.Type==TRANPORT_TYPE_PER)&&(tp->End.Type==TRANPORT_TYPE_MEM))
 	{
-		//ÍâÉèµ½´æ´¢Æ÷
+		//å¤–è®¾åˆ°å­˜å‚¨å™¨
 		tp->Executor.Stream->CR|=0<<6;
 		tp->Executor.Stream->PAR=(u32)tp->Start.Address;
 		tp->Executor.Stream->M0AR=(u32)tp->End.Address;
 		
-		//ÉèÖÃ´æ´¢Æ÷Êý¾Ý´óÐ¡
+		//è®¾ç½®å­˜å‚¨å™¨æ•°æ®å¤§å°
 		tp->Executor.Stream->CR|=(tp->End.WordLength-1)<<13;
-		//´æ´¢Æ÷ÊÇ·ñµÝÔö
+		//å­˜å‚¨å™¨æ˜¯å¦é€’å¢ž
 		if (!tp->End.IsFixed)
 			tp->Executor.Stream->CR|=1<<10;
 				
-		//ÉèÖÃÍâÉèÊý¾Ý´óÐ¡
+		//è®¾ç½®å¤–è®¾æ•°æ®å¤§å°
 		tp->Executor.Stream->CR|=(tp->Start.WordLength-1)<<11;
-		//ÍâÉèÊÇ·ñµÝÔö
+		//å¤–è®¾æ˜¯å¦é€’å¢ž
 		if (!tp->Start.IsFixed)
 			tp->Executor.Stream->CR|=1<<9;
 	}
     else if ((tp->Start.Type==TRANPORT_TYPE_MEM)&&(tp->End.Type==TRANPORT_TYPE_MEM))
     {
-        tp->Executor.Stream->CR|=(tp->Start.WordLength-1)<<11;  //Ô´´æ´¢Æ÷Êý¾Ý´óÐ¡
-        tp->Executor.Stream->CR|=(tp->End.WordLength-1)<<13;      //Ä¿±ê´æ´¢Æ÷Êý¾Ý´óÐ¡
+        tp->Executor.Stream->CR|=(tp->Start.WordLength-1)<<11;  //æºå­˜å‚¨å™¨æ•°æ®å¤§å°
+        tp->Executor.Stream->CR|=(tp->End.WordLength-1)<<13;      //ç›®æ ‡å­˜å‚¨å™¨æ•°æ®å¤§å°
         
         tp->Executor.Stream->PAR=(u32)tp->Start.Address;
         tp->Executor.Stream->M0AR=(u32)tp->End.Address;
         
-        //Ö¸ÕëµÝÔö
+        //æŒ‡é’ˆé€’å¢ž
         if (!tp->Start.IsFixed)
             tp->Executor.Stream->CR|=1<<9;
         if (!tp->End.IsFixed)
             tp->Executor.Stream->CR|=1<<10;
         
-        //´«Êä·½Ïò£º´æ´¢Æ÷µ½´æ´¢Æ÷
+        //ä¼ è¾“æ–¹å‘ï¼šå­˜å‚¨å™¨åˆ°å­˜å‚¨å™¨
         tp->Executor.Stream->CR|=2<<6;
         
-        //ÍâÉèÍ»·¢ÅäÖÃ
+        //å¤–è®¾çªå‘é…ç½®
         if ((tp->Start.Burst_Mode==Beat4_Burst1)||(tp->Start.Burst_Mode==Beat4_Burst2)||
             (tp->Start.Burst_Mode==Beat4_Burst3)||(tp->Start.Burst_Mode==Beat4_Burst4))
             tp->Executor.Stream->CR|=1<<21;
@@ -165,7 +165,7 @@ void DMA_StreamController_Set(tranplan* tp)
         else if (tp->Start.Burst_Mode==Single)
             tp->Executor.Stream->CR&=~(3<<21);
         
-        //´æ´¢Æ÷Í»·¢ÅäÖÃ
+        //å­˜å‚¨å™¨çªå‘é…ç½®
         if ((tp->End.Burst_Mode==Beat4_Burst1)||(tp->End.Burst_Mode==Beat4_Burst2)||
             (tp->End.Burst_Mode==Beat4_Burst3)||(tp->End.Burst_Mode==Beat4_Burst4))
             tp->Executor.Stream->CR|=1<<23;
@@ -176,21 +176,21 @@ void DMA_StreamController_Set(tranplan* tp)
         else if (tp->End.Burst_Mode==Single)
             tp->Executor.Stream->CR&=~(3<<23);
         
-        //½ûÖ¹Ö±½ÓÄ£Ê½
+        //ç¦æ­¢ç›´æŽ¥æ¨¡å¼
         tp->Executor.Stream->FCR|=1<<2;
         
-        //ÉèÖÃFIFOÈÝÁ¿
+        //è®¾ç½®FIFOå®¹é‡
         tp->Executor.Stream->FCR|=tp->Controller.FIFO_Mode;
     }
     
-    //´«ÊäÊý¾ÝÏîÊý
+    //ä¼ è¾“æ•°æ®é¡¹æ•°
 	tp->Executor.Stream->NDTR=tp->Controller.DataNumber;
 	
-    //¿ªÆôË«»º³å£¿
+    //å¼€å¯åŒç¼“å†²ï¼Ÿ
     if (tp->Controller.DualBuffer)
 		tp->Executor.Stream->CR|=1<<18;
     
-    //¿ªÆôÑ­»·Ä£Ê½£¿
+    //å¼€å¯å¾ªçŽ¯æ¨¡å¼ï¼Ÿ
 	if (tp->Controller.Loop)
 		tp->Executor.Stream->CR|=1<<8;
 }

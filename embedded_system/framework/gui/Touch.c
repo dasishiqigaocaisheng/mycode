@@ -5,7 +5,7 @@
 #include "USART.h"
 #include <math.h>
 
-/*touchÖĞµÄ¸÷ÖÖ½á¹¹ÌåËùÔÚµÄ¶Ñ*/
+/*touchä¸­çš„å„ç§ç»“æ„ä½“æ‰€åœ¨çš„å †*/
 #define TOUCH_HEAP  HEAP1   
 
 
@@ -16,7 +16,7 @@ uint8_t Get_Coordinates(uint16_t* xy)
 
 
 
-/*ÅĞ¶Ïµã(px,py)ÊÇ·ñÔÚÓÉ(ax,ay)ºÍwidth(¿í)height(¸ß)¶¨ÒåµÄÇøÓòÄÚ*/
+/*åˆ¤æ–­ç‚¹(px,py)æ˜¯å¦åœ¨ç”±(ax,ay)å’Œwidth(å®½)height(é«˜)å®šä¹‰çš„åŒºåŸŸå†…*/
 #define IS_IN_AREA(ax,ay,width,height,px,py) ((((px)<(ax)+(width))&&((px)>(ax)))&&(((py)<(ay)+(height))&&((py)>(ay))))
 
 #define ABS(x)  ((x)>=0?(x):-(x))
@@ -28,7 +28,7 @@ touch_area* Method_Create_Area2   (touch_device* td, short xmin, short xmax, sho
 void        Method_Delete_Area    (touch_device* td, touch_area* ta);
 void        Method_Process        (touch_device* td);
 
-/*¸üĞÂ×ø±ê±ä»»µÄ²ÎÊı*/
+/*æ›´æ–°åæ ‡å˜æ¢çš„å‚æ•°*/
 void _kb_Update(touch_device* td)
 {
     if ((td->Rotation==CLOCKWISE0)||(td->Rotation==CLOCKWISE180))
@@ -72,12 +72,12 @@ void _Coordinates_Update(touch_device* td)
     int i;
     short save[2];
     
-    /**************************¸üĞÂ´¥ÃşÉè±¸µÄĞÅÏ¢**************************/
-    //»ñÈ¡ĞÂ×ø±ê
+    /**************************æ›´æ–°è§¦æ‘¸è®¾å¤‡çš„ä¿¡æ¯**************************/
+    //è·å–æ–°åæ ‡
     i=Get_Coordinates((uint16_t*)save);
     _RO_WRITE(td->PointX,uint16_t,save[0]);
     _RO_WRITE(td->PointY,uint16_t,save[1]);
-    //×ø±ê±ä»»
+    //åæ ‡å˜æ¢
     if (td->Rotation==CLOCKWISE90)
     {
         save[0]=td->PointX;
@@ -97,23 +97,23 @@ void _Coordinates_Update(touch_device* td)
     }
     _RO_WRITE(td->PointX,short,td->PointX*td->Xk+td->Xb);
     _RO_WRITE(td->PointY,short,td->PointY*td->Yk+td->Yb);
-    //ÅĞ¶ÏÊÇ·ñÓĞ´¥µã°´ÏÂ
+    //åˆ¤æ–­æ˜¯å¦æœ‰è§¦ç‚¹æŒ‰ä¸‹
     if ((i!=0)&&IS_IN_AREA(td->ValidArea_X,td->ValidArea_Y,td->ValidArea_Width,td->ValidArea_Height,td->PointX,td->PointY))
         _RO_WRITE(td->IsKeyDown,status_flag,Enable);
     else
         _RO_WRITE(td->IsKeyDown,status_flag,Disable);
     
-    /**************************¸üĞÂÃ¿¸ö´¥ÃşÇøÓòµÄĞÅÏ¢**************************/
+    /**************************æ›´æ–°æ¯ä¸ªè§¦æ‘¸åŒºåŸŸçš„ä¿¡æ¯**************************/
     touch_area* ta;
     for (i=0;i<td->TouchArea_List.Nodes_Num;i++)
     {
-        //´æ´¢¾É×ø±ê
+        //å­˜å‚¨æ—§åæ ‡
         ta=LinkedList_Find(&td->TouchArea_List,i);
         _RO_WRITE(ta->IsKeyDown_Old,status_flag,ta->IsKeyDown);
         _RO_WRITE(ta->PointX_Old,short,ta->PointX);
         _RO_WRITE(ta->PointY_Old,short,ta->PointY);
         
-        //¸üĞÂ×ø±ê
+        //æ›´æ–°åæ ‡
         if (td->IsKeyDown)
         {
             if (IS_IN_AREA(ta->X,ta->Y,ta->Width,ta->Height,td->PointX,td->PointY))
@@ -136,33 +136,33 @@ void _Touch_Area_Event_Update(touch_area* ta)
     {
         if (ta->PressDown_Enable)
         {
-            //Ö®Ç°Î´°´ÏÂ£¬ÏÖÔÚ°´ÏÂ
+            //ä¹‹å‰æœªæŒ‰ä¸‹ï¼Œç°åœ¨æŒ‰ä¸‹
             if ((!ta->IsKeyDown_Old)&&ta->IsKeyDown)
                 _RO_WRITE(ta->PressDown_Happened,status_flag,Enable);
         }
         if (ta->Release_Enable)
         {
-            //Ö®Ç°°´ÏÂ£¬ÏÖÔÚÎ´°´ÏÂ
+            //ä¹‹å‰æŒ‰ä¸‹ï¼Œç°åœ¨æœªæŒ‰ä¸‹
             if (ta->IsKeyDown_Old&&(!ta->IsKeyDown))
                     _RO_WRITE(ta->Release_Happened,status_flag,Enable);
         }
         if (ta->KeepPress_Enable)
         {
-            //Ö®Ç°°´ÏÂ£¬ÏÖÔÚÒ²°´ÏÂ
+            //ä¹‹å‰æŒ‰ä¸‹ï¼Œç°åœ¨ä¹ŸæŒ‰ä¸‹
             if (ta->IsKeyDown_Old&&ta->IsKeyDown)
                 _RO_WRITE(ta->KeepPress_Happened,status_flag,Enable);
         }
         if (ta->Click_Enable)
         {
-            //Èç¹û°´ÏÂ
+            //å¦‚æœæŒ‰ä¸‹
             if ((!ta->IsKeyDown_Old)&&ta->IsKeyDown)
                 _RO_WRITE(ta->IsMoved,status_flag,Disable);
             else 
             {
-                //Èç¹ûÃ»ÓĞÒÆ¶¯¹ı
+                //å¦‚æœæ²¡æœ‰ç§»åŠ¨è¿‡
                 if (!ta->IsMoved)
                 {
-                    //ÅĞ¶ÏÊÇ·ñÒÆ¶¯
+                    //åˆ¤æ–­æ˜¯å¦ç§»åŠ¨
                     if (ta->IsKeyDown&&ta->IsKeyDown_Old)
                     {
                         if (IS_EQUAL(ta->PointX,ta->PointY,ta->PointX_Old,ta->PointY_Old))
@@ -203,11 +203,11 @@ void Method_Process(touch_device* td)
     int i;
     touch_area* ta;
     
-    _Coordinates_Update(td);    //×ø±ê¸üĞÂ
-    for (i=0;i<td->TouchArea_List.Nodes_Num;i++)    //±éÀú´¥ÃşÇøÓò
+    _Coordinates_Update(td);    //åæ ‡æ›´æ–°
+    for (i=0;i<td->TouchArea_List.Nodes_Num;i++)    //éå†è§¦æ‘¸åŒºåŸŸ
     {
         ta=LinkedList_Find(&td->TouchArea_List,i);
-        _Touch_Area_Event_Update(ta);   //ÊÂ¼ş¸üĞÂ
+        _Touch_Area_Event_Update(ta);   //äº‹ä»¶æ›´æ–°
         if (ta->PressDown_Happened)
             ta->PressDown_CallBackFunc(td,ta);
         if (ta->Release_Happened)

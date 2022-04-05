@@ -1,15 +1,15 @@
 #include "BMP.h"
 
-/*在rBMP格式数据流中定位图像的某一行数据的起始位置*/
+/*鍦╮BMP鏍煎紡鏁版嵁娴佷腑瀹氫綅鍥惧儚鐨勬煇涓�琛屾暟鎹殑璧峰浣嶇疆*/
 uint8_t _rBMP_Locate_Line(const rBMP* Pic, uint16_t Line, uint32_t* Index, uint16_t* Remain);
 
-/*在rBMP格式数据流中读取图像的某几行数据*/
+/*鍦╮BMP鏍煎紡鏁版嵁娴佷腑璇诲彇鍥惧儚鐨勬煇鍑犺鏁版嵁*/
 uint8_t _rBMP_Read_Lines(const rBMP* Pic, uint16_t* Out, uint16_t Lines, uint32_t Index, uint16_t Remain);
 
-/*在prBMP格式数据流中定位图像的某一行数据的起始位置*/
+/*鍦╬rBMP鏍煎紡鏁版嵁娴佷腑瀹氫綅鍥惧儚鐨勬煇涓�琛屾暟鎹殑璧峰浣嶇疆*/
 uint8_t _prBMP_Locate_Line(const prBMP* Pic, uint16_t Line, uint32_t* Index, uint16_t* Remain);
 
-/*在prBMP格式数据流中读取图像的某几行数据*/
+/*鍦╬rBMP鏍煎紡鏁版嵁娴佷腑璇诲彇鍥惧儚鐨勬煇鍑犺鏁版嵁*/
 uint8_t _prBMP_Read_Lines(const prBMP* Pic, uint16_t* Out, uint16_t Lines, uint32_t Index, uint16_t Remain);
 
 uint8_t _rBMP_Locate_Line(const rBMP* Pic, uint16_t Line, uint32_t* Index, uint16_t* Remain)

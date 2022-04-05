@@ -205,8 +205,8 @@ void ESP8266_Interrupt_Disable(void)
 
 void _DMA_CallbackFunc(void)
 {
-	//Èç¹ûÒÑ¾­ÂúÁËËµÃ÷Ò»Ö±Î´¶ÁÈ¡
-	//ÄÇÃ´Ö±½Ó´ÓÍ·¿ªÊ¼
+	//å¦‚æžœå·²ç»æ»¡äº†è¯´æ˜Žä¸€ç›´æœªè¯»å–
+	//é‚£ä¹ˆç›´æŽ¥ä»Žå¤´å¼€å§‹
 	if (IsFull)
 	{
 		IsFull=0;
@@ -249,11 +249,11 @@ void ESP8266_DMA_Get_Data(void* buf, u16 Length)
 	u16 i;
 	u8* r=buf;
 	
-	//Èç¹ûÒÑ¾­ÂúÁË,Òª¿´ÊÇ·ñÒª¶ÁÈ¡Á½´Î
+	//å¦‚æžœå·²ç»æ»¡äº†,è¦çœ‹æ˜¯å¦è¦è¯»å–ä¸¤æ¬¡
 	if (IsFull)
 	{
-		//Èç¹û³¤¶È³¬³öÁË»º³åÇø±ß½ç
-		//Òª¶ÁÈ¡Á½´Î
+		//å¦‚æžœé•¿åº¦è¶…å‡ºäº†ç¼“å†²åŒºè¾¹ç•Œ
+		//è¦è¯»å–ä¸¤æ¬¡
 		if (Length>tp.Controller.DataNumber-Last_Index)
 		{
 			for (i=0;i<tp.Controller.DataNumber-Last_Index;i++)
@@ -269,7 +269,7 @@ void ESP8266_DMA_Get_Data(void* buf, u16 Length)
 			IsFull=0;
 			Last_Index=Length-tp.Controller.DataNumber+Last_Index;
 		}
-		else//·ñÔòÒ»´Î¼´¿ÉÈ«²¿¶Á³ö
+		else//å¦åˆ™ä¸€æ¬¡å³å¯å…¨éƒ¨è¯»å‡º
 		{
 			for (i=0;i<Length;i++)
 			{
@@ -279,7 +279,7 @@ void ESP8266_DMA_Get_Data(void* buf, u16 Length)
 			Last_Index+=Length;
 		}
 	}
-	else//Ã»ÓÐÂú£¬Ò»´Î¶Á³ö
+	else//æ²¡æœ‰æ»¡ï¼Œä¸€æ¬¡è¯»å‡º
 	{
 		for (i=0;i<Length;i++)
 		{
@@ -288,7 +288,7 @@ void ESP8266_DMA_Get_Data(void* buf, u16 Length)
 		}
 		Last_Index+=Length;
 	}
-	//ÅÐ¶ÏLast_IndexÊÇ·ñ³ö½ç
+	//åˆ¤æ–­Last_Indexæ˜¯å¦å‡ºç•Œ
 	if (Last_Index>=tp.Controller.DataNumber)
 		Last_Index=0;
 }

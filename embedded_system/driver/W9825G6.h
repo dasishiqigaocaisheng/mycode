@@ -2,8 +2,8 @@
 #define _W9825G6_H_
 #include "sys.h"
 
-//FANKE STM32H7  Ê¹ÓÃ¿ØÖÆÆ÷1£¬Ò²¾ÍÊÇBANK5
-//APOLLO STM32H7 Ê¹ÓÃ¿ØÖÆÆ÷1£¬Ò²¾ÍÊÇBANK5
+//FANKE STM32H7  ä½¿ç”¨æŽ§åˆ¶å™¨1ï¼Œä¹Ÿå°±æ˜¯BANK5
+//APOLLO STM32H7 ä½¿ç”¨æŽ§åˆ¶å™¨1ï¼Œä¹Ÿå°±æ˜¯BANK5
 //256Mb=16M*16bit=32MB
 
 #define BANK6_SDRAM_ADDR    ((u16*)0XD0000000) 

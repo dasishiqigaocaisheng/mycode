@@ -1,34 +1,34 @@
 #ifndef _MATHHELPER_H_
 #define _MATHHELPER_H_
 /*
-	ÊÊºÏÓÚSTM32F4µÄÊıÑ§ÔËËã¿â
-	Ê¹ÓÃÊ±Òª¼Óºê£ºARM_MATH_CM4
-	Ò»Ğ©º¯Êı×îºó±êÃ÷ÁË¸Ãº¯ÊıµÄÊÊÓÃÊı¾İÀàĞÍ
-	arm_cortexM4lf_math.libÎÄ¼şĞèÒª¼ÓÈëµ½projectÖĞ
+	é€‚åˆäºSTM32F4çš„æ•°å­¦è¿ç®—åº“
+	ä½¿ç”¨æ—¶è¦åŠ å®ï¼šARM_MATH_CM4
+	ä¸€äº›å‡½æ•°æœ€åæ ‡æ˜äº†è¯¥å‡½æ•°çš„é€‚ç”¨æ•°æ®ç±»å‹
+	arm_cortexM4lf_math.libæ–‡ä»¶éœ€è¦åŠ å…¥åˆ°projectä¸­
 */
 #include "sys.h"
 #include <math.h>
 #include "arm_math.h"
 
-//Ö¸Ã÷ÊÇ·ñÊ¹ÓÃFFT¹¦ÄÜ
+//æŒ‡æ˜æ˜¯å¦ä½¿ç”¨FFTåŠŸèƒ½
 #define USE_FFT
 
-//ÅÅĞòº¯ÊıµÄË³Ğò
-//POSITIVE£ºÕıĞò
-//NEGATIVE£ºÄæĞò
+//æ’åºå‡½æ•°çš„é¡ºåº
+//POSITIVEï¼šæ­£åº
+//NEGATIVEï¼šé€†åº
 #define POSITIVE 0
 #define NEGATIVE 1
 
 #define MATHHELPER_PI (3.141592653f)
 #define MATHHELPER_E  (2.718281828f)
 
-//FFT¼Æ»®µÄĞòºÅ£¬Í¬Ê±×î¶à´æÔÚ4¸öFFT¼Æ»®
+//FFTè®¡åˆ’çš„åºå·ï¼ŒåŒæ—¶æœ€å¤šå­˜åœ¨4ä¸ªFFTè®¡åˆ’
 #define FFT_PLAN_ORDER0 0
 #define FFT_PLAN_ORDER1 1
 #define FFT_PLAN_ORDER2 2
 #define FFT_PLAN_ORDER3 3
 
-//Ö¸Ã÷FFTÔ­Ê¼Êı¾İµÄÀàĞÍ
+//æŒ‡æ˜FFTåŸå§‹æ•°æ®çš„ç±»å‹
 #define DATA_TYPE_UINT32 0
 #define DATA_TYPE_UINT16 1
 #define DATA_TYPE_UINT8  2
@@ -61,40 +61,40 @@ typedef struct Data_Type_Struct_Complex_Int8
 	float Imaginary_Part;
 } Complex_Int8;
 
-//FFT¼Æ»®ĞÅÏ¢½á¹¹Ìå£¬°üº¬ÁËÖ´ĞĞÒ»¸öFFTÔËËãµÄ»ù±¾ĞÅÏ¢¡£
-//ÔÚÖ´ĞĞÒ»¸öFFTÔËËãÖ®Ç°±ØĞëÏÈÉùÃ÷Ò»¸öÕâÑùµÄ½á¹¹Ìå£¬²¢ÌîÈëÏà¹ØĞÅÏ¢£¬È»ºóÒÔ¸Ã½á¹¹ÌåÖ¸ÕëÎª²ÎÊıÒıÓÃMathHelper_FFT_Plan_Buildº¯Êı¡£
-//µ±Á¬ĞøÖ´ĞĞ¶à¸öFFTÔËËãÊ±£¬Í¬Ò»¸ö½á¹¹ÌåµÄPlan_Order¡¢Sample_Number¡¢Data_Type²»Ó¦¸Ã¸Ä±ä¡£
-//µ«ÊÇInput_DataºÍOutput_DataÖĞµÄÄÚÈİ¶¼¿ÉÒÔ¸Ä±ä¡£
-//Input_DataºÍOutput_Data±ØĞëÊÇÍ¬Ò»ÀàĞÍµÄÊı¾İ
+//FFTè®¡åˆ’ä¿¡æ¯ç»“æ„ä½“ï¼ŒåŒ…å«äº†æ‰§è¡Œä¸€ä¸ªFFTè¿ç®—çš„åŸºæœ¬ä¿¡æ¯ã€‚
+//åœ¨æ‰§è¡Œä¸€ä¸ªFFTè¿ç®—ä¹‹å‰å¿…é¡»å…ˆå£°æ˜ä¸€ä¸ªè¿™æ ·çš„ç»“æ„ä½“ï¼Œå¹¶å¡«å…¥ç›¸å…³ä¿¡æ¯ï¼Œç„¶åä»¥è¯¥ç»“æ„ä½“æŒ‡é’ˆä¸ºå‚æ•°å¼•ç”¨MathHelper_FFT_Plan_Buildå‡½æ•°ã€‚
+//å½“è¿ç»­æ‰§è¡Œå¤šä¸ªFFTè¿ç®—æ—¶ï¼ŒåŒä¸€ä¸ªç»“æ„ä½“çš„Plan_Orderã€Sample_Numberã€Data_Typeä¸åº”è¯¥æ”¹å˜ã€‚
+//ä½†æ˜¯Input_Dataå’ŒOutput_Dataä¸­çš„å†…å®¹éƒ½å¯ä»¥æ”¹å˜ã€‚
+//Input_Dataå’ŒOutput_Dataå¿…é¡»æ˜¯åŒä¸€ç±»å‹çš„æ•°æ®
 typedef struct FFT_Plan_Information
 {
-	u8 Plan_Order;		//¸Ã¼Æ»®µÄĞòºÅ
-	u8 Is_IFFT;			//ÊÇ·ñÊÇIFFTÔËËã
-    u8 Is_Complex;      //ÊÇ·ñÊÇ¸´±ä»»
-	u8 Original_Output;	//ÊÇ·ñÊä³öÔ­Ê¼µÄ¸´ÊıÊı¾İ£¨µ«³ı¹ıÑù±¾Êı£©
-	u16 Sample_Number;	//Ñù±¾ÊıÁ¿£¬Ö»ÄÜÊÇ2µÄÃİ
-	float *Input_Data;	//ÊäÈëÊı¾İµØÖ·
-	float *Output_Data;	//Êä³öÊı¾İµØÖ·
+	u8 Plan_Order;		//è¯¥è®¡åˆ’çš„åºå·
+	u8 Is_IFFT;			//æ˜¯å¦æ˜¯IFFTè¿ç®—
+    u8 Is_Complex;      //æ˜¯å¦æ˜¯å¤å˜æ¢
+	u8 Original_Output;	//æ˜¯å¦è¾“å‡ºåŸå§‹çš„å¤æ•°æ•°æ®ï¼ˆä½†é™¤è¿‡æ ·æœ¬æ•°ï¼‰
+	u16 Sample_Number;	//æ ·æœ¬æ•°é‡ï¼Œåªèƒ½æ˜¯2çš„å¹‚
+	float *Input_Data;	//è¾“å…¥æ•°æ®åœ°å€
+	float *Output_Data;	//è¾“å‡ºæ•°æ®åœ°å€
 } fft_plan;
 
-/*Çó¾ø¶ÔÖµ*/
+/*æ±‚ç»å¯¹å€¼*/
 #define MATHHELPER_ABS(x) (x>0?x:-x)
 
 #define MathHelper_Slope(x1,y1,x2,y2)		(((y2)-(y1))/((x2)-(x1)))
 #define MathHelper_Intercept(x1,y1,x2,y2)	((y1)-(x1)*MathHelper_Slope(x1,y1,x2,y2))
 #define MathHelper_Round(x)                 ((int)((x)+0.5f))
 
-/*ÇóÆ½·½¸ù
-**²ÎÊı£ºX£ºÊı¾İ
-**·µ»ØÖµ£ºÆ½·½¸ùÖµ£¨ÕıÊı£©*/
+/*æ±‚å¹³æ–¹æ ¹
+**å‚æ•°ï¼šXï¼šæ•°æ®
+**è¿”å›å€¼ï¼šå¹³æ–¹æ ¹å€¼ï¼ˆæ­£æ•°ï¼‰*/
 u32 MathHelper_Sqrt_Uint(const u32 X);
 int MathHelper_Sqrt_Int(const int X);
 float MathHelper_Sqrt_Float(const float X);
 
-/*·µ»ØÊı×éÖĞµÄ×î´óÖµ
-**²ÎÊı£ºSource_Array£ºÔ´Êı×é£¬º¯Êı½«·µ»ØÕâ¸öÊı×éÀïµÄ×î´óÖµ
-**		Lenth£ºÊı×é³¤¶È
-**·µ»ØÖµ£º×î´óÖµ*/
+/*è¿”å›æ•°ç»„ä¸­çš„æœ€å¤§å€¼
+**å‚æ•°ï¼šSource_Arrayï¼šæºæ•°ç»„ï¼Œå‡½æ•°å°†è¿”å›è¿™ä¸ªæ•°ç»„é‡Œçš„æœ€å¤§å€¼
+**		Lenthï¼šæ•°ç»„é•¿åº¦
+**è¿”å›å€¼ï¼šæœ€å¤§å€¼*/
 u32 MathHelper_FindMax_Uint32(u32* Source_Array, u16 Lenth, u16* Index);
 u16 MathHelper_FindMax_Uint16(u16* Source_Array, u16 Lenth, u16* Index);
 u8 MathHelper_FindMax_Uint8(u8* Source_Array, u16 Lenth, u16* Index);
@@ -103,10 +103,10 @@ short MathHelper_FindMax_Int16(short* Source_Array, u16 Lenth, u16* Index);
 char MathHelper_FindMax_Int8(char* Source_Array, u16 Lenth, u16* Index);
 float MathHelper_FindMax_Float(float* Source_Array, u16 Lenth, u16* Index);
 
-/*·µ»ØÊı×éÖĞµÄ×îĞ¡Öµ
-**²ÎÊı£ºSource_Array£ºÔ´Êı×é£¬º¯Êı½«·µ»ØÕâ¸öÊı×éÖĞµÄ×îĞ¡Öµ
-**		Lenth£ºÊı×é³¤¶È
-**·µ»ØÖµ£º×îĞ¡Öµ*/
+/*è¿”å›æ•°ç»„ä¸­çš„æœ€å°å€¼
+**å‚æ•°ï¼šSource_Arrayï¼šæºæ•°ç»„ï¼Œå‡½æ•°å°†è¿”å›è¿™ä¸ªæ•°ç»„ä¸­çš„æœ€å°å€¼
+**		Lenthï¼šæ•°ç»„é•¿åº¦
+**è¿”å›å€¼ï¼šæœ€å°å€¼*/
 u32 MathHelper_FindMin_Uint32(u32* Source_Array, u16 Lenth, u16* Index);
 u16 MathHelper_FindMin_Uint16(u16* Source_Array, u16 Lenth, u16* Index);
 u8 MathHelper_FindMin_Uint8(u8* Source_Array, u16 Lenth, u16* Index);
@@ -115,10 +115,10 @@ short MathHelper_FindMin_Int16(short* Source_Array, u16 Lenth, u16* Index);
 char MathHelper_FindMin_Int8(char* Source_Array, u16 Lenth, u16* Index);
 float MathHelper_FindMin_Float(float* Source_Array, u16 Lenth, u16* Index);
 
-/*¶ÔÒ»¸öÊı×é½øĞĞÅÅĞò
-**²ÎÊı£ºSource_Array£ºÔ´Êı×é£¬º¯Êı½«»á¶ÔÕâ¸öÊı×é½øĞĞÅÅĞò£¬²¢½«ÅÅºÃĞòµÄÊı¾İ·ÅÔÚÕâ¸öÊı×éÀï
-**		Lenth£ºÊı×é³¤¶È
-**		Direction£ºÅÅĞò·½Ïò£¬ÎÄ¼şÍ·´¦µÄºêÓĞ¶¨Òå*/
+/*å¯¹ä¸€ä¸ªæ•°ç»„è¿›è¡Œæ’åº
+**å‚æ•°ï¼šSource_Arrayï¼šæºæ•°ç»„ï¼Œå‡½æ•°å°†ä¼šå¯¹è¿™ä¸ªæ•°ç»„è¿›è¡Œæ’åºï¼Œå¹¶å°†æ’å¥½åºçš„æ•°æ®æ”¾åœ¨è¿™ä¸ªæ•°ç»„é‡Œ
+**		Lenthï¼šæ•°ç»„é•¿åº¦
+**		Directionï¼šæ’åºæ–¹å‘ï¼Œæ–‡ä»¶å¤´å¤„çš„å®æœ‰å®šä¹‰*/
 void MathHelper_Sequence_Uint32(u32* Source_Array, u16 Lenth, u8 Direction);
 void MathHelper_Sequence_Uint16(u16* Source_Array, u16 Lenth, u8 Direction);
 void MathHelper_Sequence_Uint8(u8* Source_Array, u16 Lenth, u8 Direction);
@@ -128,10 +128,10 @@ void MathHelper_Sequence_Int8(char* Source_Array, u16 Lenth, u8 Direction);
 void MathHelper_Sequence_Float(float* Source_Array, u16 Lenth, u8 Direction);
 void MathHelper_Sequence_Double(double* Source_Array, u16 Lenth, u8 Direction);
 
-/*ÇóÒ»¸öÊı×éÖĞËùÓĞÊı¾İµÄÆ½¾ùÖµ
-**²ÎÊı£ºSource_Array£ºÔ´Êı×é£¬º¯Êı½«¶ÔÕâ¸öÊı×éÇóÆ½¾ùÖµ
-**		Lenth£ºÊı×é³¤¶È
-**·µ»ØÖµ£ºÆ½¾ùÊı*/
+/*æ±‚ä¸€ä¸ªæ•°ç»„ä¸­æ‰€æœ‰æ•°æ®çš„å¹³å‡å€¼
+**å‚æ•°ï¼šSource_Arrayï¼šæºæ•°ç»„ï¼Œå‡½æ•°å°†å¯¹è¿™ä¸ªæ•°ç»„æ±‚å¹³å‡å€¼
+**		Lenthï¼šæ•°ç»„é•¿åº¦
+**è¿”å›å€¼ï¼šå¹³å‡æ•°*/
 u32 MathHelper_Average_Uint32(u32* Source_Array, u16 Lenth);
 u16 MathHelper_Average_Uint16(u16* Source_Array, u16 Lenth);
 u8 MathHelper_Average_Uint8(u8* Source_Array, u16 Lenth);
@@ -144,34 +144,34 @@ void MathHelper_DCRemove_Float(float* Source_Array, u16 Length);
 
 float MathHelper_RMS_Float(float* Source_Array, u16 Length);
 
-/*ÇóÒ»¸öÊı×éÖĞËùÓĞÊı¾İµÄÆ½·½ºÍ
-**²ÎÊı£ºSource_Array£ºÔ´Êı×é£¬º¯Êı½«¶ÔÕâ¸öÊı×éÇóÆ½·½ºÍ
-**		Lenth£ºÊı×é³¤¶È
-**·µ»ØÖµ£ºÆ½·½ºÍ*/
+/*æ±‚ä¸€ä¸ªæ•°ç»„ä¸­æ‰€æœ‰æ•°æ®çš„å¹³æ–¹å’Œ
+**å‚æ•°ï¼šSource_Arrayï¼šæºæ•°ç»„ï¼Œå‡½æ•°å°†å¯¹è¿™ä¸ªæ•°ç»„æ±‚å¹³æ–¹å’Œ
+**		Lenthï¼šæ•°ç»„é•¿åº¦
+**è¿”å›å€¼ï¼šå¹³æ–¹å’Œ*/
 float MathHelper_SquareSum_Uint32(u32* Source_Array, u16 Lenth);
 float MathHelper_SquareSum_Uint16(u16* Source_Array, u16 Lenth);
 float MathHelper_SquareSum_Int32(int* Source_Array, u16 Lenth);
 float MathHelper_SquareSum_Float(float* Source_Array, u16 Lenth);
 
-/*·½²î*/
+/*æ–¹å·®*/
 float MathHelper_Variance_Float(float* Source_Array, u16 Length);
 
-/*Çó»¬¶¯Æ½¾ù
-**²ÎÊı£ºSource_Array£ºÔ´Êı×é
-**		Target_Array£º½á¹û½«·ÅÔÚÕâ¸öÊı×éÀïÃæ
-**		Lenth£ºÊı×é³¤¶È
-**		Block_Size£º»¬¶¯´°¿ÚµÄ´óĞ¡£¨Ö»ÄÜÊÇÆæÊı£©
-**½âÊÍ£ºTarget_Array[i]=Source_Array[i-(Block_Size-1)/2]+Source_Array[i-(Block_Size-1)/2+1]+....+
+/*æ±‚æ»‘åŠ¨å¹³å‡
+**å‚æ•°ï¼šSource_Arrayï¼šæºæ•°ç»„
+**		Target_Arrayï¼šç»“æœå°†æ”¾åœ¨è¿™ä¸ªæ•°ç»„é‡Œé¢
+**		Lenthï¼šæ•°ç»„é•¿åº¦
+**		Block_Sizeï¼šæ»‘åŠ¨çª—å£çš„å¤§å°ï¼ˆåªèƒ½æ˜¯å¥‡æ•°ï¼‰
+**è§£é‡Šï¼šTarget_Array[i]=Source_Array[i-(Block_Size-1)/2]+Source_Array[i-(Block_Size-1)/2+1]+....+
 **						Source_Array[i-1]+Source_Array[i]+Source_Array[i+1]+....+
 **						Source_Array[i+(Block_Size-1)-1]+Source_Array[i+(Block_Size-1)/2]
-**						i<(Block_Size-1)/2+1Ê±£¬¿ÕÈ±Ïî»áÒÔSource_Array[0]²¹³ä
-**						i>Lenth-(Block_Size)/2Ê±£¬¿ÕÈ±Ïî»áÒÔSource_Array[Lenth-1]²¹³ä*/
+**						i<(Block_Size-1)/2+1æ—¶ï¼Œç©ºç¼ºé¡¹ä¼šä»¥Source_Array[0]è¡¥å……
+**						i>Lenth-(Block_Size)/2æ—¶ï¼Œç©ºç¼ºé¡¹ä¼šä»¥Source_Array[Lenth-1]è¡¥å……*/
 void MathHelper_Moving_Average_Uint32(u32* Source_Array, float* Target_Array, u16 Lenth, u8 Block_Size);
 void MathHelper_Moving_Average_Uint16(u16* Source_Array, float* Target_Array, u16 Lenth, u8 Block_Size);
 void MathHelper_Moving_Average_Int32(int* Source_Array, float* Target_Array, u16 Lenth, u8 Block_Size);
 void MathHelper_Moving_Average_Float(float* Source_Array, float* Target_Array, u16 Lenth, u8 Block_Size);
 
-/*ÖĞÖµÂË²¨*/
+/*ä¸­å€¼æ»¤æ³¢*/
 void MathHelper_MidValue_Filter_Uint32(const u32* Source_Array, u32* Target_Array, u16 Length);
 void MathHelper_MidValue_Filter_Uint16(const u16* Source_Array, u16* Target_Array, u16 Length);
 void MathHelper_MidValue_Filter_Uint8(const u8* Source_Array, u8* Target_Array, u16 Length);
@@ -182,40 +182,40 @@ void MathHelper_MidValue_Filter_Float(float* Source_Array, float* Target_Array, 
 
 void MathHelper_Linear_Interpolation(float* Source_Array, float* Target_Array, u16 Source_Length, u16 Target_Length);
 
-/*»µÖµÌŞ³ı*/
+/*åå€¼å‰”é™¤*/
 u16 MathHelper_BadValue_Remove_Float(const float* Source_Array, float* Target_Array, u16 Length, float Mean, float Variance, float Con_Interval);
 
-/*ÇóÒ»¸öÑù±¾µÄÀëÉ¢¸µÀïÒ¶±ä»»
-**²ÎÊı£ºSamples£ºÑù±¾Êı×éµÄµØÖ·
-**		Spectrum£ºÆµÆ×Êı¾İ´æ·ÅµØÖ·£¬±ä»»½á¹û´æ·ÅÔÚÕâ¸öÊı×éÀï£¬Õâ¸öÊı×é´óĞ¡Ó¦±£Ö¤ÖÁÉÙÎªSamplesµÄÒ»°ë
-**		Sample_Points£ºÑù±¾Êı×é´óĞ¡
-**		Sampling_Frequency£º²ÉÑùÆµÂÊ£¨Ö¸Ã¿Ãë²ÉÑù´ÎÊı£©
-**½âÊÍ£ºSpectrumÖĞµÄµÚiÏî£¬´ú±íÆµÂÊÎªi*Sampling_Frequency/Sample_PointsµÄĞÅºÅµÄÕñ·ù£¬Ê×Ïî¾ÍÊÇÖ±Á÷·ÖÁ¿*/
+/*æ±‚ä¸€ä¸ªæ ·æœ¬çš„ç¦»æ•£å‚…é‡Œå¶å˜æ¢
+**å‚æ•°ï¼šSamplesï¼šæ ·æœ¬æ•°ç»„çš„åœ°å€
+**		Spectrumï¼šé¢‘è°±æ•°æ®å­˜æ”¾åœ°å€ï¼Œå˜æ¢ç»“æœå­˜æ”¾åœ¨è¿™ä¸ªæ•°ç»„é‡Œï¼Œè¿™ä¸ªæ•°ç»„å¤§å°åº”ä¿è¯è‡³å°‘ä¸ºSamplesçš„ä¸€åŠ
+**		Sample_Pointsï¼šæ ·æœ¬æ•°ç»„å¤§å°
+**		Sampling_Frequencyï¼šé‡‡æ ·é¢‘ç‡ï¼ˆæŒ‡æ¯ç§’é‡‡æ ·æ¬¡æ•°ï¼‰
+**è§£é‡Šï¼šSpectrumä¸­çš„ç¬¬ié¡¹ï¼Œä»£è¡¨é¢‘ç‡ä¸ºi*Sampling_Frequency/Sample_Pointsçš„ä¿¡å·çš„æŒ¯å¹…ï¼Œé¦–é¡¹å°±æ˜¯ç›´æµåˆ†é‡*/
 void MathHelper_DFT(float* Samples, float* Spectrum, u16 Sample_Points, u32 Sampling_Frequency);
 
 /**********************************************************************
-*¹¦ÄÜ£º³õÊ¼»¯Ò»¸öFFTÔËËã¼Æ»®										  *
-*²ÎÊı£ºExecute_Plan£º½«Òª³õÊ¼»¯µÄ¼Æ»®½á¹¹ÌåµØÖ·						  *
-*·µ»ØÖµ£º0£º³É¹¦													  *
-*		 1£ºÑù±¾ÊıÁ¿²»ÊÇÖ¸¶¨µÄÊı									  *
-*		 2£º¼Æ»®ĞòºÅ²»ÊÇÖ¸¶¨µÄÊı									  *
+*åŠŸèƒ½ï¼šåˆå§‹åŒ–ä¸€ä¸ªFFTè¿ç®—è®¡åˆ’										  *
+*å‚æ•°ï¼šExecute_Planï¼šå°†è¦åˆå§‹åŒ–çš„è®¡åˆ’ç»“æ„ä½“åœ°å€						  *
+*è¿”å›å€¼ï¼š0ï¼šæˆåŠŸ													  *
+*		 1ï¼šæ ·æœ¬æ•°é‡ä¸æ˜¯æŒ‡å®šçš„æ•°									  *
+*		 2ï¼šè®¡åˆ’åºå·ä¸æ˜¯æŒ‡å®šçš„æ•°									  *
 ***********************************************************************/
 u8 MathHelper_FFT_Plan_Build(struct FFT_Plan_Information *Execute_Plan);
 
 /************************************************************************************
-*¹¦ÄÜ£ºÇóÒ»¸öÑù±¾µÄ¿ìËÙ¸µÀïÒ¶±ä»»													*
-*²ÎÊı£ºFFT_Plan_Order£ºÒªÖ´ĞĞÔËËãµÄ¼Æ»®ĞòºÅ£¨¸Ã¼Æ»®±ØĞë±»³õÊ¼»¯¹ı£©					*   						
-*·µ»ØÖµ£º0£ºÕı³£  																	*
-*		 1£º¼Æ»®ĞòºÅ²»ÊÇÖ¸¶¨µÄÊı													*
-*		 2£º¼Æ»®Î´±»³õÊ¼»¯															*
-*½âÊÍ£º¶ÔÒ»¸ö¾ßÓĞN¸öÑù±¾µÄĞòÁĞ×öFFTÔËËã£¬Êä³öĞòÁĞ³¤¶ÈÎªN/2+1¡£ÆäÖĞµÚÒ»ÏîÎªÖ±Á÷·ù¶È£¬*
-*	   µÚkÏîÊÇÆµÂÊÎª(k-1)*(N/Sample_Frequency)µÄ·ÖÁ¿µÄ·ù¶È							*
+*åŠŸèƒ½ï¼šæ±‚ä¸€ä¸ªæ ·æœ¬çš„å¿«é€Ÿå‚…é‡Œå¶å˜æ¢													*
+*å‚æ•°ï¼šFFT_Plan_Orderï¼šè¦æ‰§è¡Œè¿ç®—çš„è®¡åˆ’åºå·ï¼ˆè¯¥è®¡åˆ’å¿…é¡»è¢«åˆå§‹åŒ–è¿‡ï¼‰					*   						
+*è¿”å›å€¼ï¼š0ï¼šæ­£å¸¸  																	*
+*		 1ï¼šè®¡åˆ’åºå·ä¸æ˜¯æŒ‡å®šçš„æ•°													*
+*		 2ï¼šè®¡åˆ’æœªè¢«åˆå§‹åŒ–															*
+*è§£é‡Šï¼šå¯¹ä¸€ä¸ªå…·æœ‰Nä¸ªæ ·æœ¬çš„åºåˆ—åšFFTè¿ç®—ï¼Œè¾“å‡ºåºåˆ—é•¿åº¦ä¸ºN/2+1ã€‚å…¶ä¸­ç¬¬ä¸€é¡¹ä¸ºç›´æµå¹…åº¦ï¼Œ*
+*	   ç¬¬ké¡¹æ˜¯é¢‘ç‡ä¸º(k-1)*(N/Sample_Frequency)çš„åˆ†é‡çš„å¹…åº¦							*
 *************************************************************************************/
 u8 MathHelper_FFT(u8 FFT_Plan_Order);
 
 /*************************************************************************
-*¹¦ÄÜ£º³·ÏúÒ»¸öFFTÔËËã¼Æ»®²¢ÊÍ·ÅÄÚ´æ									 *
-*²ÎÊı£ºExecute_Plan£ºÒªÖ´ĞĞ³·ÏúµÄ¼Æ»®½á¹¹ÌåµØÖ·							 *
+*åŠŸèƒ½ï¼šæ’¤é”€ä¸€ä¸ªFFTè¿ç®—è®¡åˆ’å¹¶é‡Šæ”¾å†…å­˜									 *
+*å‚æ•°ï¼šExecute_Planï¼šè¦æ‰§è¡Œæ’¤é”€çš„è®¡åˆ’ç»“æ„ä½“åœ°å€							 *
 **************************************************************************/
 void MathHelper_FFT_Plan_Cancel(struct FFT_Plan_Information *Execute_Plan);
 

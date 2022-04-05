@@ -1,53 +1,53 @@
 /*******************************************************************************
-AD9834Ä£¿éÇý¶¯																   *
-AD9834Ä£¿é£º5V¹©µç£¬0~37.5MHzÊä³ö£¬·Ö±æÂÊ0.28Hz								   *
-ÊÊÓÃMCU£ºSTM32F4ÏµÁÐ													       *
-AD9834Êä³öÐÅºÅ·ù¶È£º														   *
-	AD9834ÊôÓÚµçÁ÷Êä³öÐÍDAC£¬ÔÚFS_ADJUSTÒý½ÅÓëGNDÖ®¼äÁ¬½ÓÒ»¸öµç×èRset£¬		   *
-	ÄÇÃ´IOUTÊä³öÂúÁ¿³ÌµçÁ÷Îª£ºIOUTfullscale=18*FSADJUST/Rset£¬				   *
-														ÆäÖÐ£ºFSADJUST=1.15V   *
+AD9834æ¨¡å—é©±åŠ¨																   *
+AD9834æ¨¡å—ï¼š5Vä¾›ç”µï¼Œ0~37.5MHzè¾“å‡ºï¼Œåˆ†è¾¨çŽ‡0.28Hz								   *
+é€‚ç”¨MCUï¼šSTM32F4ç³»åˆ—													       *
+AD9834è¾“å‡ºä¿¡å·å¹…åº¦ï¼š														   *
+	AD9834å±žäºŽç”µæµè¾“å‡ºåž‹DACï¼Œåœ¨FS_ADJUSTå¼•è„šä¸ŽGNDä¹‹é—´è¿žæŽ¥ä¸€ä¸ªç”µé˜»Rsetï¼Œ		   *
+	é‚£ä¹ˆIOUTè¾“å‡ºæ»¡é‡ç¨‹ç”µæµä¸ºï¼šIOUTfullscale=18*FSADJUST/Rsetï¼Œ				   *
+														å…¶ä¸­ï¼šFSADJUST=1.15V   *
 ********************************************************************************/
 #ifndef _AD9834_H_
 #define _AD9834_H_
 #include "sys.h"
 
-//Ò»ÏµÁÐÖ¸Áîºê£¬¶ÔÓ¦ÁËÒ»¸ö16Î»¼Ä´æÆ÷ÉÏµÄ¸÷¸öÎ»
-/******************************¸÷¸öÎ»µÄ¹¦ÄÜËµÃ÷******************************************
-	B28£ºAD9834¾ßÓÐÁ½¸ö28Î»ÆµÂÊ¼Ä´æÆ÷£¨FREQ0/FREQ1£©£¬ËüÖ¸¶¨ÁËÐÅºÅµÄÊä³öÆµÂÊ£¬			*
-			 µ±B28=1£¬¿ÉÒÔÁ¬Ðø½«Á½¸ö14Î»Êý¾ÝÐ´Èë1¸ö¼Ä´æÆ÷£¬¶øÎ¬³ÖÁíÒ»¸ö²»±ä£¬			*	
-			 µ±B28=0£¬28Î»ÆµÂÊ¼Ä´æÆ÷ÓÃ×÷Á½¸ö14Î»¼Ä´æÆ÷£¬¿ÉÒÔÖ»¸üÐÂ14Î»MSB»òLSB£¬		*
-			 					ÕâÈ¡¾öÓÚHLBÎ»¡£											*
-	HLB£ºÖ»ÓÐB28=0£¬²ÅÄÜÆð×÷ÓÃ£¬														*
-			 µ±HLB=1£¬Ð´ÈëMSB£¬															*
-			 µ±HLB=0£¬Ð´ÈëLSB¡£															*
-	FSEL£º°´ÕÕFREQ0»¹ÊÇFREQ1À´Êä³öÐÅºÅ£¬												*
-				µ±FSEL=0£¬Ñ¡ÔñFREQ0£¬													*
-				µ±FSEL=1£¬Ñ¡ÔñFREQ1¡£													*
-	PSEL£ºAD9834ÓÐÁ½¸öÏàÎ»¼Ä´æÆ÷£¨PHASE0/PHASE1£©£¬ËüÃÇ¾ö¶¨ÁËÐÅºÅµÄ³õÏà£¬				*
-				¸ÃÎ»¾ö¶¨ÁËÊÇÑ¡ÔñPHASE0»¹ÊÇPHASE1×÷ÓÃÓÚÊä³ö£¬							*
-				µ±PSEL=0£¬Ñ¡ÔñPHASE0£¬													*
-				µ±PSEL=1£¬Ñ¡ÔñPHASE1¡£													*
-	PIN_SW£ºÊ¹ÓÃÓ²¼þ£¨Òý½Å£©»¹ÊÇÈí¼þ£¨¼Ä´æÆ÷£©À´¿ØÖÆÄÚ²¿×ÊÔ´£¬							*
-					Ä¬ÈÏÊ¹ÓÃÈí¼þ£¬½¨Òé²»Òª¸ü¸Ä´ËÎ»ÉèÖÃ¡£								*
-	RESET£ºÊÇ·ñ½øÐÐ¸´Î»²Ù×÷¡£															*
-				 µ±RESET=1£¬½øÐÐ¸´Î»£¬²»ÔÙÊä³öÐÅºÅ£¬µ«ÊÇÆµÂÊ£¬ÏàÎ»ºÍ¿ØÖÆ¼Ä´æÆ÷µÄÖµ²»±ä£¬*
-				 µ±RESET=0£¬½ûÓÃ¸´Î»													*
-	SLEEP1£ºµ±SLEEP1=1£¬ÄÚ²¿Ê±ÖÓ½ûÓÃ£¬Êä³öÐÅºÅ²»ÔÙ±ä»¯¡£								*
-			µ±SLEEP1=0£¬Ê±ÖÓÊ¹ÄÜ£¬Õý³£Êä³ö¡£											*
-	SLEEP12£ºµ±SLEEP12=1£¬¹Ø¶ÏDAC¡£														*
-			 µ±SLEEP12=0£¬¿ªÆôDAC¡£														*
-	OPBITEN£º¿ØÖÆSIGN BIT OUTÒý½ÅÊÇ·ñÊä³ö£¬												*
-					 µ±OPBITEN=1£¬Ê¹ÄÜSIGN BIT OUTÒý½Å£¬								*
-					 µ±OPBITEN=0£¬SIGN BIT OUT²»×÷ÎªÊä³ö£¬ÇÒ´¦ÓÚ¸ß×èÌ¬¡£				*
-	SIGN_PIB£º´ËÎ»¾ö¶¨ÁËSIGN BIT OUTµÄÊä³öÐÅºÅ£¬										*
-						µ±SIGN_PIB=1£¬Êä³ö·½²¨£¬										*
-						µ±SIGN_PIB=0£¬Êä³öDACµÄMSB»òMSB/2£¬ÕâÓÉDIV2Î»¾ö¶¨¡£				*
-	DIV2£ºµ±SIGN_PIB=0£¬´ËÎ»ÓÐÓÃ£¬µ±SIGN_PIB=1£¬´ËÎ»Ó¦±£³Ö1£¬							*
-		  µ±DIV2=0£¬MSB/2£¬																*
-		  µ±DIV2=1£¬MSB¡£																*
-	MODE£º¸ÃÎ»¾ö¶¨IOUT/IOUTBµÄÊä³ö£¬ÈôOPBITEN=1£¬´ËÎ»Ó¦Îª0£¬							*
-				µ±MODE=1£¬Êä³öÈý½Ç²¨£¬													*
-				µ±MODE=0£¬Êä³öÕýÏÒÐÅºÅ¡£												*
+//ä¸€ç³»åˆ—æŒ‡ä»¤å®ï¼Œå¯¹åº”äº†ä¸€ä¸ª16ä½å¯„å­˜å™¨ä¸Šçš„å„ä¸ªä½
+/******************************å„ä¸ªä½çš„åŠŸèƒ½è¯´æ˜Ž******************************************
+	B28ï¼šAD9834å…·æœ‰ä¸¤ä¸ª28ä½é¢‘çŽ‡å¯„å­˜å™¨ï¼ˆFREQ0/FREQ1ï¼‰ï¼Œå®ƒæŒ‡å®šäº†ä¿¡å·çš„è¾“å‡ºé¢‘çŽ‡ï¼Œ			*
+			 å½“B28=1ï¼Œå¯ä»¥è¿žç»­å°†ä¸¤ä¸ª14ä½æ•°æ®å†™å…¥1ä¸ªå¯„å­˜å™¨ï¼Œè€Œç»´æŒå¦ä¸€ä¸ªä¸å˜ï¼Œ			*	
+			 å½“B28=0ï¼Œ28ä½é¢‘çŽ‡å¯„å­˜å™¨ç”¨ä½œä¸¤ä¸ª14ä½å¯„å­˜å™¨ï¼Œå¯ä»¥åªæ›´æ–°14ä½MSBæˆ–LSBï¼Œ		*
+			 					è¿™å–å†³äºŽHLBä½ã€‚											*
+	HLBï¼šåªæœ‰B28=0ï¼Œæ‰èƒ½èµ·ä½œç”¨ï¼Œ														*
+			 å½“HLB=1ï¼Œå†™å…¥MSBï¼Œ															*
+			 å½“HLB=0ï¼Œå†™å…¥LSBã€‚															*
+	FSELï¼šæŒ‰ç…§FREQ0è¿˜æ˜¯FREQ1æ¥è¾“å‡ºä¿¡å·ï¼Œ												*
+				å½“FSEL=0ï¼Œé€‰æ‹©FREQ0ï¼Œ													*
+				å½“FSEL=1ï¼Œé€‰æ‹©FREQ1ã€‚													*
+	PSELï¼šAD9834æœ‰ä¸¤ä¸ªç›¸ä½å¯„å­˜å™¨ï¼ˆPHASE0/PHASE1ï¼‰ï¼Œå®ƒä»¬å†³å®šäº†ä¿¡å·çš„åˆç›¸ï¼Œ				*
+				è¯¥ä½å†³å®šäº†æ˜¯é€‰æ‹©PHASE0è¿˜æ˜¯PHASE1ä½œç”¨äºŽè¾“å‡ºï¼Œ							*
+				å½“PSEL=0ï¼Œé€‰æ‹©PHASE0ï¼Œ													*
+				å½“PSEL=1ï¼Œé€‰æ‹©PHASE1ã€‚													*
+	PIN_SWï¼šä½¿ç”¨ç¡¬ä»¶ï¼ˆå¼•è„šï¼‰è¿˜æ˜¯è½¯ä»¶ï¼ˆå¯„å­˜å™¨ï¼‰æ¥æŽ§åˆ¶å†…éƒ¨èµ„æºï¼Œ							*
+					é»˜è®¤ä½¿ç”¨è½¯ä»¶ï¼Œå»ºè®®ä¸è¦æ›´æ”¹æ­¤ä½è®¾ç½®ã€‚								*
+	RESETï¼šæ˜¯å¦è¿›è¡Œå¤ä½æ“ä½œã€‚															*
+				 å½“RESET=1ï¼Œè¿›è¡Œå¤ä½ï¼Œä¸å†è¾“å‡ºä¿¡å·ï¼Œä½†æ˜¯é¢‘çŽ‡ï¼Œç›¸ä½å’ŒæŽ§åˆ¶å¯„å­˜å™¨çš„å€¼ä¸å˜ï¼Œ*
+				 å½“RESET=0ï¼Œç¦ç”¨å¤ä½													*
+	SLEEP1ï¼šå½“SLEEP1=1ï¼Œå†…éƒ¨æ—¶é’Ÿç¦ç”¨ï¼Œè¾“å‡ºä¿¡å·ä¸å†å˜åŒ–ã€‚								*
+			å½“SLEEP1=0ï¼Œæ—¶é’Ÿä½¿èƒ½ï¼Œæ­£å¸¸è¾“å‡ºã€‚											*
+	SLEEP12ï¼šå½“SLEEP12=1ï¼Œå…³æ–­DACã€‚														*
+			 å½“SLEEP12=0ï¼Œå¼€å¯DACã€‚														*
+	OPBITENï¼šæŽ§åˆ¶SIGN BIT OUTå¼•è„šæ˜¯å¦è¾“å‡ºï¼Œ												*
+					 å½“OPBITEN=1ï¼Œä½¿èƒ½SIGN BIT OUTå¼•è„šï¼Œ								*
+					 å½“OPBITEN=0ï¼ŒSIGN BIT OUTä¸ä½œä¸ºè¾“å‡ºï¼Œä¸”å¤„äºŽé«˜é˜»æ€ã€‚				*
+	SIGN_PIBï¼šæ­¤ä½å†³å®šäº†SIGN BIT OUTçš„è¾“å‡ºä¿¡å·ï¼Œ										*
+						å½“SIGN_PIB=1ï¼Œè¾“å‡ºæ–¹æ³¢ï¼Œ										*
+						å½“SIGN_PIB=0ï¼Œè¾“å‡ºDACçš„MSBæˆ–MSB/2ï¼Œè¿™ç”±DIV2ä½å†³å®šã€‚				*
+	DIV2ï¼šå½“SIGN_PIB=0ï¼Œæ­¤ä½æœ‰ç”¨ï¼Œå½“SIGN_PIB=1ï¼Œæ­¤ä½åº”ä¿æŒ1ï¼Œ							*
+		  å½“DIV2=0ï¼ŒMSB/2ï¼Œ																*
+		  å½“DIV2=1ï¼ŒMSBã€‚																*
+	MODEï¼šè¯¥ä½å†³å®šIOUT/IOUTBçš„è¾“å‡ºï¼Œè‹¥OPBITEN=1ï¼Œæ­¤ä½åº”ä¸º0ï¼Œ							*
+				å½“MODE=1ï¼Œè¾“å‡ºä¸‰è§’æ³¢ï¼Œ													*
+				å½“MODE=0ï¼Œè¾“å‡ºæ­£å¼¦ä¿¡å·ã€‚												*
 *****************************************************************************************/
 #define B28		 1<<13
 #define HLB		 1<<12
@@ -62,40 +62,40 @@ AD9834Êä³öÐÅºÅ·ù¶È£º														   *
 #define DIV2	 1<<3
 #define MODE	 1<<1
 
-//ON£º½«¸ÃÎ»ÖÃ1
-//OFF£º½«¸ÃÎ»ÖÃ0
+//ONï¼šå°†è¯¥ä½ç½®1
+//OFFï¼šå°†è¯¥ä½ç½®0
 #define ON 	1
 #define OFF 0
 
 /**********************************************************
-¹¦ÄÜ£ºÏòAD9834Ä³¸ö¼Ä´æÆ÷Ð´Êý¾Ý£¨¼Ä´æÆ÷µØÖ·ÓÉÊý¾ÝÄÚÈÝ¾ö¶¨£©*
-²ÎÊý£º1.Data£ºÒªÐ´µÄÊý¾Ý								  *
+åŠŸèƒ½ï¼šå‘AD9834æŸä¸ªå¯„å­˜å™¨å†™æ•°æ®ï¼ˆå¯„å­˜å™¨åœ°å€ç”±æ•°æ®å†…å®¹å†³å®šï¼‰*
+å‚æ•°ï¼š1.Dataï¼šè¦å†™çš„æ•°æ®								  *
 ***********************************************************/	
 void AD9834_Write_Register(u16 Data);
 
 /************************************************************
-¹¦ÄÜ£ºÏòAD9834Ä³¸ö¼Ä´æÆ÷Î»Ð´Êý¾Ý£¨ON/OFF£©				    *
-²ÎÊý£º1.Cmd£ºÖ»ÄÜÓÐ0ºÍ1Á½¸öÖµ£¬´ú±íÏò¸ÃÎ»ÖÃ0»ò1			    *
-	  2.ControlData£º¼Ä´æÆ÷¸÷¸öÎ»µÄºê£¬´ú±íÒª¸Ä±äµÄ¼Ä´æÆ÷Î» *
+åŠŸèƒ½ï¼šå‘AD9834æŸä¸ªå¯„å­˜å™¨ä½å†™æ•°æ®ï¼ˆON/OFFï¼‰				    *
+å‚æ•°ï¼š1.Cmdï¼šåªèƒ½æœ‰0å’Œ1ä¸¤ä¸ªå€¼ï¼Œä»£è¡¨å‘è¯¥ä½ç½®0æˆ–1			    *
+	  2.ControlDataï¼šå¯„å­˜å™¨å„ä¸ªä½çš„å®ï¼Œä»£è¡¨è¦æ”¹å˜çš„å¯„å­˜å™¨ä½ *
 *************************************************************/
 void AD9834_Write_ControlRegister(u8 Cmd, u16 ControlData);
 
 /***********************************
-¹¦ÄÜ£ºAD9834µÄ³õÊ¼»¯£¬Ö±½ÓÒýÓÃ¼´¿É *
+åŠŸèƒ½ï¼šAD9834çš„åˆå§‹åŒ–ï¼Œç›´æŽ¥å¼•ç”¨å³å¯ *
 ************************************/
 void AD9834_Init(void); 
 
 /****************************************
-¹¦ÄÜ£ºÏòÄ³¸öÆµÂÊ¼Ä´æÆ÷Á¬ÐøÐ´28Î»ÆµÂÊÖµ  *
-²ÎÊý£º1.Addr£º¼Ä´æÆ÷µØÖ·£¬Ö»ÄÜÊÇ0»ò1    *
-	  2.Frequency£ºÒªÐ´µÄÆµÂÊ			*
+åŠŸèƒ½ï¼šå‘æŸä¸ªé¢‘çŽ‡å¯„å­˜å™¨è¿žç»­å†™28ä½é¢‘çŽ‡å€¼  *
+å‚æ•°ï¼š1.Addrï¼šå¯„å­˜å™¨åœ°å€ï¼Œåªèƒ½æ˜¯0æˆ–1    *
+	  2.Frequencyï¼šè¦å†™çš„é¢‘çŽ‡			*
 *****************************************/
 void AD9834_Write_28BitsFrequencyRegister(u8 Addr, u32 Frequency);
 
 /********************************************
-¹¦ÄÜ£ºÏòÄ³¸öÏàÎ»¼Ä´æÆ÷Ð´ÏàÎ»				*
-²ÎÊý£º1.Addr£ºÏàÎ»¼Ä´æÆ÷µÄµØÖ·£¬Ö»ÄÜÊÇ0»ò1	*
-	  2.Phase£ºÒªÐ´µÄÏàÎ»Öµ					*
+åŠŸèƒ½ï¼šå‘æŸä¸ªç›¸ä½å¯„å­˜å™¨å†™ç›¸ä½				*
+å‚æ•°ï¼š1.Addrï¼šç›¸ä½å¯„å­˜å™¨çš„åœ°å€ï¼Œåªèƒ½æ˜¯0æˆ–1	*
+	  2.Phaseï¼šè¦å†™çš„ç›¸ä½å€¼					*
 *********************************************/				
 void AD9834_Write_PhaseRegister(u8 Addr, float Phase);
 

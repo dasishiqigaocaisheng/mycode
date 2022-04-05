@@ -5,7 +5,7 @@
 #include "USART.h"
 #include "F4GPIO.h"
 
-//ÕæÊµµçÑ¹Öµ=²âÁ¿Öµ(0~0xfff)*k+b
+//çœŸå®žç”µåŽ‹å€¼=æµ‹é‡å€¼(0~0xfff)*k+b
 #define k	(0.002442f)
 #define b	(-5.0f)
 
@@ -16,7 +16,7 @@ tranplan dmaplan;
 
 void AD9226_Init(GPIO_TypeDef* GPIO, TIM_TypeDef* Timer, u32 APBClock, u32 OCx, u16 DMA_Channel)
 {
-	//ÅäÖÃ¶¨Ê±Æ÷
+	//é…ç½®å®šæ—¶å™¨
 	Timer_Reset(Timer,&timer);
 	Timer_Global_Set(&timer,INSIDE_CLOCK_SOURCE,APBClock,84000000,TRIGGER_SOFTWARE);
 	TIM1->DIER|=1<<9;
@@ -26,11 +26,11 @@ void AD9226_Init(GPIO_TypeDef* GPIO, TIM_TypeDef* Timer, u32 APBClock, u32 OCx, 
 	Timer_PWMOutput_Wave_Set(&timer,0.5f,OCx,DO_UPDATE);
 	OC=OCx;
 	
-	//GPIO³õÊ¼»¯
+	//GPIOåˆå§‹åŒ–
 	GPIO_Set(GPIO,PIN0|PIN1|PIN2|PIN3|PIN4|PIN5|PIN6|PIN7|PIN8|PIN9|PIN10|PIN11,
 			GPIO_MODE_IN,GPIO_OTYPE_PP,GPIO_SPEED_100M,GPIO_PUPD_NONE);
 	
-	//DMA³õÊ¼»¯
+	//DMAåˆå§‹åŒ–
 	DMA_Build_TransferPlan(&dmaplan,DMA_Channel);
 	dmaplan.Start.Address=(void*)&GPIO->IDR;
 	dmaplan.Start.IsFixed=1;
@@ -53,7 +53,7 @@ void AD9226_Init(GPIO_TypeDef* GPIO, TIM_TypeDef* Timer, u32 APBClock, u32 OCx, 
 void AD9226_Get_Data(u32 Freq, u16 Num, void* Data, u8 Data_Mode)
 {
 	u16 i;
-	//ÖØÐÂÉèÖÃÆµÂÊ
+	//é‡æ–°è®¾ç½®é¢‘çŽ‡
 	Timer_PWMOutput_Frequency_Set(&timer,Freq,NO_UPDATE);
 	dmaplan.End.Address=Data;
 	dmaplan.Controller.DataNumber=Num;
@@ -77,7 +77,7 @@ void AD9226_Get_Data(u32 Freq, u16 Num, void* Data, u8 Data_Mode)
 #else
 
 /*
-FSMCÒý½ÅÁ¬½Ó£º
+FSMCå¼•è„šè¿žæŽ¥ï¼š
 PD14---D0		PF0----A0
 PD15---D1		PF1----A1
 PD0----D2		PF2----A2
@@ -99,7 +99,7 @@ PD4----NOE
 PG9----NE3
 */
 
-///////////////ÓÃ»§ÅäÖÃÇø////////////////
+///////////////ç”¨æˆ·é…ç½®åŒº////////////////
 #define FPGA_CLK	120000000
 
 #define SDA_PIN		GPIOE_0
@@ -149,7 +149,7 @@ void AD9226_Init(void)
 	START=0;
 	RST=0;
 	
-	//FSMCÊ±ÖÓÊ¹ÄÜ
+	//FSMCæ—¶é’Ÿä½¿èƒ½
 	RCC->AHB3ENR|=1;
 	
 	RCC->AHB1ENR|=1<<3;	//GPIOD
@@ -218,9 +218,9 @@ void AD9226_Init(void)
 	FSMC_Bank1->BTCR[2]=0x00000000;
 	FSMC_Bank1->BTCR[3]=0x00000000;
 	
-	FSMC_Bank1->BTCR[2]|=1<<12;		//ÔÊÐíÐ´Èë
-	FSMC_Bank1->BTCR[2]|=1<<4;		//16Î»¿í¶È
-	FSMC_Bank1->BTCR[2]|=1;			//´æ´¢ÇøÓòÊ¹ÄÜ
+	FSMC_Bank1->BTCR[2]|=1<<12;		//å…è®¸å†™å…¥
+	FSMC_Bank1->BTCR[2]|=1<<4;		//16ä½å®½åº¦
+	FSMC_Bank1->BTCR[2]|=1;			//å­˜å‚¨åŒºåŸŸä½¿èƒ½
 	
 	FSMC_Bank1->BTCR[3]|=32<<8;		//DATAST=16HCLK
 	FSMC_Bank1->BTCR[3]|=15;			//ADDSET=1HCLK

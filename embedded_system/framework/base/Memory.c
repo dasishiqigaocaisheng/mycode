@@ -6,31 +6,31 @@
 #include "USART.h"
 #endif
 
-#define HEAP0_BLOCK_SIZE 256	//HEAP0¿é´óĞ¡
-#define HEAP1_BLOCK_SIZE 256	//HEAP1¿é´óĞ¡
+#define HEAP0_BLOCK_SIZE 256	//HEAP0å—å¤§å°
+#define HEAP1_BLOCK_SIZE 256	//HEAP1å—å¤§å°
 
 #ifdef USE_IRAM1
-u8 IRAM1_Heap[HEAP0_BLOCK_NUMBER*HEAP0_BLOCK_SIZE] __ALIGNED(4);	//±àÒëÆ÷×Ô¶¯·ÖÅä¶Ñ¿Õ¼ä
+u8 IRAM1_Heap[HEAP0_BLOCK_NUMBER*HEAP0_BLOCK_SIZE] __ALIGNED(4);	//ç¼–è¯‘å™¨è‡ªåŠ¨åˆ†é…å †ç©ºé—´
 #endif
 
 #if !defined USE_STM32H7
-#define IRAM2_HEAP ((void*)0x10000000)	//HEAP1Ê×µØÖ·
+#define IRAM2_HEAP ((void*)0x10000000)	//HEAP1é¦–åœ°å€
 #else   
 //u8 IRAM2_HEAP[HEAP1_BLOCK_NUMBER*HEAP1_BLOCK_SIZE] __attribute__((section(".ARM.__at_0x38000000")));
 u8 IRAM2_HEAP[HEAP1_BLOCK_NUMBER*HEAP1_BLOCK_SIZE] __attribute__((section(".ARM.__at_0x24000000")));
 #endif
 
-#define HEAP5_BLOCK_SIZE   64	//HEAP5¿é´óĞ¡
-#define HEAP5_BLOCK_NUMBER 512	//HEAP5¿éÊıÁ¿
+#define HEAP5_BLOCK_SIZE   64	//HEAP5å—å¤§å°
+#define HEAP5_BLOCK_NUMBER 512	//HEAP5å—æ•°é‡
 
 #if !defined USE_STM32H7
-#define HEAP5_ADDRESS      ((void*)0x1000c000)	//HEAP5Ê×µØÖ·
+#define HEAP5_ADDRESS      ((void*)0x1000c000)	//HEAP5é¦–åœ°å€
 #else
-#define HEAP5_ADDRESS      ((void*)0x38008000)	//HEAP5Ê×µØÖ·
+#define HEAP5_ADDRESS      ((void*)0x38008000)	//HEAP5é¦–åœ°å€
 #endif
-#define HEAP5_SIZE		   32768				//HEAP5×Ü´óĞ¡
+#define HEAP5_SIZE		   32768				//HEAP5æ€»å¤§å°
 
-//¶ÑĞÅÏ¢½á¹¹Ìå
+//å †ä¿¡æ¯ç»“æ„ä½“
 struct Heap_Info
 {
 	void* Address;
@@ -39,17 +39,17 @@ struct Heap_Info
 	struct block_Info* Block_List;
 } Custom_Heap_List[6]={{NULL,0,0,NULL},{NULL,0,0,NULL},{NULL,0,0,NULL},{NULL,0,0,NULL},{NULL,0,0,NULL},{NULL,0,0,NULL}};
 
-//ÄÚ´æ¿éĞÅÏ¢½á¹¹Ìå
+//å†…å­˜å—ä¿¡æ¯ç»“æ„ä½“
 struct block_Info
 {
-	u16 Head_Address;//Èç¹ûÕâ¸ö¿éÒÑ¾­±»·ÖÅäÁË£¬Ôò¸ÃÏî´ú±í¸Ã·ÖÅäÇøÓòÔÚ±íÖĞµÄÆğÊ¼µØÖ·
-	u16 Area_Size;//Õâ¸ö¿éËùÊôµÄ·ÖÅäÇøÓòµÄ´óĞ¡£¨ÒÔ¿éÎªµ¥Î»£©£¬Îª0´ú±íÕâ¸ö¿éÃ»ÓĞ±»·ÖÅä
+	u16 Head_Address;//å¦‚æœè¿™ä¸ªå—å·²ç»è¢«åˆ†é…äº†ï¼Œåˆ™è¯¥é¡¹ä»£è¡¨è¯¥åˆ†é…åŒºåŸŸåœ¨è¡¨ä¸­çš„èµ·å§‹åœ°å€
+	u16 Area_Size;//è¿™ä¸ªå—æ‰€å±çš„åˆ†é…åŒºåŸŸçš„å¤§å°ï¼ˆä»¥å—ä¸ºå•ä½ï¼‰ï¼Œä¸º0ä»£è¡¨è¿™ä¸ªå—æ²¡æœ‰è¢«åˆ†é…
 };
 
-/*ÄÚ´æ·ÖÅä*/
+/*å†…å­˜åˆ†é…*/
 void* _Malloc(u32 Size, struct Heap_Info* Heap);
 
-/*ÄÚ´æÊÍ·Å*/
+/*å†…å­˜é‡Šæ”¾*/
 void _Free(void* Address, struct Heap_Info* Heap);
 
 
@@ -63,24 +63,24 @@ void* _Malloc(u32 Size, struct Heap_Info* Heap)
 	else
 		Blocks_Needed=Size/Heap->Block_Size+1;
 	
-	for (i=0;i<Heap->Block_Number;i++)//´ÓµÚÒ»¸ö¿é¿ªÊ¼ËÑË÷
+	for (i=0;i<Heap->Block_Number;i++)//ä»ç¬¬ä¸€ä¸ªå—å¼€å§‹æœç´¢
 	{
-		if (Heap->Block_List[i].Area_Size==0)//ÕÒµ½Ò»¸ö¿Õ¿é
+		if (Heap->Block_List[i].Area_Size==0)//æ‰¾åˆ°ä¸€ä¸ªç©ºå—
 		{
-			int save=i;//¼ÇÂ¼ÏÂÕâ¸öÎ»ÖÃ
-			for (j=0;j<Blocks_Needed;j++,i++)//ËÑË÷ËùÓĞĞèÒª·ÖÅäµÄ¿é
+			int save=i;//è®°å½•ä¸‹è¿™ä¸ªä½ç½®
+			for (j=0;j<Blocks_Needed;j++,i++)//æœç´¢æ‰€æœ‰éœ€è¦åˆ†é…çš„å—
 			{
-				if (Heap->Block_Number-save<Blocks_Needed)//ËµÃ÷Ã»ÓÃ×ã¹»µÄ¿éÊ£ÏÂ
+				if (Heap->Block_Number-save<Blocks_Needed)//è¯´æ˜æ²¡ç”¨è¶³å¤Ÿçš„å—å‰©ä¸‹
 					return NULL;
-				if (Heap->Block_List[i].Area_Size!=0)//ÓĞ¿é±»Ê¹ÓÃ
+				if (Heap->Block_List[i].Area_Size!=0)//æœ‰å—è¢«ä½¿ç”¨
 				{
-					i+=Heap->Block_List[i].Area_Size-1;//i¶¨Î»µ½µ±Ç°±»·ÖÅäÇøÓòµÄ½áÎ²,-1·ÀÒç³ö
+					i+=Heap->Block_List[i].Area_Size-1;//iå®šä½åˆ°å½“å‰è¢«åˆ†é…åŒºåŸŸçš„ç»“å°¾,-1é˜²æº¢å‡º
 					break;
 				}
 			}
-			if (j==Blocks_Needed)//ËµÃ÷´æÔÚºÏÊÊ´óĞ¡µÄ¿ÕÏĞÇøÓò
+			if (j==Blocks_Needed)//è¯´æ˜å­˜åœ¨åˆé€‚å¤§å°çš„ç©ºé—²åŒºåŸŸ
 			{
-				for (j=0,i=save;j<Blocks_Needed;j++,i++)//¶ÔÕâĞ©¿é½øĞĞ±ê¼Ç
+				for (j=0,i=save;j<Blocks_Needed;j++,i++)//å¯¹è¿™äº›å—è¿›è¡Œæ ‡è®°
 				{
 					Heap->Block_List[i].Area_Size=Blocks_Needed;
 					Heap->Block_List[i].Head_Address=save;
@@ -115,10 +115,10 @@ void _Free(void* Address, struct Heap_Info* Heap)
 
 void Memory_Init(void)
 {
-	//Heap5ÄÚ´æ³õÊ¼»¯
+	//Heap5å†…å­˜åˆå§‹åŒ–
 	memset(HEAP5_ADDRESS,0,HEAP5_SIZE);
 	
-	//Ê×ÏÈ³õÊ¼»¯Heap5£¬²¢ÎªÆä·ÖÅäÄÚ´æ±í
+	//é¦–å…ˆåˆå§‹åŒ–Heap5ï¼Œå¹¶ä¸ºå…¶åˆ†é…å†…å­˜è¡¨
 	Custom_Heap_List[5].Address=HEAP5_ADDRESS;
 	Custom_Heap_List[5].Block_Number=HEAP5_BLOCK_NUMBER;
 	Custom_Heap_List[5].Block_Size=HEAP5_BLOCK_SIZE;
@@ -127,7 +127,7 @@ void Memory_Init(void)
 	
 	
 	#ifdef USE_IRAM1
-	//³õÊ¼»¯Heap0£¬²¢ÎªÆä·ÖÅäÄÚ´æ±í
+	//åˆå§‹åŒ–Heap0ï¼Œå¹¶ä¸ºå…¶åˆ†é…å†…å­˜è¡¨
 	Custom_Heap_List[0].Address=IRAM1_Heap;
 	Custom_Heap_List[0].Block_Number=HEAP0_BLOCK_NUMBER;
 	Custom_Heap_List[0].Block_Size=HEAP0_BLOCK_SIZE;
@@ -135,7 +135,7 @@ void Memory_Init(void)
 	#endif
 	
 	#ifdef USE_IRAM2
-	//³õÊ¼»¯Heap1£¬²¢ÎªÆä·ÖÅäÄÚ´æ±í
+	//åˆå§‹åŒ–Heap1ï¼Œå¹¶ä¸ºå…¶åˆ†é…å†…å­˜è¡¨
 	Custom_Heap_List[1].Address=IRAM2_HEAP;
 	Custom_Heap_List[1].Block_Number=HEAP1_BLOCK_NUMBER;
 	Custom_Heap_List[1].Block_Size=HEAP1_BLOCK_SIZE;

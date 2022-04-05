@@ -1,23 +1,23 @@
 #include "qspi.h"
 //////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌĞòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßĞí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32H7¿ª·¢°å
-//QSPI Çı¶¯´úÂë	   
-//ÕıµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2018/6/14
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓĞ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖİÊĞĞÇÒíµç×Ó¿Æ¼¼ÓĞÏŞ¹«Ë¾ 2014-2024
+//æœ¬ç¨‹åºåªä¾›å­¦ä¹ ä½¿ç”¨ï¼Œæœªç»ä½œè€…è®¸å¯ï¼Œä¸å¾—ç”¨äºå…¶å®ƒä»»ä½•ç”¨é€”
+//ALIENTEK STM32H7å¼€å‘æ¿
+//QSPI é©±åŠ¨ä»£ç 	   
+//æ­£ç‚¹åŸå­@ALIENTEK
+//æŠ€æœ¯è®ºå›:www.openedv.com
+//åˆ›å»ºæ—¥æœŸ:2018/6/14
+//ç‰ˆæœ¬ï¼šV1.0
+//ç‰ˆæƒæ‰€æœ‰ï¼Œç›—ç‰ˆå¿…ç©¶ã€‚
+//Copyright(C) å¹¿å·å¸‚æ˜Ÿç¿¼ç”µå­ç§‘æŠ€æœ‰é™å…¬å¸ 2014-2024
 //All rights reserved									  
 ////////////////////////////////////////////////////////////////////////////////// 	 
 
-//µÈ´ı×´Ì¬±êÖ¾
-//flag:ĞèÒªµÈ´ıµÄ±êÖ¾Î»
-//sta:ĞèÒªµÈ´ıµÄ×´Ì¬
-//wtime:µÈ´ıÊ±¼ä
-//·µ»ØÖµ:0,µÈ´ı³É¹¦.
-//	     1,µÈ´ıÊ§°Ü.
+//ç­‰å¾…çŠ¶æ€æ ‡å¿—
+//flag:éœ€è¦ç­‰å¾…çš„æ ‡å¿—ä½
+//sta:éœ€è¦ç­‰å¾…çš„çŠ¶æ€
+//wtime:ç­‰å¾…æ—¶é—´
+//è¿”å›å€¼:0,ç­‰å¾…æˆåŠŸ.
+//	     1,ç­‰å¾…å¤±è´¥.
 u8 QSPI_Wait_Flag(u32 flag,u8 sta,u32 wtime)
 {
 	u8 flagsta=0;
@@ -31,18 +31,18 @@ u8 QSPI_Wait_Flag(u32 flag,u8 sta,u32 wtime)
 	else return 1;
 }
 
-//³õÊ¼»¯QSPI½Ó¿Ú
-//·µ»ØÖµ:0,³É¹¦;
-//       1,Ê§°Ü;
+//åˆå§‹åŒ–QSPIæ¥å£
+//è¿”å›å€¼:0,æˆåŠŸ;
+//       1,å¤±è´¥;
 u8 QSPI_Init(void)
 {
 	u32 tempreg=0;
-	RCC->AHB4ENR|=1<<1;    		//Ê¹ÄÜPORTBÊ±ÖÓ	   
-	RCC->AHB4ENR|=1<<5;    		//Ê¹ÄÜPORTFÊ±ÖÓ	   
-	RCC->AHB3ENR|=1<<14;   		//QSPIÊ±ÖÓÊ¹ÄÜ
-	GPIO_Set(GPIOB,1<<2,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);	//PB2¸´ÓÃ¹¦ÄÜÊä³ö	
-	GPIO_Set(GPIOB,1<<6,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);	//PB6¸´ÓÃ¹¦ÄÜÊä³ö	
-	GPIO_Set(GPIOF,0XF<<6,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);	//PF6~9¸´ÓÃ¹¦ÄÜÊä³ö	
+	RCC->AHB4ENR|=1<<1;    		//ä½¿èƒ½PORTBæ—¶é’Ÿ	   
+	RCC->AHB4ENR|=1<<5;    		//ä½¿èƒ½PORTFæ—¶é’Ÿ	   
+	RCC->AHB3ENR|=1<<14;   		//QSPIæ—¶é’Ÿä½¿èƒ½
+	GPIO_Set(GPIOB,1<<2,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);	//PB2å¤ç”¨åŠŸèƒ½è¾“å‡º	
+	GPIO_Set(GPIOB,1<<6,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);	//PB6å¤ç”¨åŠŸèƒ½è¾“å‡º	
+	GPIO_Set(GPIOF,0XF<<6,GPIO_MODE_AF,GPIO_OTYPE_PP,GPIO_SPEED_HIGH,GPIO_PUPD_PU);	//PF6~9å¤ç”¨åŠŸèƒ½è¾“å‡º	
    	GPIO_AF_Set(GPIOB,2,9);		//PB2,AF9
  	GPIO_AF_Set(GPIOB,6,10);	//PB6,AF10
  	GPIO_AF_Set(GPIOF,6,9);		//PF6,AF9 
@@ -50,87 +50,87 @@ u8 QSPI_Init(void)
  	GPIO_AF_Set(GPIOF,8,10);	//PF8,AF10
  	GPIO_AF_Set(GPIOF,9,10);	//PF9,AF10
 	
-	RCC->AHB3RSTR|=1<<14;		//¸´Î»QSPI
-	RCC->AHB3RSTR&=~(1<<14);	//Í£Ö¹¸´Î»QSPI
-	if(QSPI_Wait_Flag(1<<5,0,0XFFFF)==0)//µÈ´ıBUSY¿ÕÏĞ
+	RCC->AHB3RSTR|=1<<14;		//å¤ä½QSPI
+	RCC->AHB3RSTR&=~(1<<14);	//åœæ­¢å¤ä½QSPI
+	if(QSPI_Wait_Flag(1<<5,0,0XFFFF)==0)//ç­‰å¾…BUSYç©ºé—²
 	{
-		//QSPIÊ±ÖÓÄ¬ÈÏÀ´×Ôrcc_hclk3(ÓÉRCC_D1CCIPRµÄQSPISEL[1:0]Ñ¡Ôñ)
-		tempreg=(2-1)<<24;		//ÉèÖÃQSPIÊ±ÖÓÎªAHBÊ±ÖÓµÄ1/2,¼´200M/2=100Mhz,10ns
-		tempreg|=(4-1)<<8;		//ÉèÖÃFIFOãĞÖµÎª4¸ö×Ö½Ú(×î´óÎª31,±íÊ¾32¸ö×Ö½Ú)
-		tempreg|=0<<7;			//Ñ¡ÔñFLASH1
-		tempreg|=0<<6;			//½ûÖ¹Ë«ÉÁ´æÄ£Ê½
-		tempreg|=1<<4;			//²ÉÑùÒÆÎ»°ë¸öÖÜÆÚ(DDRÄ£Ê½ÏÂ,±ØĞëÉèÖÃÎª0)
-		QUADSPI->CR=tempreg;	//ÉèÖÃCR¼Ä´æÆ÷
-		tempreg=(25-1)<<16;		//ÉèÖÃFLASH´óĞ¡Îª2^25=32MB
-		tempreg|=(5-1)<<8;		//Æ¬Ñ¡¸ßµçÆ½Ê±¼äÎª5¸öÊ±ÖÓ(10*5=50ns),¼´ÊÖ²áÀïÃæµÄtSHSL²ÎÊı
-		tempreg|=1<<0;			//Mode3,¿ÕÏĞÊ±CLKÎª¸ßµçÆ½
-		QUADSPI->DCR=tempreg;	//ÉèÖÃDCR¼Ä´æÆ÷
-		QUADSPI->CR|=1<<0;		//Ê¹ÄÜQSPI
+		//QSPIæ—¶é’Ÿé»˜è®¤æ¥è‡ªrcc_hclk3(ç”±RCC_D1CCIPRçš„QSPISEL[1:0]é€‰æ‹©)
+		tempreg=(2-1)<<24;		//è®¾ç½®QSPIæ—¶é’Ÿä¸ºAHBæ—¶é’Ÿçš„1/2,å³200M/2=100Mhz,10ns
+		tempreg|=(4-1)<<8;		//è®¾ç½®FIFOé˜ˆå€¼ä¸º4ä¸ªå­—èŠ‚(æœ€å¤§ä¸º31,è¡¨ç¤º32ä¸ªå­—èŠ‚)
+		tempreg|=0<<7;			//é€‰æ‹©FLASH1
+		tempreg|=0<<6;			//ç¦æ­¢åŒé—ªå­˜æ¨¡å¼
+		tempreg|=1<<4;			//é‡‡æ ·ç§»ä½åŠä¸ªå‘¨æœŸ(DDRæ¨¡å¼ä¸‹,å¿…é¡»è®¾ç½®ä¸º0)
+		QUADSPI->CR=tempreg;	//è®¾ç½®CRå¯„å­˜å™¨
+		tempreg=(25-1)<<16;		//è®¾ç½®FLASHå¤§å°ä¸º2^25=32MB
+		tempreg|=(5-1)<<8;		//ç‰‡é€‰é«˜ç”µå¹³æ—¶é—´ä¸º5ä¸ªæ—¶é’Ÿ(10*5=50ns),å³æ‰‹å†Œé‡Œé¢çš„tSHSLå‚æ•°
+		tempreg|=1<<0;			//Mode3,ç©ºé—²æ—¶CLKä¸ºé«˜ç”µå¹³
+		QUADSPI->DCR=tempreg;	//è®¾ç½®DCRå¯„å­˜å™¨
+		QUADSPI->CR|=1<<0;		//ä½¿èƒ½QSPI
 	}else return 1;
 	return 0;
 }
 
-//QSPI·¢ËÍÃüÁî
-//cmd:Òª·¢ËÍµÄÖ¸Áî
-//addr:·¢ËÍµ½µÄÄ¿µÄµØÖ·
-//mode:Ä£Ê½,ÏêÏ¸Î»¶¨ÒåÈçÏÂ:
-//	mode[1:0]:Ö¸ÁîÄ£Ê½;00,ÎŞÖ¸Áî;01,µ¥Ïß´«ÊäÖ¸Áî;10,Ë«Ïß´«ÊäÖ¸Áî;11,ËÄÏß´«ÊäÖ¸Áî.
-//	mode[3:2]:µØÖ·Ä£Ê½;00,ÎŞµØÖ·;01,µ¥Ïß´«ÊäµØÖ·;10,Ë«Ïß´«ÊäµØÖ·;11,ËÄÏß´«ÊäµØÖ·.
-//	mode[5:4]:µØÖ·³¤¶È;00,8Î»µØÖ·;01,16Î»µØÖ·;10,24Î»µØÖ·;11,32Î»µØÖ·.
-//	mode[7:6]:Êı¾İÄ£Ê½;00,ÎŞÊı¾İ;01,µ¥Ïß´«ÊäÊı¾İ;10,Ë«Ïß´«ÊäÊı¾İ;11,ËÄÏß´«ÊäÊı¾İ.
-//dmcycle:¿ÕÖ¸ÁîÖÜÆÚÊı
+//QSPIå‘é€å‘½ä»¤
+//cmd:è¦å‘é€çš„æŒ‡ä»¤
+//addr:å‘é€åˆ°çš„ç›®çš„åœ°å€
+//mode:æ¨¡å¼,è¯¦ç»†ä½å®šä¹‰å¦‚ä¸‹:
+//	mode[1:0]:æŒ‡ä»¤æ¨¡å¼;00,æ— æŒ‡ä»¤;01,å•çº¿ä¼ è¾“æŒ‡ä»¤;10,åŒçº¿ä¼ è¾“æŒ‡ä»¤;11,å››çº¿ä¼ è¾“æŒ‡ä»¤.
+//	mode[3:2]:åœ°å€æ¨¡å¼;00,æ— åœ°å€;01,å•çº¿ä¼ è¾“åœ°å€;10,åŒçº¿ä¼ è¾“åœ°å€;11,å››çº¿ä¼ è¾“åœ°å€.
+//	mode[5:4]:åœ°å€é•¿åº¦;00,8ä½åœ°å€;01,16ä½åœ°å€;10,24ä½åœ°å€;11,32ä½åœ°å€.
+//	mode[7:6]:æ•°æ®æ¨¡å¼;00,æ— æ•°æ®;01,å•çº¿ä¼ è¾“æ•°æ®;10,åŒçº¿ä¼ è¾“æ•°æ®;11,å››çº¿ä¼ è¾“æ•°æ®.
+//dmcycle:ç©ºæŒ‡ä»¤å‘¨æœŸæ•°
 void QSPI_Send_CMD(u8 cmd,u32 addr,u8 mode,u8 dmcycle)
 {
 	u32 tempreg=0;	
 	u8 status;
-	if(QSPI_Wait_Flag(1<<5,0,0XFFFF)==0)	//µÈ´ıBUSY¿ÕÏĞ
+	if(QSPI_Wait_Flag(1<<5,0,0XFFFF)==0)	//ç­‰å¾…BUSYç©ºé—²
 	{
-		tempreg=0<<31;						//½ûÖ¹DDRÄ£Ê½
-		tempreg|=0<<28;						//Ã¿´Î¶¼·¢ËÍÖ¸Áî
-		tempreg|=0<<26;						//¼ä½ÓĞ´Ä£Ê½
-		tempreg|=((u32)mode>>6)<<24;		//ÉèÖÃÊı¾İÄ£Ê½
-		tempreg|=(u32)dmcycle<<18;			//ÉèÖÃ¿ÕÖ¸ÁîÖÜÆÚÊı
-		tempreg|=((u32)(mode>>4)&0X03)<<12;	//ÉèÖÃµØÖ·³¤¶È
-		tempreg|=((u32)(mode>>2)&0X03)<<10;	//ÉèÖÃµØÖ·Ä£Ê½
-		tempreg|=((u32)(mode>>0)&0X03)<<8;	//ÉèÖÃÖ¸ÁîÄ£Ê½
-		tempreg|=cmd;						//ÉèÖÃÖ¸Áî
-		QUADSPI->CCR=tempreg;				//ÉèÖÃCCR¼Ä´æÆ÷
-		if(mode&0X0C)						//ÓĞÖ¸Áî+µØÖ·Òª·¢ËÍ
+		tempreg=0<<31;						//ç¦æ­¢DDRæ¨¡å¼
+		tempreg|=0<<28;						//æ¯æ¬¡éƒ½å‘é€æŒ‡ä»¤
+		tempreg|=0<<26;						//é—´æ¥å†™æ¨¡å¼
+		tempreg|=((u32)mode>>6)<<24;		//è®¾ç½®æ•°æ®æ¨¡å¼
+		tempreg|=(u32)dmcycle<<18;			//è®¾ç½®ç©ºæŒ‡ä»¤å‘¨æœŸæ•°
+		tempreg|=((u32)(mode>>4)&0X03)<<12;	//è®¾ç½®åœ°å€é•¿åº¦
+		tempreg|=((u32)(mode>>2)&0X03)<<10;	//è®¾ç½®åœ°å€æ¨¡å¼
+		tempreg|=((u32)(mode>>0)&0X03)<<8;	//è®¾ç½®æŒ‡ä»¤æ¨¡å¼
+		tempreg|=cmd;						//è®¾ç½®æŒ‡ä»¤
+		QUADSPI->CCR=tempreg;				//è®¾ç½®CCRå¯„å­˜å™¨
+		if(mode&0X0C)						//æœ‰æŒ‡ä»¤+åœ°å€è¦å‘é€
 		{
-			QUADSPI->AR=addr;				//ÉèÖÃµØÖ·¼Ä´æÆ÷
+			QUADSPI->AR=addr;				//è®¾ç½®åœ°å€å¯„å­˜å™¨
 		} 
-		if((mode&0XC0)==0)					//ÎŞÊı¾İ´«Êä,µÈ´ıÖ¸Áî·¢ËÍÍê³É
+		if((mode&0XC0)==0)					//æ— æ•°æ®ä¼ è¾“,ç­‰å¾…æŒ‡ä»¤å‘é€å®Œæˆ
 		{
-			status=QSPI_Wait_Flag(1<<1,1,0XFFFF);//µÈ´ıTCF,¼´´«ÊäÍê³É
+			status=QSPI_Wait_Flag(1<<1,1,0XFFFF);//ç­‰å¾…TCF,å³ä¼ è¾“å®Œæˆ
 			if(status==0)
 			{
-				QUADSPI->FCR|=1<<1;			//Çå³ıTCF±êÖ¾Î» 
+				QUADSPI->FCR|=1<<1;			//æ¸…é™¤TCFæ ‡å¿—ä½ 
 			}
 		}
 	}	
 }
 
-//QSPI½ÓÊÕÖ¸¶¨³¤¶ÈµÄÊı¾İ
-//buf:½ÓÊÕÊı¾İ»º³åÇøÊ×µØÖ·
-//datalen:Òª´«ÊäµÄÊı¾İ³¤¶È
-//·µ»ØÖµ:0,Õı³£
-//    ÆäËû,´íÎó´úÂë
+//QSPIæ¥æ”¶æŒ‡å®šé•¿åº¦çš„æ•°æ®
+//buf:æ¥æ”¶æ•°æ®ç¼“å†²åŒºé¦–åœ°å€
+//datalen:è¦ä¼ è¾“çš„æ•°æ®é•¿åº¦
+//è¿”å›å€¼:0,æ­£å¸¸
+//    å…¶ä»–,é”™è¯¯ä»£ç 
 u8 QSPI_Receive(u8* buf,u32 datalen)
 {
 	u32 tempreg=QUADSPI->CCR;
 	u32 addrreg=QUADSPI->AR; 	
 	u8 status;
 	vu32 *data_reg=&QUADSPI->DR;
-	QUADSPI->DLR=datalen-1;					//ÉèÖÃÊı¾İ´«Êä³¤¶È
-	tempreg&=~(3<<26);						//Çå³ıFMODEÔ­À´µÄÉèÖÃ
-	tempreg|=1<<26;							//ÉèÖÃFMODEÎª¼ä½Ó¶ÁÈ¡Ä£Ê½
-	QUADSPI->FCR|=1<<1;						//Çå³ıTCF±êÖ¾Î»
-	QUADSPI->CCR=tempreg;					//»ØĞ´CCR¼Ä´æÆ÷
-	QUADSPI->AR=addrreg;					//»ØĞ´AR¼Ä´æÆ÷,´¥·¢´«Êä
+	QUADSPI->DLR=datalen-1;					//è®¾ç½®æ•°æ®ä¼ è¾“é•¿åº¦
+	tempreg&=~(3<<26);						//æ¸…é™¤FMODEåŸæ¥çš„è®¾ç½®
+	tempreg|=1<<26;							//è®¾ç½®FMODEä¸ºé—´æ¥è¯»å–æ¨¡å¼
+	QUADSPI->FCR|=1<<1;						//æ¸…é™¤TCFæ ‡å¿—ä½
+	QUADSPI->CCR=tempreg;					//å›å†™CCRå¯„å­˜å™¨
+	QUADSPI->AR=addrreg;					//å›å†™ARå¯„å­˜å™¨,è§¦å‘ä¼ è¾“
 	while(datalen)
 	{
-		status=QSPI_Wait_Flag(3<<1,1,0XFFFF);//µÈµ½FTFºÍTCF,¼´½ÓÊÕµ½ÁËÊı¾İ
-		if(status==0)						//µÈ´ı³É¹¦
+		status=QSPI_Wait_Flag(3<<1,1,0XFFFF);//ç­‰åˆ°FTFå’ŒTCF,å³æ¥æ”¶åˆ°äº†æ•°æ®
+		if(status==0)						//ç­‰å¾…æˆåŠŸ
 		{
 			*buf++=*(vu8 *)data_reg;
 			datalen--;
@@ -138,37 +138,37 @@ u8 QSPI_Receive(u8* buf,u32 datalen)
 	}
 	if(status==0)
 	{
-		QUADSPI->CR|=1<<2;							//ÖÕÖ¹´«Êä 
-		status=QSPI_Wait_Flag(1<<1,1,0XFFFF);		//µÈ´ıTCF,¼´Êı¾İ´«ÊäÍê³É
+		QUADSPI->CR|=1<<2;							//ç»ˆæ­¢ä¼ è¾“ 
+		status=QSPI_Wait_Flag(1<<1,1,0XFFFF);		//ç­‰å¾…TCF,å³æ•°æ®ä¼ è¾“å®Œæˆ
 		if(status==0)
 		{
-			QUADSPI->FCR|=1<<1;						//Çå³ıTCF±êÖ¾Î» 
-			status=QSPI_Wait_Flag(1<<5,0,0XFFFF);	//µÈ´ıBUSYÎ»ÇåÁã
+			QUADSPI->FCR|=1<<1;						//æ¸…é™¤TCFæ ‡å¿—ä½ 
+			status=QSPI_Wait_Flag(1<<5,0,0XFFFF);	//ç­‰å¾…BUSYä½æ¸…é›¶
 		}
 	}
 	return status;
 } 
 
-//QSPI·¢ËÍÖ¸¶¨³¤¶ÈµÄÊı¾İ
-//buf:·¢ËÍÊı¾İ»º³åÇøÊ×µØÖ·
-//datalen:Òª´«ÊäµÄÊı¾İ³¤¶È
-//·µ»ØÖµ:0,Õı³£
-//    ÆäËû,´íÎó´úÂë
+//QSPIå‘é€æŒ‡å®šé•¿åº¦çš„æ•°æ®
+//buf:å‘é€æ•°æ®ç¼“å†²åŒºé¦–åœ°å€
+//datalen:è¦ä¼ è¾“çš„æ•°æ®é•¿åº¦
+//è¿”å›å€¼:0,æ­£å¸¸
+//    å…¶ä»–,é”™è¯¯ä»£ç 
 u8 QSPI_Transmit(u8* buf,u32 datalen)
 {
 	u32 tempreg=QUADSPI->CCR;
 	u32 addrreg=QUADSPI->AR; 
 	u8 status;
 	vu32 *data_reg=&QUADSPI->DR;
-	QUADSPI->DLR=datalen-1;					//ÉèÖÃÊı¾İ´«Êä³¤¶È
-	tempreg&=~(3<<26);						//Çå³ıFMODEÔ­À´µÄÉèÖÃ
-	tempreg|=0<<26;							//ÉèÖÃFMODEÎª¼ä½ÓĞ´ÈëÄ£Ê½
-	QUADSPI->FCR|=1<<1;						//Çå³ıTCF±êÖ¾Î»
-	QUADSPI->CCR=tempreg;					//»ØĞ´CCR¼Ä´æÆ÷ 
+	QUADSPI->DLR=datalen-1;					//è®¾ç½®æ•°æ®ä¼ è¾“é•¿åº¦
+	tempreg&=~(3<<26);						//æ¸…é™¤FMODEåŸæ¥çš„è®¾ç½®
+	tempreg|=0<<26;							//è®¾ç½®FMODEä¸ºé—´æ¥å†™å…¥æ¨¡å¼
+	QUADSPI->FCR|=1<<1;						//æ¸…é™¤TCFæ ‡å¿—ä½
+	QUADSPI->CCR=tempreg;					//å›å†™CCRå¯„å­˜å™¨ 
 	while(datalen)
 	{
-		status=QSPI_Wait_Flag(1<<2,1,0XFFFF);//µÈµ½FTF
-		if(status!=0)						//µÈ´ı³É¹¦
+		status=QSPI_Wait_Flag(1<<2,1,0XFFFF);//ç­‰åˆ°FTF
+		if(status!=0)						//ç­‰å¾…æˆåŠŸ
 		{
 			break;
 		}
@@ -177,12 +177,12 @@ u8 QSPI_Transmit(u8* buf,u32 datalen)
 	}
 	if(status==0)
 	{
-		QUADSPI->CR|=1<<2;							//ÖÕÖ¹´«Êä 
-		status=QSPI_Wait_Flag(1<<1,1,0XFFFF);		//µÈ´ıTCF,¼´Êı¾İ´«ÊäÍê³É
+		QUADSPI->CR|=1<<2;							//ç»ˆæ­¢ä¼ è¾“ 
+		status=QSPI_Wait_Flag(1<<1,1,0XFFFF);		//ç­‰å¾…TCF,å³æ•°æ®ä¼ è¾“å®Œæˆ
 		if(status==0)
 		{
-			QUADSPI->FCR|=1<<1;						//Çå³ıTCF±êÖ¾Î» 
-			status=QSPI_Wait_Flag(1<<5,0,0XFFFF);	//µÈ´ıBUSYÎ»ÇåÁã
+			QUADSPI->FCR|=1<<1;						//æ¸…é™¤TCFæ ‡å¿—ä½ 
+			status=QSPI_Wait_Flag(1<<5,0,0XFFFF);	//ç­‰å¾…BUSYä½æ¸…é›¶
 		}
 	}
 	return status;

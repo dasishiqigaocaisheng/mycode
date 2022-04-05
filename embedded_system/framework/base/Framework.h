@@ -1,620 +1,580 @@
 /*
-*°æ±¾£º
+*ç‰ˆæœ¬ï¼š
 
-2021.6.21£¨14×é£©£º
-¡¾Framework¡¿
-1.¡¾ÖØ´ó¸üĞÂ¡¿Ôö¼Ó¶ÔF7/H7µÄÖ§³Ö£¬F7/H7ÏÖÔÚ¿ÉÒÔÊ¹ÓÃGPIO¡¢SystemTimerÈ«²¿¹¦ÄÜ£¬²¢ÇÒÓëF4/F1ÍêÈ«¼æÈİ
-2.¸ÄĞ´ÁËSystem_TimerµÄ²Ù×÷·½·¨
-    ¢ÙÔö¼ÓSystemTimer_Init·½·¨
-    ¢ÚÔö¼ÓSystemTimer_Cancel·½·¨
-    ¢ÛÉ¾³ıSystemTimer_Reset·½·¨
-    ¢ÜSystemTimer_Delay_UsµÄ²ÎÊı¸ÄÎªfloatÀàĞÍ£¬¸Ãº¯ÊıÏÖÔÚ¿ÉÒÔÊµÏÖ1usÒÔÄÚµÄÑÓÊ±
-3.GPIO²¿·ÖÔö¼ÓGPIO_Mode_InºÍGPIO_Mode_Out·½·¨
-4.GPIOĞ´º¯Êı·¢Éú±ä»¯£¬ÏÖÔÚµÄĞ´º¯ÊıÎªGPIO_Write(x,y)»òGPIO_Pin_Set/GPIO_Pin_Reset
+2021.6.21ï¼ˆ14ç»„ï¼‰ï¼š
+ã€Frameworkã€‘
+1.ã€é‡å¤§æ›´æ–°ã€‘å¢åŠ å¯¹F7/H7çš„æ”¯æŒï¼ŒF7/H7ç°åœ¨å¯ä»¥ä½¿ç”¨GPIOã€SystemTimerå…¨éƒ¨åŠŸèƒ½ï¼Œå¹¶ä¸”ä¸F4/F1å®Œå…¨å…¼å®¹
+2.æ”¹å†™äº†System_Timerçš„æ“ä½œæ–¹æ³•
+    â‘ å¢åŠ SystemTimer_Initæ–¹æ³•
+    â‘¡å¢åŠ SystemTimer_Cancelæ–¹æ³•
+    â‘¢åˆ é™¤SystemTimer_Resetæ–¹æ³•
+    â‘£SystemTimer_Delay_Usçš„å‚æ•°æ”¹ä¸ºfloatç±»å‹ï¼Œè¯¥å‡½æ•°ç°åœ¨å¯ä»¥å®ç°1usä»¥å†…çš„å»¶æ—¶
+3.GPIOéƒ¨åˆ†å¢åŠ GPIO_Mode_Inå’ŒGPIO_Mode_Outæ–¹æ³•
+4.GPIOå†™å‡½æ•°å‘ç”Ÿå˜åŒ–ï¼Œç°åœ¨çš„å†™å‡½æ•°ä¸ºGPIO_Write(x,y)æˆ–GPIO_Pin_Set/GPIO_Pin_Reset
 
-2021.6.30£º
-1.ÏÖÔÚ¿ÉÒÔÑ¡ÔñSysTickµÄÊ±ÖÓÔ´
+2021.6.30ï¼š
+1.ç°åœ¨å¯ä»¥é€‰æ‹©SysTickçš„æ—¶é’Ÿæº
 
 */
-
 
 #ifndef _FRAMEWORK_H_
 #define _FRAMEWORK_H_
 
 #include <stdint.h>
+#include <stddef.h>
 
 /****************************************************************************************/
 /*                                                                                      */
-/*                                       ÅäÖÃÇø                                         */
+/*                                       é…ç½®åŒº                                         */
 /*                                                                                      */
 /****************************************************************************************/
 
 /*======================================================================================*/
 
 /*
-*ÅäÖÃÇøµÄ²ÎÊı£¨ºê£©ĞèÒªÓÃ»§¸ù¾İ×Ô¼ºµÄÊµ¼ÊÇé¿ö×ÔĞĞÅäÖÃ£¬Èç¹ûÓĞ¡°!±ØĞëµÄ!¡±ÕâÑùµÄ±ê¼Ç£¬ÔòËµÃ÷
-*Õâ¸öºê±ØĞë±»ºÏÀíÅäÖÃ£»Èç¹ûÓĞ¡°£¨¿ÉÑ¡µÄ£©¡±ÕâÑùµÄ±ê¼Ç£¬ÔòËµÃ÷¸Ãºê¶ÔÓ¦×Å¿ÉÑ¡¹¦ÄÜ£¬Èç¹ûÓÃ»§²¢
-*²»ÏëÊ¹ÓÃ¸Ã¹¦ÄÜ£¬¾Í¿ÉÒÔ²»ÅäÖÃ¡£
+*é…ç½®åŒºçš„å‚æ•°ï¼ˆå®ï¼‰éœ€è¦ç”¨æˆ·æ ¹æ®è‡ªå·±çš„å®é™…æƒ…å†µè‡ªè¡Œé…ç½®ï¼Œå¦‚æœæœ‰â€œ!å¿…é¡»çš„!â€è¿™æ ·çš„æ ‡è®°ï¼Œåˆ™è¯´æ˜
+*è¿™ä¸ªå®å¿…é¡»è¢«åˆç†é…ç½®ï¼›å¦‚æœæœ‰â€œï¼ˆå¯é€‰çš„ï¼‰â€è¿™æ ·çš„æ ‡è®°ï¼Œåˆ™è¯´æ˜è¯¥å®å¯¹åº”ç€å¯é€‰åŠŸèƒ½ï¼Œå¦‚æœç”¨æˆ·å¹¶
+*ä¸æƒ³ä½¿ç”¨è¯¥åŠŸèƒ½ï¼Œå°±å¯ä»¥ä¸é…ç½®ã€‚
 *
 */
 
 /*******************************
-*!±ØĞëµÄ!                      *
-*ÕâĞ©ºêÖ¸Ã÷ÄãÊ¹ÓÃµÄÆ÷¼şÀàĞÍ    *
-*Õâ»áÓ°Ïìµ½ºóÃæGPIO²Ù×÷²¿·Ö    *
+*!å¿…é¡»çš„!                      *
+*è¿™äº›å®æŒ‡æ˜ä½ ä½¿ç”¨çš„å™¨ä»¶ç±»å‹    *
+*è¿™ä¼šå½±å“åˆ°åé¢GPIOæ“ä½œéƒ¨åˆ†    *
 ********************************/
-#define USE_STM32H7     //H7ÏµÁĞ
-//#define USE_STM32F7   //F7ÏµÁĞ
-//#define USE_STM32F4   //F4ÏµÁĞ
-//#define USE_STM32F1   //F1ÏµÁĞ
+#define USE_STM32H7 //H7ç³»åˆ—
+//#define USE_STM32F7   //F7ç³»åˆ—
+//#define USE_STM32F4   //F4ç³»åˆ—
+//#define USE_STM32F1   //F1ç³»åˆ—
 /*******************************/
 
-
 /**********************************
-*!±ØĞëµÄ£¡                        *
-*°üº¬¶ÔÓ¦µÄÍ·ÎÄ¼ş£¨stm32xxxx.h£©  *
+*!å¿…é¡»çš„ï¼                        *
+*åŒ…å«å¯¹åº”çš„å¤´æ–‡ä»¶ï¼ˆstm32xxxx.hï¼‰  *
 ***********************************/
 #include "stm32h743xx.h"
 /**********************************/
 
-
 /**************************************
-*£¨¿ÉÑ¡µÄ£©                           *
-*¶¨ÒåÄãµÄÆ÷¼şµÄ×î´óÖ÷Æµ               *
-*¶ÔÓÚF103ÏµÁĞÕâ¸öÖµÎª72000000         *
-*¶ÔÓÚF407ÏµÁĞÕâ¸öÖµÎª168000000        *
-*¶ÔÓÚF429/439ÏµÁĞÕâ¸öÖµÎª180000000    *
-*ÆäËû×Ô¼ºÌí¼Ó...                      *
+*ï¼ˆå¯é€‰çš„ï¼‰                           *
+*å®šä¹‰ä½ çš„å™¨ä»¶çš„æœ€å¤§ä¸»é¢‘               *
+*å¯¹äºF103ç³»åˆ—è¿™ä¸ªå€¼ä¸º72000000         *
+*å¯¹äºF407ç³»åˆ—è¿™ä¸ªå€¼ä¸º168000000        *
+*å¯¹äºF429/439ç³»åˆ—è¿™ä¸ªå€¼ä¸º180000000    *
+*å…¶ä»–è‡ªå·±æ·»åŠ ...                      *
 ***************************************/
 //#define SYSCLK_MAX_CLOCK    48000000
 //#define SYSCLK_MAX_CLOCK    72000000
 //#define SYSCLK_MAX_CLOCK    168000000
 //#define SYSCLK_MAX_CLOCK    180000000
-#define SYSCLK_MAX_CLOCK    400000000
+#define SYSCLK_MAX_CLOCK 400000000
 /**************************************/
-
 
 /****************************************
-*!±ØĞëµÄ!                               *
-*ÏµÍ³¶¨Ê±Æ÷µÄÀàĞÍ                       *
-*ÏµÍ³¶¨Ê±Æ÷±»ÓÃÀ´Ìá¹©Ò»¸ö¹«ÓÃµÄÊ±ÖÓ»ù×¼ *
-*ËüµÄ×÷ÓÃÊÇÌá¹©Í¨ÓÃµÄÑÓÊ±º¯ÊıºÍ¼ÆÊ±·½·¨ *
-*0£º²»Ê¹ÓÃÏµÍ³¶¨Ê±Æ÷                    *
-*1£ºsystick¶¨Ê±Æ÷                       *
-*2£ºÓÃ»§×Ô¶¨Òå                          *
+*!å¿…é¡»çš„!                               *
+*ç³»ç»Ÿå®šæ—¶å™¨çš„ç±»å‹                       *
+*ç³»ç»Ÿå®šæ—¶å™¨è¢«ç”¨æ¥æä¾›ä¸€ä¸ªå…¬ç”¨çš„æ—¶é’ŸåŸºå‡† *
+*å®ƒçš„ä½œç”¨æ˜¯æä¾›é€šç”¨çš„å»¶æ—¶å‡½æ•°å’Œè®¡æ—¶æ–¹æ³• *
+*0ï¼šä¸ä½¿ç”¨ç³»ç»Ÿå®šæ—¶å™¨                    *
+*1ï¼šsystickå®šæ—¶å™¨                       *
+*2ï¼šç”¨æˆ·è‡ªå®šä¹‰                          *
 *****************************************/
-#define SYSTEM_TIMER        1
+#define SYSTEM_TIMER 1
 /****************************************/
 
-
-#if SYSTEM_TIMER!=0
+#if SYSTEM_TIMER != 0
 
 /**************************************
-*!±ØĞëµÄ!                             *
-*Ö¸¶¨¶¨Ê±Æ÷µÄÊ±ÖÓÆµÂÊ¶ÔÓÚsystick¶¨Ê±  *
-*Æ÷Õâ¸öÖµÍ¨³£ÊÇSYSCLK»ò               *
+*!å¿…é¡»çš„!                             *
+*æŒ‡å®šå®šæ—¶å™¨çš„æ—¶é’Ÿé¢‘ç‡å¯¹äºsystickå®šæ—¶  *
+*å™¨è¿™ä¸ªå€¼é€šå¸¸æ˜¯SYSCLKæˆ–               *
 *SYSCLK/8                             *
 ***************************************/
-#define SYSTEM_TIMER_CLOCK  SYSCLK_MAX_CLOCK
+#define SYSTEM_TIMER_CLOCK SYSCLK_MAX_CLOCK
 
-#if SYSTEM_TIMER==1
+#if SYSTEM_TIMER == 1
 
 /**************************************
-*!±ØĞëµÄ!                             *
-*Ö¸¶¨SysTick¶¨Ê±Æ÷µÄÊ±ÖÓÔ´            *
-1£ºÄÚ²¿£¨Ò²¾ÍÊÇÏµÍ³Ö÷Æµ£©             *
-0£ºÍâ²¿£¨ÏµÍ³Ö÷Æµ»òÏµÍ³Ö÷Æµ/8£©       *
+*!å¿…é¡»çš„!                             *
+*æŒ‡å®šSysTickå®šæ—¶å™¨çš„æ—¶é’Ÿæº            *
+1ï¼šå†…éƒ¨ï¼ˆä¹Ÿå°±æ˜¯ç³»ç»Ÿä¸»é¢‘ï¼‰             *
+0ï¼šå¤–éƒ¨ï¼ˆç³»ç»Ÿä¸»é¢‘æˆ–ç³»ç»Ÿä¸»é¢‘/8ï¼‰       *
 ***************************************/
-#define SYSTICK_CLOCK_SOURCE    1
+#define SYSTICK_CLOCK_SOURCE 1
 
 #endif
 /**************************************/
 
 #endif
 
-
-
-
 /***********************************************************
-*!±ØĞëµÄ!                                                  *
-*STM32ÖĞ¸÷ÖÖÍâÉè¼Ä´æÆ÷µÄ¶¨Òå                               *
-*ÒªÊ¹ÓÃµÄ¾Í°Ñ×¢ÊÍÈ¡Ïû£¬Èç¹ûÃ»ÓĞÄãÒªÓÃµÄÍâÉè¿ÉÒÔ×Ô¼ºÌí¼Ó½øÈ¥*
+*!å¿…é¡»çš„!                                                  *
+*STM32ä¸­å„ç§å¤–è®¾å¯„å­˜å™¨çš„å®šä¹‰                               *
+*è¦ä½¿ç”¨çš„å°±æŠŠæ³¨é‡Šå–æ¶ˆï¼Œå¦‚æœæ²¡æœ‰ä½ è¦ç”¨çš„å¤–è®¾å¯ä»¥è‡ªå·±æ·»åŠ è¿›å»*
 ************************************************************/
 typedef union
 {
-    //ADC_TypeDef*                adc;              
-    //ADC_Common_TypeDef*         adc_common;
-    //CAN_TxMailBox_TypeDef*      can_txmailbox;
-    //CAN_FIFOMailBox_TypeDef*    can_fifomailbox;
-    //CAN_FilterRegister_TypeDef* filterregister;
-    //CAN_TypeDef*                can;
-    //CRC_TypeDef*                crc;
-    //DAC_TypeDef*                dac;
-    //DBGMCU_TypeDef*             debugmcu;
-    //DCMI_TypeDef*               dcmi;
-    //DMA_Stream_TypeDef*         dma_stream;
-    //DMA_TypeDef*                dma;
-    //DMA2D_TypeDef*              dma2d;
-    //ETH_TypeDef*                eth;
-    //EXTI_TypeDef*               exti;
-    //FLASH_TypeDef*              flash;
-    //FMC_Bank1_TypeDef*          fmc_bank1;
-    //FMC_Bank1E_TypeDef*         fmc_bank1e;
-    //FMC_Bank2_3_TypeDef*        fmc_bank2_3;
-    //FMC_Bank4_TypeDef*          fmc_bank4;
-    //FMC_Bank5_6_TypeDef*        fmc_bank5_6;
-    //GPIO_TypeDef*               gpio;
-    //SYSCFG_TypeDef*             syscfg;
-    //I2C_TypeDef*                i2c;
-    //IWDG_TypeDef*               iwdg;
-    //LTDC_TypeDef*               ltdc;
-    //LTDC_Layer_TypeDef*         ltdc_layer;
-    //PWR_TypeDef*                pwr;
-    //RCC_TypeDef*                rcc;
-    //RTC_TypeDef*                rtc;
-    //SAI_TypeDef*                sai;
-    //SAI_Block_TypeDef*          sai_block;
-    //SDIO_TypeDef*               sdio;
-    SPI_TypeDef*                spi;
-    //TIM_TypeDef*                tim;
-    //USART_TypeDef*              usart;
-    //WWDG_TypeDef*               wwdg;
-    //RNG_TypeDef*                rng;
-    //USB_OTG_GlobalTypeDef*      usa_otg_global;
-    //USB_OTG_DeviceTypeDef*      usb_otg_device;
-    //USB_OTG_INEndpointTypeDef*  usb_otg_inendpoint;
-    //USB_OTG_OUTEndpointTypeDef* usb_otg_outendpoint;  
-    //USB_OTG_HostTypeDef*        usb_otg_host;
-    //USB_OTG_HostChannelTypeDef* usb_otg_hostchannel;
+	//ADC_TypeDef *adc;
+	//ADC_Common_TypeDef*         adc_common;
+	//CAN_TxMailBox_TypeDef*      can_txmailbox;
+	//CAN_FIFOMailBox_TypeDef*    can_fifomailbox;
+	//CAN_FilterRegister_TypeDef* filterregister;
+	//CAN_TypeDef*                can;
+	//CRC_TypeDef*                crc;
+	//DAC_TypeDef*                dac;
+	//DBGMCU_TypeDef*             debugmcu;
+	//DCMI_TypeDef*               dcmi;
+	//DMA_Stream_TypeDef*         dma_stream;
+	//DMA_TypeDef*                dma;
+	//DMA2D_TypeDef*              dma2d;
+	//ETH_TypeDef*                eth;
+	//EXTI_TypeDef*               exti;
+	//FLASH_TypeDef*              flash;
+	//FMC_Bank1_TypeDef*          fmc_bank1;
+	//FMC_Bank1E_TypeDef*         fmc_bank1e;
+	//FMC_Bank2_3_TypeDef*        fmc_bank2_3;
+	//FMC_Bank4_TypeDef*          fmc_bank4;
+	//FMC_Bank5_6_TypeDef*        fmc_bank5_6;
+	//GPIO_TypeDef*               gpio;
+	//SYSCFG_TypeDef*             syscfg;
+	//I2C_TypeDef*                i2c;
+	//IWDG_TypeDef*               iwdg;
+	//LTDC_TypeDef*               ltdc;
+	//LTDC_Layer_TypeDef*         ltdc_layer;
+	//PWR_TypeDef*                pwr;
+	//RCC_TypeDef*                rcc;
+	//RTC_TypeDef*                rtc;
+	//SAI_TypeDef*                sai;
+	//SAI_Block_TypeDef*          sai_block;
+	//SDIO_TypeDef*               sdio;
+	//SPI_TypeDef *spi;
+	//TIM_TypeDef*                tim;
+	//USART_TypeDef*              usart;
+	//WWDG_TypeDef*               wwdg;
+	//RNG_TypeDef*                rng;
+	//USB_OTG_GlobalTypeDef*      usa_otg_global;
+	//USB_OTG_DeviceTypeDef*      usb_otg_device;
+	//USB_OTG_INEndpointTypeDef*  usb_otg_inendpoint;
+	//USB_OTG_OUTEndpointTypeDef* usb_otg_outendpoint;
+	//USB_OTG_HostTypeDef*        usb_otg_host;
+	//USB_OTG_HostChannelTypeDef* usb_otg_hostchannel;
 } peripheral_register_type;
 /**********************************************************/
 
 /*====================================END=====================================*/
 
-
-
-
-
-
-
-
-
-
-
-
-
 /****************************************************************************************/
 /*                                                                                      */
-/*                                       ¶¨ÒåÇø                                         */
+/*                                       å®šä¹‰åŒº                                         */
 /*                                                                                      */
 /****************************************************************************************/
 
 /*======================================================================================*/
 
 #if defined USE_STM32F4 || defined USE_STM32F1
-#define AHB_MAX_CLOCK       SYSCLK_MAX_CLOCK
-#define APB1_MAX_CLOCK      (SYSCLK_MAX_CLOCK>>2)
-#define APB2_MAX_CLOCK      (SYSCLK_MAX_CLOCK>>1)
+#define AHB_MAX_CLOCK SYSCLK_MAX_CLOCK
+#define APB1_MAX_CLOCK (SYSCLK_MAX_CLOCK >> 2)
+#define APB2_MAX_CLOCK (SYSCLK_MAX_CLOCK >> 1)
 #else
-#define AHB_MAX_CLOCK       (SYSCLK_MAX_CLOCK>>1)
-#define APB1_MAX_CLOCK      (SYSCLK_MAX_CLOCK>>2)
-#define APB2_MAX_CLOCK      (SYSCLK_MAX_CLOCK>>2)
+#define AHB_MAX_CLOCK (SYSCLK_MAX_CLOCK >> 1)
+#define APB1_MAX_CLOCK (SYSCLK_MAX_CLOCK >> 2)
+#define APB2_MAX_CLOCK (SYSCLK_MAX_CLOCK >> 2)
 #endif
 
 /*
-*ÎªÁËÔöÇ¿´úÂë¿É¶ÁĞÔ£¬¶¨Òå¼¸ÖÖ¿ÉÄÜ»áÓÃµ½µÄÊı¾İÀàĞÍ
-*1.sign£º±êÖ¾¡£
-*        Èç¹ûÒ»¸ö±äÁ¿Ö»Æğµ½±êÖ¾µÄ×÷ÓÃ£¨Ö»¾ßÓĞÓĞÏŞµÄ¼¸ÖÖ×´Ì¬£©£¬
-*        ÄÇÃ´Ó¦¸ÃÓĞsignĞŞÊÎ£¬ÀıÈçÒ»¸ö±äÁ¿ÓÃÀ´±íÊ¾ADCÊÇ·ñ¶ÁÈ¡Íê
-*        ±Ï£¬ÄÇÃ´¸Ä±äÁ¿¾ÍÊÇÒ»¸ö±êÖ¾Î»£¬ËüµÄÖµÖ»ÓĞÂß¼­µÄÒâÒå£¬
-*        Ã»ÓĞÊµ¼Ê´óĞ¡µÄÒâÒå¡£
-*2.reg£º¼Ä´æÆ÷¡£
-*       Æğµ½¼Ä´æÆ÷×÷ÓÃµÄ±äÁ¿ÓÃÆäĞŞÊÎ£¬ÀıÈç¸Ã±äÁ¿¶ÔÓ¦ÁËÍâ²¿Ğ¾Æ¬
-*       ÖĞµÄÄ³¸öÊµ¼ÊµÄ¼Ä´æÆ÷£¬¾ÍÓ¦¸ÃÓĞregĞŞÊÎ¡£
-*3.ro£ºÖ»¶Á¡£
-*      ¸Ã±äÁ¿Ö»Ï£Íû±»ÓÃ»§¶ÁÈ¡£¬ÓÃ»§²»Ó¦¸Ã¸Ä±äÆäÖµ¡£Èç¹ûÒ»¸ö±»
-*      roĞŞÊÎ£¬ÄÇÃ´¸Ã±äÁ¿ÔÚ×î³õ¸³ÖµÒÔºó£¨×îºÃ£©ÔÚÕû¸ö³ÌĞòÖ´ĞĞ
-*      ¹ı³Ì¶¼²»»á¸Ä±ä¡£
-*4.vro£ºÖ»¶Á²¢ÇÒ¿ÉÄÜ¾­³£±»_RO_WRITE·½·¨¸Ä±ä
+*ä¸ºäº†å¢å¼ºä»£ç å¯è¯»æ€§ï¼Œå®šä¹‰å‡ ç§å¯èƒ½ä¼šç”¨åˆ°çš„æ•°æ®ç±»å‹
+*1.signï¼šæ ‡å¿—ã€‚
+*        å¦‚æœä¸€ä¸ªå˜é‡åªèµ·åˆ°æ ‡å¿—çš„ä½œç”¨ï¼ˆåªå…·æœ‰æœ‰é™çš„å‡ ç§çŠ¶æ€ï¼‰ï¼Œ
+*        é‚£ä¹ˆåº”è¯¥æœ‰signä¿®é¥°ï¼Œä¾‹å¦‚ä¸€ä¸ªå˜é‡ç”¨æ¥è¡¨ç¤ºADCæ˜¯å¦è¯»å–å®Œ
+*        æ¯•ï¼Œé‚£ä¹ˆæ”¹å˜é‡å°±æ˜¯ä¸€ä¸ªæ ‡å¿—ä½ï¼Œå®ƒçš„å€¼åªæœ‰é€»è¾‘çš„æ„ä¹‰ï¼Œ
+*        æ²¡æœ‰å®é™…å¤§å°çš„æ„ä¹‰ã€‚
+*2.regï¼šå¯„å­˜å™¨ã€‚
+*       èµ·åˆ°å¯„å­˜å™¨ä½œç”¨çš„å˜é‡ç”¨å…¶ä¿®é¥°ï¼Œä¾‹å¦‚è¯¥å˜é‡å¯¹åº”äº†å¤–éƒ¨èŠ¯ç‰‡
+*       ä¸­çš„æŸä¸ªå®é™…çš„å¯„å­˜å™¨ï¼Œå°±åº”è¯¥æœ‰regä¿®é¥°ã€‚
+*3.roï¼šåªè¯»ã€‚
+*      è¯¥å˜é‡åªå¸Œæœ›è¢«ç”¨æˆ·è¯»å–ï¼Œç”¨æˆ·ä¸åº”è¯¥æ”¹å˜å…¶å€¼ã€‚å¦‚æœä¸€ä¸ªè¢«
+*      roä¿®é¥°ï¼Œé‚£ä¹ˆè¯¥å˜é‡åœ¨æœ€åˆèµ‹å€¼ä»¥åï¼ˆæœ€å¥½ï¼‰åœ¨æ•´ä¸ªç¨‹åºæ‰§è¡Œ
+*      è¿‡ç¨‹éƒ½ä¸ä¼šæ”¹å˜ã€‚
+*4.vroï¼šåªè¯»å¹¶ä¸”å¯èƒ½ç»å¸¸è¢«_RO_WRITEæ–¹æ³•æ”¹å˜
 */
-#define ro      const           //Ö»¶ÁÀàĞÍ
-#define vro     volatile const  //vro
-    
-//Ö»¶ÁÀàĞÍµÄĞ´Èë·½·¨
-//Èı¸ö²ÎÊıÒâÒå£º¶ÔÏó¡¢¶ÔÏóµÄÊı¾İÀàĞÍ¡¢ÒªĞ´ÈëµÄÖµ
-#define _RO_WRITE(object,type,value)	*((type*)((uint32_t)(&object)))=value
+#define ro const		   //åªè¯»ç±»å‹
+#define vro volatile const //vro
 
-typedef void*   inst_type;  //ÊµÀıÀàĞÍ£¬¶ÔÓ¦¸÷ÖÖÀàµÄÊµÀı
+//åªè¯»ç±»å‹çš„å†™å…¥æ–¹æ³•
+//ä¸‰ä¸ªå‚æ•°æ„ä¹‰ï¼šå¯¹è±¡ã€å¯¹è±¡çš„æ•°æ®ç±»å‹ã€è¦å†™å…¥çš„å€¼
+#define _RO_WRITE(object, type, value) *((type *)((uint32_t)(&object))) = value
+
+typedef void *inst_type; //å®ä¾‹ç±»å‹ï¼Œå¯¹åº”å„ç§ç±»çš„å®ä¾‹
 
 /*
-*ÍâÉè½Ó¿ÚÀà
-*Õë¶Ô¼Ä´æÆ÷Ğ´·¨¡¢±ê×¼¿âĞ´·¨¡¢HAL¿âĞ´·¨µÄÍâÉè½Ó¿Ú
-*¶¨Òå¸ÃÀàµÄÄ¿µÄÔÚÓÚÈÃ¸÷ÖÖĞ´·¨¶¼ÄÜÒÔÍ³Ò»·½Ê½·ÃÎÊÍâÉè
+*å¤–è®¾æ¥å£ç±»
+*é’ˆå¯¹å¯„å­˜å™¨å†™æ³•ã€æ ‡å‡†åº“å†™æ³•ã€HALåº“å†™æ³•çš„å¤–è®¾æ¥å£
+*å®šä¹‰è¯¥ç±»çš„ç›®çš„åœ¨äºè®©å„ç§å†™æ³•éƒ½èƒ½ä»¥ç»Ÿä¸€æ–¹å¼è®¿é—®å¤–è®¾
 */
 typedef struct peripheral_interface_class
 {
-    //ÓÉÓÃ»§×ÔĞĞ¾ö¶¨Æä×÷ÓÃ£¨Èç¹ûÓĞ±ØÒªÊ¹ÓÃµÄ»°£©£¬µ±È»Ò²¿ÉÒÔ²»Ê¹ÓÃ
-    ro uint32_t                    Value;
-    
-    //´æ·ÅÍâÉèµÄ¼Ä´æÆ÷µØÖ·£¬Èç£ºTIM1£¬USART1£¬SPI2µÈ
-    ro peripheral_register_type    Register0;
-    
-    //£¨±¸ÓÃµÄ£©´æ·ÅÍâÉèµÄ¼Ä´æÆ÷µØÖ·£¬Èç£ºTIM1£¬USART1£¬SPI2µÈ
-    //Èç¹ûÒ»¸öRegister0²»¹»ÓÃ²Å¿ÉÒÔÓÃÕâ¸ö
-    ro peripheral_register_type    Register1;
-    
-    //´æ·ÅÄ³Ğ©¿âÖĞ¶¨ÒåµÄ½á¹¹Ìå
-    //ÈçHAL¿âÖĞµÄSPI_HandlerµÈ
-    ro inst_type                   Instance;
+	//å­˜æ”¾å¤–è®¾çš„å¯„å­˜å™¨åœ°å€ï¼Œå¦‚ï¼šTIM1ï¼ŒUSART1ï¼ŒSPI2ç­‰
+	ro peripheral_register_type Register0;
+
+	//ï¼ˆå¤‡ç”¨çš„ï¼‰å­˜æ”¾å¤–è®¾çš„å¯„å­˜å™¨åœ°å€ï¼Œå¦‚ï¼šTIM1ï¼ŒUSART1ï¼ŒSPI2ç­‰
+	//å¦‚æœä¸€ä¸ªRegister0ä¸å¤Ÿç”¨æ‰å¯ä»¥ç”¨è¿™ä¸ª
+	ro peripheral_register_type Register1;
+
+	//å­˜æ”¾æŸäº›åº“ä¸­å®šä¹‰çš„ç»“æ„ä½“
+	//å¦‚HALåº“ä¸­çš„SPI_Handlerç­‰
+	ro inst_type Instance;
+
+	//ç”±ç”¨æˆ·è‡ªè¡Œå†³å®šå…¶ä½œç”¨ï¼ˆå¦‚æœæœ‰å¿…è¦ä½¿ç”¨çš„è¯ï¼‰ï¼Œå½“ç„¶ä¹Ÿå¯ä»¥ä¸ä½¿ç”¨
+	ro uint32_t Value;
 } periperal;
 
-//CÓïÑÔ»ù±¾Êı¾İÀàĞÍ
-//ÔÚ½øĞĞÊı¾İÀàĞÍ×ª»»µÄÊ±ºò£¬ÕâĞ©¶¨Òå¿ÉÄÜ»áÓĞÓÃ
+//Cè¯­è¨€åŸºæœ¬æ•°æ®ç±»å‹
+//åœ¨è¿›è¡Œæ•°æ®ç±»å‹è½¬æ¢çš„æ—¶å€™ï¼Œè¿™äº›å®šä¹‰å¯èƒ½ä¼šæœ‰ç”¨
 typedef enum
 {
-    UCHAR_Format,
-    CHAR_Format,
-    USHORT_Format,
-    SHORT_Format,
-    INT_Format,
-    UINT_Format,
-    FLOAT_Format,
-    DOUBLE_Format
+	UCHAR_Format,
+	CHAR_Format,
+	USHORT_Format,
+	SHORT_Format,
+	INT_Format,
+	UINT_Format,
+	FLOAT_Format,
+	DOUBLE_Format
 } data_format_type;
-   
-//Ó²¼ş»òÈí¼ş
-//Ö¸Ã÷Ò»Ğ©ÍâÉè¹¦ÄÜµÄÊµÏÖ·½·¨
-//ÈçÓ²¼şSPI»òÈí¼şÄ£ÄâSPI
+
+//ç¡¬ä»¶æˆ–è½¯ä»¶
+//æŒ‡æ˜ä¸€äº›å¤–è®¾åŠŸèƒ½çš„å®ç°æ–¹æ³•
+//å¦‚ç¡¬ä»¶SPIæˆ–è½¯ä»¶æ¨¡æ‹ŸSPI
 typedef enum
 {
-    SOFTWARE,
-    HARDWARE
+	SOFTWARE,
+	HARDWARE
 } S_H_type;
-   
 
 typedef enum
-{   
-    Enable=1,
-    Disable=0
+{
+	Enable = 1,
+	Disable = 0
 } status_flag;
 
+#define Mask1Bit 0x00000001
+#define Mask2Bit 0x00000003
+#define Mask3Bit 0x00000007
+#define Mask4Bit 0x0000000f
+#define Mask5Bit 0x0000001f
+#define Mask6Bit 0x0000003f
+#define Mask7Bit 0x0000007f
+#define Mask8Bit 0x000000ff
+#define Mask9Bit 0x000001ff
+#define Mask10Bit 0x000003ff
+#define Mask11Bit 0x000007ff
+#define Mask12Bit 0x00000fff
+#define Mask13Bit 0x00001fff
+#define Mask14Bit 0x00003fff
+#define Mask15Bit 0x00007fff
+#define Mask16Bit 0x0000ffff
+#define Mask17Bit 0x0001ffff
+#define Mask18Bit 0x0003ffff
+#define Mask19Bit 0x0007ffff
+#define Mask20Bit 0x000fffff
+#define Mask21Bit 0x001fffff
+#define Mask22Bit 0x003fffff
+#define Mask23Bit 0x007fffff
+#define Mask24Bit 0x00ffffff
+#define Mask25Bit 0x01ffffff
+#define Mask26Bit 0x03ffffff
+#define Mask27Bit 0x07ffffff
+#define Mask28Bit 0x0fffffff
+#define Mask29Bit 0x1fffffff
+#define Mask30Bit 0x3fffffff
+#define Mask31Bit 0x7fffffff
+#define Mask32Bit 0xffffffff
 
-#define Mask1Bit    0x00000001
-#define Mask2Bit    0x00000003
-#define Mask3Bit    0x00000007
-#define Mask4Bit    0x0000000f
-#define Mask5Bit    0x0000001f
-#define Mask6Bit    0x0000003f
-#define Mask7Bit    0x0000007f
-#define Mask8Bit    0x000000ff
-#define Mask9Bit    0x000001ff
-#define Mask10Bit    0x000003ff
-#define Mask11Bit    0x000007ff
-#define Mask12Bit    0x00000fff
-#define Mask13Bit    0x00001fff
-#define Mask14Bit    0x00003fff
-#define Mask15Bit    0x00007fff
-#define Mask16Bit    0x0000ffff
-#define Mask17Bit    0x0001ffff
-#define Mask18Bit    0x0003ffff
-#define Mask19Bit    0x0007ffff
-#define Mask20Bit    0x000fffff
-#define Mask21Bit    0x001fffff
-#define Mask22Bit    0x003fffff
-#define Mask23Bit    0x007fffff
-#define Mask24Bit    0x00ffffff
-#define Mask25Bit    0x01ffffff
-#define Mask26Bit    0x03ffffff
-#define Mask27Bit    0x07ffffff
-#define Mask28Bit    0x0fffffff
-#define Mask29Bit    0x1fffffff
-#define Mask30Bit    0x3fffffff
-#define Mask31Bit    0x7fffffff
-#define Mask32Bit    0xffffffff
-
-#define BitClear(target,offset,mask)            (target)&=~((mask)<<(offset))
-#define BitSet(target,offset,mask,data)         (target)|=((data)&(mask))<<(offset)
-#define BitClearSet(target,offset,mask,data)    (target)=((target)&~((mask)<<(offset)))|((data)<<(offset))
-#define BitRead(target,offset,mask)             (((target)>>offset)&mask)
-
-
-
+#define BitClear(target, offset, mask) (target) &= ~((mask) << (offset))
+#define BitSet(target, offset, mask, data) (target) |= ((data) & (mask)) << (offset)
+#define BitClearSet(target, offset, mask, data) (target) = ((target) & ~((mask) << (offset))) | ((data) << (offset))
+#define BitRead(target, offset, mask) (((target) >> offset) & mask)
 
 /*========================================END===========================================*/
 
-
-
-
-
-
-
-
-
-
 /****************************************************************************************/
 /*                                                                                      */
-/*                                       GPIO²Ù×÷                                       */
+/*                                       GPIOæ“ä½œ                                       */
 /*                                                                                      */
 /****************************************************************************************/
 
 /*======================================================================================*/
 
 /*
-*Õâ²¿·Ö´úÂë²Î¿¼ÁËÕıµãÔ­×Ó
-*Èç¹ûÊ¹ÓÃF4/F1ÔòÔ­ÀíÊÇÀûÓÃCortexÄÚºËµÄÎ»´ø²Ù×÷¹¦ÄÜ£¬ÊµÏÖGPIOµÄ¸ßĞ§¶Á/Ğ´
-*Èç¹ûÊ¹ÓÃF7/H7ÔòÔ­ÀíÊÇ²Ù×÷GPIO¼Ä´æÆ÷
-*ËùÓĞ²Ù×÷Ê¹ÓÃºêÊµÏÖ£¬Ìá¸ß²Ù×÷ËÙ¶È
-*Ï¸½Ú²»¼Ó×¸Êö£¬ÏÂÃæÊÇÊ¹ÓÃ·½·¨
+*è¿™éƒ¨åˆ†ä»£ç å‚è€ƒäº†æ­£ç‚¹åŸå­
+*å¦‚æœä½¿ç”¨F4/F1åˆ™åŸç†æ˜¯åˆ©ç”¨Cortexå†…æ ¸çš„ä½å¸¦æ“ä½œåŠŸèƒ½ï¼Œå®ç°GPIOçš„é«˜æ•ˆè¯»/å†™
+*å¦‚æœä½¿ç”¨F7/H7åˆ™åŸç†æ˜¯æ“ä½œGPIOå¯„å­˜å™¨
+*æ‰€æœ‰æ“ä½œä½¿ç”¨å®å®ç°ï¼Œæé«˜æ“ä½œé€Ÿåº¦
+*ç»†èŠ‚ä¸åŠ èµ˜è¿°ï¼Œä¸‹é¢æ˜¯ä½¿ç”¨æ–¹æ³•
 *
 *
-*1.GPIOµÄÀ­¸ß/µÍ(GPIO_Write())
-*Àı£ºGPIO_Write(GPIOA_6,1);¸ÃÓï¾ä½«PA6À­¸ß
-*Àı£ºGPIO_Write(GPIOI_15,0);¸ÃÓï¾ä½«PI15À­µÍ
-*»òÕß£º
-*GPIO_Pin_Set(GPIOB_3);¸ÃÓï¾ä½«PB3À­¸ß
-*GPIO_Pin_Reset(GPIOF_3);¸ÃÓï¾ä½«PF3À­µÍ
+*1.GPIOçš„æ‹‰é«˜/ä½(GPIO_Write())
+*ä¾‹ï¼šGPIO_Write(GPIOA_6,1);è¯¥è¯­å¥å°†PA6æ‹‰é«˜
+*ä¾‹ï¼šGPIO_Write(GPIOI_15,0);è¯¥è¯­å¥å°†PI15æ‹‰ä½
+*æˆ–è€…ï¼š
+*GPIO_Pin_Set(GPIOB_3);è¯¥è¯­å¥å°†PB3æ‹‰é«˜
+*GPIO_Pin_Reset(GPIOF_3);è¯¥è¯­å¥å°†PF3æ‹‰ä½
 *
-*2.GPIOÊäÈë¶ÁÈ¡(GPIO_Read())
-*Àı£ºGPIO_Read(GPIOB_0);¸ÃÓï¾ä·µ»ØPB0ÉÏµÄÊäÈëÖµ
+*2.GPIOè¾“å…¥è¯»å–(GPIO_Read())
+*ä¾‹ï¼šGPIO_Read(GPIOB_0);è¯¥è¯­å¥è¿”å›PB0ä¸Šçš„è¾“å…¥å€¼
 *
-*3.»ñÈ¡IO×éÖĞÄ³¸ö¶Ë¿ÚµÄÆ«ÒÆ(GPIO_Get_Pin_Addr())
-*Àı£ºGPIO_Get_Pin_Addr(GPIOB_3);¸ÃÓï¾ä·µ»Ø:1<<3
-*Àı£ºGPIO_Get_Pin_Addr(GPIOA_12);¸ÃÓï¾ä·µ»Ø:1<<12
+*3.è·å–IOç»„ä¸­æŸä¸ªç«¯å£çš„åç§»(GPIO_Get_Pin_Addr())
+*ä¾‹ï¼šGPIO_Get_Pin_Addr(GPIOB_3);è¯¥è¯­å¥è¿”å›:1<<3
+*ä¾‹ï¼šGPIO_Get_Pin_Addr(GPIOA_12);è¯¥è¯­å¥è¿”å›:1<<12
 *
-*4.»ñÈ¡IO×éÖĞÄ³¸ö¶Ë¿ÚµÄĞòºÅ(GPIO_Get_Pin_Num())
-*Àı£ºGPIO_Get_Pin_Num(GPIOA_3);¸ÃÓï¾ä·µ»Ø:3
-*Àı£ºGPIO_Get_Pin_Num(GPIOA_12);¸ÃÓï¾ä·µ»Ø:12
+*4.è·å–IOç»„ä¸­æŸä¸ªç«¯å£çš„åºå·(GPIO_Get_Pin_Num())
+*ä¾‹ï¼šGPIO_Get_Pin_Num(GPIOA_3);è¯¥è¯­å¥è¿”å›:3
+*ä¾‹ï¼šGPIO_Get_Pin_Num(GPIOA_12);è¯¥è¯­å¥è¿”å›:12
 *
-*5.GPIOÊäÈë/Êä³öÄ£Ê½ÉèÖÃ£¬ÕâÒ»µãÔÚÒ»Ğ©Í¨ĞÅĞ­ÒéÀïÃæ»áºÜÓĞÓÃ£¨ÈçIIC£©
-*Àı£ºGPIO_Mode_In(GPIOA_4);¸ÃÓï¾ä½«PA4ÉèÖÃÎªÊäÈëÄ£Ê½
-*Àı£ºGPIO_Mode_Out(GPIOC_8);¸ÃÓï¾ä½«PC8ÉèÖÃÎªÊä³öÄ£Ê½
+*5.GPIOè¾“å…¥/è¾“å‡ºæ¨¡å¼è®¾ç½®ï¼Œè¿™ä¸€ç‚¹åœ¨ä¸€äº›é€šä¿¡åè®®é‡Œé¢ä¼šå¾ˆæœ‰ç”¨ï¼ˆå¦‚IICï¼‰
+*ä¾‹ï¼šGPIO_Mode_In(GPIOA_4);è¯¥è¯­å¥å°†PA4è®¾ç½®ä¸ºè¾“å…¥æ¨¡å¼
+*ä¾‹ï¼šGPIO_Mode_Out(GPIOC_8);è¯¥è¯­å¥å°†PC8è®¾ç½®ä¸ºè¾“å‡ºæ¨¡å¼
 */
 
+//////////////////////////////////////////////////////////////////////////////////
 
+//bit0~bit15ï¼š1<<Pinx
+//bit16~bit19ï¼šGPIOA=0,GPIOB=1,GPIOC=2,...
+//bit20~bit23ï¼šPIN0_ADDR=0,PIN1_ADDR=1,PIN3_ADDR=3,...
 
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////// 
-
-
-//bit0~bit15£º1<<Pinx
-//bit16~bit19£ºGPIOA=0,GPIOB=1,GPIOC=2,...
-//bit20~bit23£ºPIN0_ADDR=0,PIN1_ADDR=1,PIN3_ADDR=3,...
-
-//GPIOÒı½Å±àºÅ¶¨Òå
-typedef enum
+//GPIOå¼•è„šç¼–å·å®šä¹‰
+/*typedef enum
 {
-	PIN0_ADDR=1<<0,
-	PIN1_ADDR=1<<1,
-	PIN2_ADDR=1<<2,
-	PIN3_ADDR=1<<3,
-	PIN4_ADDR=1<<4,
-	PIN5_ADDR=1<<5,
-	PIN6_ADDR=1<<6,
-	PIN7_ADDR=1<<7,
-	PIN8_ADDR=1<<8,
-	PIN9_ADDR=1<<9,
-	PIN10_ADDR=1<<10,
-	PIN11_ADDR=1<<11,
-	PIN12_ADDR=1<<12,
-	PIN13_ADDR=1<<13,
-	PIN14_ADDR=1<<14,
-	PIN15_ADDR=1<<15 
+	PIN0_ADDR 	= 1 << 0,
+	PIN1_ADDR 	= 1 << 1,
+	PIN2_ADDR 	= 1 << 2,
+	PIN3_ADDR 	= 1 << 3,
+	PIN4_ADDR 	= 1 << 4,
+	PIN5_ADDR 	= 1 << 5,
+	PIN6_ADDR 	= 1 << 6,
+	PIN7_ADDR 	= 1 << 7,
+	PIN8_ADDR 	= 1 << 8,
+	PIN9_ADDR 	= 1 << 9,
+	PIN10_ADDR 	= 1 << 10,
+	PIN11_ADDR 	= 1 << 11,
+	PIN12_ADDR 	= 1 << 12,
+	PIN13_ADDR 	= 1 << 13,
+	PIN14_ADDR 	= 1 << 14,
+	PIN15_ADDR 	= 1 << 15
 } pin_type;
 
 typedef enum
 {
-	GPIO_GROUPA=0<<16,
-	GPIO_GROUPB=1<<16,
-	GPIO_GROUPC=2<<16,
-	GPIO_GROUPD=3<<16,
-	GPIO_GROUPE=4<<16,
-	GPIO_GROUPF=5<<16,
-	GPIO_GROUPG=6<<16,
-	GPIO_GROUPH=7<<16,
-	GPIO_GROUPI=8<<16
+	GPIO_GROUPA = 0 << 16,
+	GPIO_GROUPB = 1 << 16,
+	GPIO_GROUPC = 2 << 16,
+	GPIO_GROUPD = 3 << 16,
+	GPIO_GROUPE = 4 << 16,
+	GPIO_GROUPF = 5 << 16,
+	GPIO_GROUPG = 6 << 16,
+	GPIO_GROUPH = 7 << 16,
+	GPIO_GROUPI = 8 << 16
 } gpio_group_type;
 
 typedef enum
 {
-	PIN0_NUM=0<<20,
-	PIN1_NUM=1<<20,
-	PIN2_NUM=2<<20,
-	PIN3_NUM=3<<20,
-	PIN4_NUM=4<<20,
-	PIN5_NUM=5<<20,
-	PIN6_NUM=6<<20,
-	PIN7_NUM=7<<20,
-	PIN8_NUM=8<<20,
-	PIN9_NUM=9<<20,
-	PIN10_NUM=10<<20,
-	PIN11_NUM=11<<20,
-	PIN12_NUM=12<<20,
-	PIN13_NUM=13<<20,
-	PIN14_NUM=14<<20,
-	PIN15_NUM=15<<20
+	PIN0_NUM 	= 0 << 20,
+	PIN1_NUM 	= 1 << 20,
+	PIN2_NUM 	= 2 << 20,
+	PIN3_NUM 	= 3 << 20,
+	PIN4_NUM 	= 4 << 20,
+	PIN5_NUM 	= 5 << 20,
+	PIN6_NUM 	= 6 << 20,
+	PIN7_NUM 	= 7 << 20,
+	PIN8_NUM 	= 8 << 20,
+	PIN9_NUM 	= 9 << 20,
+	PIN10_NUM 	= 10 << 20,
+	PIN11_NUM 	= 11 << 20,
+	PIN12_NUM 	= 12 << 20,
+	PIN13_NUM 	= 13 << 20,
+	PIN14_NUM 	= 14 << 20,
+	PIN15_NUM 	= 15 << 20
 } pin_num_type;
 
 typedef enum
 {
-	GPIOA_0=PIN0_ADDR+PIN0_NUM+GPIO_GROUPA,
-	GPIOA_1=PIN1_ADDR+PIN1_NUM+GPIO_GROUPA,
-	GPIOA_2=PIN2_ADDR+PIN2_NUM+GPIO_GROUPA,
-	GPIOA_3=PIN3_ADDR+PIN3_NUM+GPIO_GROUPA,
-	GPIOA_4=PIN4_ADDR+PIN4_NUM+GPIO_GROUPA,
-	GPIOA_5=PIN5_ADDR+PIN5_NUM+GPIO_GROUPA,
-	GPIOA_6=PIN6_ADDR+PIN6_NUM+GPIO_GROUPA,
-	GPIOA_7=PIN7_ADDR+PIN7_NUM+GPIO_GROUPA,
-	GPIOA_8=PIN8_ADDR+PIN8_NUM+GPIO_GROUPA,
-	GPIOA_9=PIN9_ADDR+PIN9_NUM+GPIO_GROUPA,
-	GPIOA_10=PIN10_ADDR+PIN10_NUM+GPIO_GROUPA,
-	GPIOA_11=PIN11_ADDR+PIN11_NUM+GPIO_GROUPA,
-	GPIOA_12=PIN12_ADDR+PIN12_NUM+GPIO_GROUPA,
-	GPIOA_13=PIN13_ADDR+PIN13_NUM+GPIO_GROUPA,
-	GPIOA_14=PIN14_ADDR+PIN14_NUM+GPIO_GROUPA,
-	GPIOA_15=PIN15_ADDR+PIN15_NUM+GPIO_GROUPA,
+	GPIOA_0 = PIN0_ADDR + PIN0_NUM + GPIO_GROUPA,
+	GPIOA_1 = PIN1_ADDR + PIN1_NUM + GPIO_GROUPA,
+	GPIOA_2 = PIN2_ADDR + PIN2_NUM + GPIO_GROUPA,
+	GPIOA_3 = PIN3_ADDR + PIN3_NUM + GPIO_GROUPA,
+	GPIOA_4 = PIN4_ADDR + PIN4_NUM + GPIO_GROUPA,
+	GPIOA_5 = PIN5_ADDR + PIN5_NUM + GPIO_GROUPA,
+	GPIOA_6 = PIN6_ADDR + PIN6_NUM + GPIO_GROUPA,
+	GPIOA_7 = PIN7_ADDR + PIN7_NUM + GPIO_GROUPA,
+	GPIOA_8 = PIN8_ADDR + PIN8_NUM + GPIO_GROUPA,
+	GPIOA_9 = PIN9_ADDR + PIN9_NUM + GPIO_GROUPA,
+	GPIOA_10 = PIN10_ADDR + PIN10_NUM + GPIO_GROUPA,
+	GPIOA_11 = PIN11_ADDR + PIN11_NUM + GPIO_GROUPA,
+	GPIOA_12 = PIN12_ADDR + PIN12_NUM + GPIO_GROUPA,
+	GPIOA_13 = PIN13_ADDR + PIN13_NUM + GPIO_GROUPA,
+	GPIOA_14 = PIN14_ADDR + PIN14_NUM + GPIO_GROUPA,
+	GPIOA_15 = PIN15_ADDR + PIN15_NUM + GPIO_GROUPA,
 
-	GPIOB_0=PIN0_ADDR+PIN0_NUM+GPIO_GROUPB,
-	GPIOB_1=PIN1_ADDR+PIN1_NUM+GPIO_GROUPB,
-	GPIOB_2=PIN2_ADDR+PIN2_NUM+GPIO_GROUPB,
-	GPIOB_3=PIN3_ADDR+PIN3_NUM+GPIO_GROUPB,
-	GPIOB_4=PIN4_ADDR+PIN4_NUM+GPIO_GROUPB,
-	GPIOB_5=PIN5_ADDR+PIN5_NUM+GPIO_GROUPB,
-	GPIOB_6=PIN6_ADDR+PIN6_NUM+GPIO_GROUPB,
-	GPIOB_7=PIN7_ADDR+PIN7_NUM+GPIO_GROUPB,
-	GPIOB_8=PIN8_ADDR+PIN8_NUM+GPIO_GROUPB,
-	GPIOB_9=PIN9_ADDR+PIN9_NUM+GPIO_GROUPB,
-	GPIOB_10=PIN10_ADDR+PIN10_NUM+GPIO_GROUPB,
-	GPIOB_11=PIN11_ADDR+PIN11_NUM+GPIO_GROUPB,
-	GPIOB_12=PIN12_ADDR+PIN12_NUM+GPIO_GROUPB,
-	GPIOB_13=PIN13_ADDR+PIN13_NUM+GPIO_GROUPB,
-	GPIOB_14=PIN14_ADDR+PIN14_NUM+GPIO_GROUPB,
-	GPIOB_15=PIN15_ADDR+PIN15_NUM+GPIO_GROUPB,
+	GPIOB_0 = PIN0_ADDR + PIN0_NUM + GPIO_GROUPB,
+	GPIOB_1 = PIN1_ADDR + PIN1_NUM + GPIO_GROUPB,
+	GPIOB_2 = PIN2_ADDR + PIN2_NUM + GPIO_GROUPB,
+	GPIOB_3 = PIN3_ADDR + PIN3_NUM + GPIO_GROUPB,
+	GPIOB_4 = PIN4_ADDR + PIN4_NUM + GPIO_GROUPB,
+	GPIOB_5 = PIN5_ADDR + PIN5_NUM + GPIO_GROUPB,
+	GPIOB_6 = PIN6_ADDR + PIN6_NUM + GPIO_GROUPB,
+	GPIOB_7 = PIN7_ADDR + PIN7_NUM + GPIO_GROUPB,
+	GPIOB_8 = PIN8_ADDR + PIN8_NUM + GPIO_GROUPB,
+	GPIOB_9 = PIN9_ADDR + PIN9_NUM + GPIO_GROUPB,
+	GPIOB_10 = PIN10_ADDR + PIN10_NUM + GPIO_GROUPB,
+	GPIOB_11 = PIN11_ADDR + PIN11_NUM + GPIO_GROUPB,
+	GPIOB_12 = PIN12_ADDR + PIN12_NUM + GPIO_GROUPB,
+	GPIOB_13 = PIN13_ADDR + PIN13_NUM + GPIO_GROUPB,
+	GPIOB_14 = PIN14_ADDR + PIN14_NUM + GPIO_GROUPB,
+	GPIOB_15 = PIN15_ADDR + PIN15_NUM + GPIO_GROUPB,
 
-	GPIOC_0=PIN0_ADDR+PIN0_NUM+GPIO_GROUPC,
-	GPIOC_1=PIN1_ADDR+PIN1_NUM+GPIO_GROUPC,
-	GPIOC_2=PIN2_ADDR+PIN2_NUM+GPIO_GROUPC,
-	GPIOC_3=PIN3_ADDR+PIN3_NUM+GPIO_GROUPC,
-	GPIOC_4=PIN4_ADDR+PIN4_NUM+GPIO_GROUPC,
-	GPIOC_5=PIN5_ADDR+PIN5_NUM+GPIO_GROUPC,
-	GPIOC_6=PIN6_ADDR+PIN6_NUM+GPIO_GROUPC,
-	GPIOC_7=PIN7_ADDR+PIN7_NUM+GPIO_GROUPC,
-	GPIOC_8=PIN8_ADDR+PIN8_NUM+GPIO_GROUPC,
-	GPIOC_9=PIN9_ADDR+PIN9_NUM+GPIO_GROUPC,
-	GPIOC_10=PIN10_ADDR+PIN10_NUM+GPIO_GROUPC,
-	GPIOC_11=PIN11_ADDR+PIN11_NUM+GPIO_GROUPC,
-	GPIOC_12=PIN12_ADDR+PIN12_NUM+GPIO_GROUPC,
-	GPIOC_13=PIN13_ADDR+PIN13_NUM+GPIO_GROUPC,
-	GPIOC_14=PIN14_ADDR+PIN14_NUM+GPIO_GROUPC,
-	GPIOC_15=PIN15_ADDR+PIN15_NUM+GPIO_GROUPC,
+	GPIOC_0 = PIN0_ADDR + PIN0_NUM + GPIO_GROUPC,
+	GPIOC_1 = PIN1_ADDR + PIN1_NUM + GPIO_GROUPC,
+	GPIOC_2 = PIN2_ADDR + PIN2_NUM + GPIO_GROUPC,
+	GPIOC_3 = PIN3_ADDR + PIN3_NUM + GPIO_GROUPC,
+	GPIOC_4 = PIN4_ADDR + PIN4_NUM + GPIO_GROUPC,
+	GPIOC_5 = PIN5_ADDR + PIN5_NUM + GPIO_GROUPC,
+	GPIOC_6 = PIN6_ADDR + PIN6_NUM + GPIO_GROUPC,
+	GPIOC_7 = PIN7_ADDR + PIN7_NUM + GPIO_GROUPC,
+	GPIOC_8 = PIN8_ADDR + PIN8_NUM + GPIO_GROUPC,
+	GPIOC_9 = PIN9_ADDR + PIN9_NUM + GPIO_GROUPC,
+	GPIOC_10 = PIN10_ADDR + PIN10_NUM + GPIO_GROUPC,
+	GPIOC_11 = PIN11_ADDR + PIN11_NUM + GPIO_GROUPC,
+	GPIOC_12 = PIN12_ADDR + PIN12_NUM + GPIO_GROUPC,
+	GPIOC_13 = PIN13_ADDR + PIN13_NUM + GPIO_GROUPC,
+	GPIOC_14 = PIN14_ADDR + PIN14_NUM + GPIO_GROUPC,
+	GPIOC_15 = PIN15_ADDR + PIN15_NUM + GPIO_GROUPC,
 
-	GPIOD_0=PIN0_ADDR+PIN0_NUM+GPIO_GROUPD,
-	GPIOD_1=PIN1_ADDR+PIN1_NUM+GPIO_GROUPD,
-	GPIOD_2=PIN2_ADDR+PIN2_NUM+GPIO_GROUPD,
-	GPIOD_3=PIN3_ADDR+PIN3_NUM+GPIO_GROUPD,
-	GPIOD_4=PIN4_ADDR+PIN4_NUM+GPIO_GROUPD,
-	GPIOD_5=PIN5_ADDR+PIN5_NUM+GPIO_GROUPD,
-	GPIOD_6=PIN6_ADDR+PIN6_NUM+GPIO_GROUPD,
-	GPIOD_7=PIN7_ADDR+PIN7_NUM+GPIO_GROUPD,
-	GPIOD_8=PIN8_ADDR+PIN8_NUM+GPIO_GROUPD,
-	GPIOD_9=PIN9_ADDR+PIN9_NUM+GPIO_GROUPD,
-	GPIOD_10=PIN10_ADDR+PIN10_NUM+GPIO_GROUPD,
-	GPIOD_11=PIN11_ADDR+PIN11_NUM+GPIO_GROUPD,
-	GPIOD_12=PIN12_ADDR+PIN12_NUM+GPIO_GROUPD,
-	GPIOD_13=PIN13_ADDR+PIN13_NUM+GPIO_GROUPD,
-	GPIOD_14=PIN14_ADDR+PIN14_NUM+GPIO_GROUPD,
-	GPIOD_15=PIN15_ADDR+PIN15_NUM+GPIO_GROUPD,
+	GPIOD_0 = PIN0_ADDR + PIN0_NUM + GPIO_GROUPD,
+	GPIOD_1 = PIN1_ADDR + PIN1_NUM + GPIO_GROUPD,
+	GPIOD_2 = PIN2_ADDR + PIN2_NUM + GPIO_GROUPD,
+	GPIOD_3 = PIN3_ADDR + PIN3_NUM + GPIO_GROUPD,
+	GPIOD_4 = PIN4_ADDR + PIN4_NUM + GPIO_GROUPD,
+	GPIOD_5 = PIN5_ADDR + PIN5_NUM + GPIO_GROUPD,
+	GPIOD_6 = PIN6_ADDR + PIN6_NUM + GPIO_GROUPD,
+	GPIOD_7 = PIN7_ADDR + PIN7_NUM + GPIO_GROUPD,
+	GPIOD_8 = PIN8_ADDR + PIN8_NUM + GPIO_GROUPD,
+	GPIOD_9 = PIN9_ADDR + PIN9_NUM + GPIO_GROUPD,
+	GPIOD_10 = PIN10_ADDR + PIN10_NUM + GPIO_GROUPD,
+	GPIOD_11 = PIN11_ADDR + PIN11_NUM + GPIO_GROUPD,
+	GPIOD_12 = PIN12_ADDR + PIN12_NUM + GPIO_GROUPD,
+	GPIOD_13 = PIN13_ADDR + PIN13_NUM + GPIO_GROUPD,
+	GPIOD_14 = PIN14_ADDR + PIN14_NUM + GPIO_GROUPD,
+	GPIOD_15 = PIN15_ADDR + PIN15_NUM + GPIO_GROUPD,
 
-	GPIOE_0=PIN0_ADDR+PIN0_NUM+GPIO_GROUPE,
-	GPIOE_1=PIN1_ADDR+PIN1_NUM+GPIO_GROUPE,
-	GPIOE_2=PIN2_ADDR+PIN2_NUM+GPIO_GROUPE,
-	GPIOE_3=PIN3_ADDR+PIN3_NUM+GPIO_GROUPE,
-	GPIOE_4=PIN4_ADDR+PIN4_NUM+GPIO_GROUPE,
-	GPIOE_5=PIN5_ADDR+PIN5_NUM+GPIO_GROUPE,
-	GPIOE_6=PIN6_ADDR+PIN6_NUM+GPIO_GROUPE,
-	GPIOE_7=PIN7_ADDR+PIN7_NUM+GPIO_GROUPE,
-	GPIOE_8=PIN8_ADDR+PIN8_NUM+GPIO_GROUPE,
-	GPIOE_9=PIN9_ADDR+PIN9_NUM+GPIO_GROUPE,
-	GPIOE_10=PIN10_ADDR+PIN10_NUM+GPIO_GROUPE,
-	GPIOE_11=PIN11_ADDR+PIN11_NUM+GPIO_GROUPE,
-	GPIOE_12=PIN12_ADDR+PIN12_NUM+GPIO_GROUPE,
-	GPIOE_13=PIN13_ADDR+PIN13_NUM+GPIO_GROUPE,
-	GPIOE_14=PIN14_ADDR+PIN14_NUM+GPIO_GROUPE,
-	GPIOE_15=PIN15_ADDR+PIN15_NUM+GPIO_GROUPE,
+	GPIOE_0 = PIN0_ADDR + PIN0_NUM + GPIO_GROUPE,
+	GPIOE_1 = PIN1_ADDR + PIN1_NUM + GPIO_GROUPE,
+	GPIOE_2 = PIN2_ADDR + PIN2_NUM + GPIO_GROUPE,
+	GPIOE_3 = PIN3_ADDR + PIN3_NUM + GPIO_GROUPE,
+	GPIOE_4 = PIN4_ADDR + PIN4_NUM + GPIO_GROUPE,
+	GPIOE_5 = PIN5_ADDR + PIN5_NUM + GPIO_GROUPE,
+	GPIOE_6 = PIN6_ADDR + PIN6_NUM + GPIO_GROUPE,
+	GPIOE_7 = PIN7_ADDR + PIN7_NUM + GPIO_GROUPE,
+	GPIOE_8 = PIN8_ADDR + PIN8_NUM + GPIO_GROUPE,
+	GPIOE_9 = PIN9_ADDR + PIN9_NUM + GPIO_GROUPE,
+	GPIOE_10 = PIN10_ADDR + PIN10_NUM + GPIO_GROUPE,
+	GPIOE_11 = PIN11_ADDR + PIN11_NUM + GPIO_GROUPE,
+	GPIOE_12 = PIN12_ADDR + PIN12_NUM + GPIO_GROUPE,
+	GPIOE_13 = PIN13_ADDR + PIN13_NUM + GPIO_GROUPE,
+	GPIOE_14 = PIN14_ADDR + PIN14_NUM + GPIO_GROUPE,
+	GPIOE_15 = PIN15_ADDR + PIN15_NUM + GPIO_GROUPE,
 
-	GPIOF_0=PIN0_ADDR+PIN0_NUM+GPIO_GROUPF,
-	GPIOF_1=PIN1_ADDR+PIN1_NUM+GPIO_GROUPF,
-	GPIOF_2=PIN2_ADDR+PIN2_NUM+GPIO_GROUPF,
-	GPIOF_3=PIN3_ADDR+PIN3_NUM+GPIO_GROUPF,
-	GPIOF_4=PIN4_ADDR+PIN4_NUM+GPIO_GROUPF,
-	GPIOF_5=PIN5_ADDR+PIN5_NUM+GPIO_GROUPF,
-	GPIOF_6=PIN6_ADDR+PIN6_NUM+GPIO_GROUPF,
-	GPIOF_7=PIN7_ADDR+PIN7_NUM+GPIO_GROUPF,
-	GPIOF_8=PIN8_ADDR+PIN8_NUM+GPIO_GROUPF,
-	GPIOF_9=PIN9_ADDR+PIN9_NUM+GPIO_GROUPF,
-	GPIOF_10=PIN10_ADDR+PIN10_NUM+GPIO_GROUPF,
-	GPIOF_11=PIN11_ADDR+PIN11_NUM+GPIO_GROUPF,
-	GPIOF_12=PIN12_ADDR+PIN12_NUM+GPIO_GROUPF,
-	GPIOF_13=PIN13_ADDR+PIN13_NUM+GPIO_GROUPF,
-	GPIOF_14=PIN14_ADDR+PIN14_NUM+GPIO_GROUPF,
-	GPIOF_15=PIN15_ADDR+PIN15_NUM+GPIO_GROUPF,
+	GPIOF_0 = PIN0_ADDR + PIN0_NUM + GPIO_GROUPF,
+	GPIOF_1 = PIN1_ADDR + PIN1_NUM + GPIO_GROUPF,
+	GPIOF_2 = PIN2_ADDR + PIN2_NUM + GPIO_GROUPF,
+	GPIOF_3 = PIN3_ADDR + PIN3_NUM + GPIO_GROUPF,
+	GPIOF_4 = PIN4_ADDR + PIN4_NUM + GPIO_GROUPF,
+	GPIOF_5 = PIN5_ADDR + PIN5_NUM + GPIO_GROUPF,
+	GPIOF_6 = PIN6_ADDR + PIN6_NUM + GPIO_GROUPF,
+	GPIOF_7 = PIN7_ADDR + PIN7_NUM + GPIO_GROUPF,
+	GPIOF_8 = PIN8_ADDR + PIN8_NUM + GPIO_GROUPF,
+	GPIOF_9 = PIN9_ADDR + PIN9_NUM + GPIO_GROUPF,
+	GPIOF_10 = PIN10_ADDR + PIN10_NUM + GPIO_GROUPF,
+	GPIOF_11 = PIN11_ADDR + PIN11_NUM + GPIO_GROUPF,
+	GPIOF_12 = PIN12_ADDR + PIN12_NUM + GPIO_GROUPF,
+	GPIOF_13 = PIN13_ADDR + PIN13_NUM + GPIO_GROUPF,
+	GPIOF_14 = PIN14_ADDR + PIN14_NUM + GPIO_GROUPF,
+	GPIOF_15 = PIN15_ADDR + PIN15_NUM + GPIO_GROUPF,
 
-	GPIOG_0=PIN0_ADDR+PIN0_NUM+GPIO_GROUPG,
-	GPIOG_1=PIN1_ADDR+PIN1_NUM+GPIO_GROUPG,
-	GPIOG_2=PIN2_ADDR+PIN2_NUM+GPIO_GROUPG,
-	GPIOG_3=PIN3_ADDR+PIN3_NUM+GPIO_GROUPG,
-	GPIOG_4=PIN4_ADDR+PIN4_NUM+GPIO_GROUPG,
-	GPIOG_5=PIN5_ADDR+PIN5_NUM+GPIO_GROUPG,
-	GPIOG_6=PIN6_ADDR+PIN6_NUM+GPIO_GROUPG,
-	GPIOG_7=PIN7_ADDR+PIN7_NUM+GPIO_GROUPG,
-	GPIOG_8=PIN8_ADDR+PIN8_NUM+GPIO_GROUPG,
-	GPIOG_9=PIN9_ADDR+PIN9_NUM+GPIO_GROUPG,
-	GPIOG_10=PIN10_ADDR+PIN10_NUM+GPIO_GROUPG,
-	GPIOG_11=PIN11_ADDR+PIN11_NUM+GPIO_GROUPG,
-	GPIOG_12=PIN12_ADDR+PIN12_NUM+GPIO_GROUPG,
-	GPIOG_13=PIN13_ADDR+PIN13_NUM+GPIO_GROUPG,
-	GPIOG_14=PIN14_ADDR+PIN14_NUM+GPIO_GROUPG,
-	GPIOG_15=PIN15_ADDR+PIN15_NUM+GPIO_GROUPG,
+	GPIOG_0 = PIN0_ADDR + PIN0_NUM + GPIO_GROUPG,
+	GPIOG_1 = PIN1_ADDR + PIN1_NUM + GPIO_GROUPG,
+	GPIOG_2 = PIN2_ADDR + PIN2_NUM + GPIO_GROUPG,
+	GPIOG_3 = PIN3_ADDR + PIN3_NUM + GPIO_GROUPG,
+	GPIOG_4 = PIN4_ADDR + PIN4_NUM + GPIO_GROUPG,
+	GPIOG_5 = PIN5_ADDR + PIN5_NUM + GPIO_GROUPG,
+	GPIOG_6 = PIN6_ADDR + PIN6_NUM + GPIO_GROUPG,
+	GPIOG_7 = PIN7_ADDR + PIN7_NUM + GPIO_GROUPG,
+	GPIOG_8 = PIN8_ADDR + PIN8_NUM + GPIO_GROUPG,
+	GPIOG_9 = PIN9_ADDR + PIN9_NUM + GPIO_GROUPG,
+	GPIOG_10 = PIN10_ADDR + PIN10_NUM + GPIO_GROUPG,
+	GPIOG_11 = PIN11_ADDR + PIN11_NUM + GPIO_GROUPG,
+	GPIOG_12 = PIN12_ADDR + PIN12_NUM + GPIO_GROUPG,
+	GPIOG_13 = PIN13_ADDR + PIN13_NUM + GPIO_GROUPG,
+	GPIOG_14 = PIN14_ADDR + PIN14_NUM + GPIO_GROUPG,
+	GPIOG_15 = PIN15_ADDR + PIN15_NUM + GPIO_GROUPG,
 
-	GPIOH_0=PIN0_ADDR+PIN0_NUM+GPIO_GROUPH,
-	GPIOH_1=PIN1_ADDR+PIN1_NUM+GPIO_GROUPH,
-	GPIOH_2=PIN2_ADDR+PIN2_NUM+GPIO_GROUPH,
-	GPIOH_3=PIN3_ADDR+PIN3_NUM+GPIO_GROUPH,
-	GPIOH_4=PIN4_ADDR+PIN4_NUM+GPIO_GROUPH,
-	GPIOH_5=PIN5_ADDR+PIN5_NUM+GPIO_GROUPH,
-	GPIOH_6=PIN6_ADDR+PIN6_NUM+GPIO_GROUPH,
-	GPIOH_7=PIN7_ADDR+PIN7_NUM+GPIO_GROUPH,
-	GPIOH_8=PIN8_ADDR+PIN8_NUM+GPIO_GROUPH,
-	GPIOH_9=PIN9_ADDR+PIN9_NUM+GPIO_GROUPH,
-	GPIOH_10=PIN10_ADDR+PIN10_NUM+GPIO_GROUPH,
-	GPIOH_11=PIN11_ADDR+PIN11_NUM+GPIO_GROUPH,
-	GPIOH_12=PIN12_ADDR+PIN12_NUM+GPIO_GROUPH,
-	GPIOH_13=PIN13_ADDR+PIN13_NUM+GPIO_GROUPH,
-	GPIOH_14=PIN14_ADDR+PIN14_NUM+GPIO_GROUPH,
-	GPIOH_15=PIN15_ADDR+PIN15_NUM+GPIO_GROUPH,
+	GPIOH_0 = PIN0_ADDR + PIN0_NUM + GPIO_GROUPH,
+	GPIOH_1 = PIN1_ADDR + PIN1_NUM + GPIO_GROUPH,
+	GPIOH_2 = PIN2_ADDR + PIN2_NUM + GPIO_GROUPH,
+	GPIOH_3 = PIN3_ADDR + PIN3_NUM + GPIO_GROUPH,
+	GPIOH_4 = PIN4_ADDR + PIN4_NUM + GPIO_GROUPH,
+	GPIOH_5 = PIN5_ADDR + PIN5_NUM + GPIO_GROUPH,
+	GPIOH_6 = PIN6_ADDR + PIN6_NUM + GPIO_GROUPH,
+	GPIOH_7 = PIN7_ADDR + PIN7_NUM + GPIO_GROUPH,
+	GPIOH_8 = PIN8_ADDR + PIN8_NUM + GPIO_GROUPH,
+	GPIOH_9 = PIN9_ADDR + PIN9_NUM + GPIO_GROUPH,
+	GPIOH_10 = PIN10_ADDR + PIN10_NUM + GPIO_GROUPH,
+	GPIOH_11 = PIN11_ADDR + PIN11_NUM + GPIO_GROUPH,
+	GPIOH_12 = PIN12_ADDR + PIN12_NUM + GPIO_GROUPH,
+	GPIOH_13 = PIN13_ADDR + PIN13_NUM + GPIO_GROUPH,
+	GPIOH_14 = PIN14_ADDR + PIN14_NUM + GPIO_GROUPH,
+	GPIOH_15 = PIN15_ADDR + PIN15_NUM + GPIO_GROUPH,
 
-	GPIOI_0=PIN0_ADDR+PIN0_NUM+GPIO_GROUPI,
-	GPIOI_1=PIN1_ADDR+PIN1_NUM+GPIO_GROUPI,
-	GPIOI_2=PIN2_ADDR+PIN2_NUM+GPIO_GROUPI,
-	GPIOI_3=PIN3_ADDR+PIN3_NUM+GPIO_GROUPI,
-	GPIOI_4=PIN4_ADDR+PIN4_NUM+GPIO_GROUPI,
-	GPIOI_5=PIN5_ADDR+PIN5_NUM+GPIO_GROUPI,
-	GPIOI_6=PIN6_ADDR+PIN6_NUM+GPIO_GROUPI,
-	GPIOI_7=PIN7_ADDR+PIN7_NUM+GPIO_GROUPI,
-	GPIOI_8=PIN8_ADDR+PIN8_NUM+GPIO_GROUPI,
-	GPIOI_9=PIN9_ADDR+PIN9_NUM+GPIO_GROUPI,
-	GPIOI_10=PIN10_ADDR+PIN10_NUM+GPIO_GROUPI,
-	GPIOI_11=PIN11_ADDR+PIN11_NUM+GPIO_GROUPI,
-	GPIOI_12=PIN12_ADDR+PIN12_NUM+GPIO_GROUPI,
-	GPIOI_13=PIN13_ADDR+PIN13_NUM+GPIO_GROUPI,
-	GPIOI_14=PIN14_ADDR+PIN14_NUM+GPIO_GROUPI,
-	GPIOI_15=PIN15_ADDR+PIN15_NUM+GPIO_GROUPI,
-    
-    GPIO_NONE
+	GPIOI_0 = PIN0_ADDR + PIN0_NUM + GPIO_GROUPI,
+	GPIOI_1 = PIN1_ADDR + PIN1_NUM + GPIO_GROUPI,
+	GPIOI_2 = PIN2_ADDR + PIN2_NUM + GPIO_GROUPI,
+	GPIOI_3 = PIN3_ADDR + PIN3_NUM + GPIO_GROUPI,
+	GPIOI_4 = PIN4_ADDR + PIN4_NUM + GPIO_GROUPI,
+	GPIOI_5 = PIN5_ADDR + PIN5_NUM + GPIO_GROUPI,
+	GPIOI_6 = PIN6_ADDR + PIN6_NUM + GPIO_GROUPI,
+	GPIOI_7 = PIN7_ADDR + PIN7_NUM + GPIO_GROUPI,
+	GPIOI_8 = PIN8_ADDR + PIN8_NUM + GPIO_GROUPI,
+	GPIOI_9 = PIN9_ADDR + PIN9_NUM + GPIO_GROUPI,
+	GPIOI_10 = PIN10_ADDR + PIN10_NUM + GPIO_GROUPI,
+	GPIOI_11 = PIN11_ADDR + PIN11_NUM + GPIO_GROUPI,
+	GPIOI_12 = PIN12_ADDR + PIN12_NUM + GPIO_GROUPI,
+	GPIOI_13 = PIN13_ADDR + PIN13_NUM + GPIO_GROUPI,
+	GPIOI_14 = PIN14_ADDR + PIN14_NUM + GPIO_GROUPI,
+	GPIOI_15 = PIN15_ADDR + PIN15_NUM + GPIO_GROUPI,
+
+	GPIO_NONE
 } gpio_type;
-	
-#define GPIO_Get_Pin_Num(x)		(x>>20)
-#define _Get_GPIO_Num(x)		((x>>16)&0xf)
 
-#define GPIO_Get_Pin_Addr(x)    (x&0xffff)
-#define _Get_GPIO_Addr(x)	    ((GPIO_TypeDef*)((_Get_GPIO_Num(x)<<10)+GPIOA_BASE))
+#define GPIO_Get_Pin_Num(x) 	(x >> 20)
+#define _Get_GPIO_Num(x) 		((x >> 16) & 0xf)
 
-#define GPIO_Mode_In(x)              _Get_GPIO_Addr(x)->MODER&=~(3<<(GPIO_Get_Pin_Num(x)<<1))
-#define GPIO_Mode_Out(x)             GPIO_Mode_In(x); \
-                                     _Get_GPIO_Addr(x)->MODER|=1<<(GPIO_Get_Pin_Num(x)<<1)
+#define GPIO_Get_Pin_Addr(x) 	(x & 0xffff)
+#define _Get_GPIO_Addr(x) 		((GPIO_TypeDef *)((_Get_GPIO_Num(x) << 10) + GPIOA_BASE))
 
+#define GPIO_Mode_In(x) 		_Get_GPIO_Addr(x)->MODER &= ~(3 << (GPIO_Get_Pin_Num(x) << 1))
+#define GPIO_Mode_Out(x) 		\
+								GPIO_Mode_In(x);     \
+								_Get_GPIO_Addr(x)->MODER |= 1 << (GPIO_Get_Pin_Num(x) << 1)*/
 
 #if defined USE_STM32F4 || defined USE_STM32F1
-//Î»´ø²Ù×÷,ÊµÏÖ51ÀàËÆµÄGPIO¿ØÖÆ¹¦ÄÜ
-//¾ßÌåÊµÏÖË¼Ïë,²Î¿¼<<CM3È¨ÍşÖ¸ÄÏ>>µÚÎåÕÂ(87Ò³~92Ò³).M4Í¬M3ÀàËÆ,Ö»ÊÇ¼Ä´æÆ÷µØÖ·±äÁË.
-//IO¿Ú²Ù×÷ºê¶¨Òå
-#define BITBAND(addr, bitnum) 	((addr & 0xF0000000)+0x2000000+((addr &0xFFFFF)<<5)+(bitnum<<2)) 
-#define MEM_ADDR(addr)  		*((volatile unsigned long  *)(addr)) 
-#define BIT_ADDR(addr, bitnum)  MEM_ADDR(BITBAND(addr, bitnum)) 
+//ä½å¸¦æ“ä½œ,å®ç°51ç±»ä¼¼çš„GPIOæ§åˆ¶åŠŸèƒ½
+//å…·ä½“å®ç°æ€æƒ³,å‚è€ƒ<<CM3æƒå¨æŒ‡å—>>ç¬¬äº”ç« (87é¡µ~92é¡µ).M4åŒM3ç±»ä¼¼,åªæ˜¯å¯„å­˜å™¨åœ°å€å˜äº†.
+//IOå£æ“ä½œå®å®šä¹‰
+#define BITBAND(addr, bitnum) ((addr & 0xF0000000) + 0x2000000 + ((addr & 0xFFFFF) << 5) + (bitnum << 2))
+#define MEM_ADDR(addr) *((volatile unsigned long *)(addr))
+#define BIT_ADDR(addr, bitnum) MEM_ADDR(BITBAND(addr, bitnum))
 
-//ODR»òIDRµØÖ·Æ«ÒÆÁ¿
+//ODRæˆ–IDRåœ°å€åç§»é‡
 #if defined USE_STM32F4
 #define ODR_OFFSET 20
 #define IDR_OFFSET 16
@@ -623,144 +583,126 @@ typedef enum
 #define IDR_OFFSET 8
 #endif
 
-#define _GPIO_Write(x)		BIT_ADDR(((uint32_t)_Get_GPIO_Addr(x)+ODR_OFFSET),GPIO_Get_Pin_Num(x))
-#define GPIO_Read(x)		BIT_ADDR(((uint32_t)_Get_GPIO_Addr(x)+IDR_OFFSET),GPIO_Get_Pin_Num(x))
+#define _GPIO_Write(x) BIT_ADDR(((uint32_t)_Get_GPIO_Addr(x) + ODR_OFFSET), GPIO_Get_Pin_Num(x))
+#define GPIO_Read(x) BIT_ADDR(((uint32_t)_Get_GPIO_Addr(x) + IDR_OFFSET), GPIO_Get_Pin_Num(x))
 
-#define GPIO_Write(x,y)     _GPIO_Write(x)=y
+#define GPIO_Write(x, y) _GPIO_Write(x) = y
 
-#define GPIO_Pin_Set(x)      _GPIO_Write(x)=1
-#define GPIO_Pin_Reset(x)    _GPIO_Write(x)=0
-
-
+#define GPIO_Pin_Set(x) _GPIO_Write(x) = 1
+#define GPIO_Pin_Reset(x) _GPIO_Write(x) = 0
 
 #endif
 
 #if defined USE_STM32F7 || defined USE_STM32H7
 
-#define BSRR_OFFSET         0x18
-#define IDR_OFFSET          0x10
+/*#define BSRR_OFFSET 0x18
+#define IDR_OFFSET 0x10
 
-//x£ºGPIO¶Ë¿Ú£¬y£ºÒªĞ´ÈëµÄÖµ£¨0/1£©
-#define GPIO_Write(x,y)      *(((uint16_t*)((uint32_t)_Get_GPIO_Addr(x)+BSRR_OFFSET))+((~(y))&1))|=GPIO_Get_Pin_Addr(x)
-#define GPIO_Read(x)         (((*((uint16_t*)((uint32_t)_Get_GPIO_Addr(x)+IDR_OFFSET)))>>GPIO_Get_Pin_Num(x))&1) 
+//xï¼šGPIOç«¯å£ï¼Œyï¼šè¦å†™å…¥çš„å€¼ï¼ˆ0/1ï¼‰
+#define GPIO_Write(x, y) *(((uint16_t *)((uint32_t)_Get_GPIO_Addr(x) + BSRR_OFFSET)) + ((~(y)) & 1)) |= GPIO_Get_Pin_Addr(x)
+#define GPIO_Read(x) (((*((uint16_t *)((uint32_t)_Get_GPIO_Addr(x) + IDR_OFFSET))) >> GPIO_Get_Pin_Num(x)) & 1)
 
-#define GPIO_Pin_Set(x)      GPIO_Write(x,1)
-#define GPIO_Pin_Reset(x)    GPIO_Write(x,0)
+#define GPIO_Pin_Set(x) GPIO_Write(x, 1)
+#define GPIO_Pin_Reset(x) GPIO_Write(x, 0)*/
 
 #endif
 /*=========================================END==========================================*/
 
-
-
-
-
-
-
-
-
-
 /****************************************************************************************/
 /*                                                                                      */
-/*                                     ÏµÍ³¶¨Ê±Æ÷                                       */
+/*                                     ç³»ç»Ÿå®šæ—¶å™¨                                       */
 /*                                                                                      */
 /****************************************************************************************/
 
 /*======================================================================================*/
 
 /*
-*ÏµÍ³¶¨Ê±Æ÷ÊÇÒ»¸ö¹«ÓÃµÄ¶¨Ê±Æ÷£¬ÎªÕû¸öÏµÍ³Ìá¹©Í¨ÓÃµÄ¡¢¼òµ¥µÄ¡¢±ê×¼µÄµ¹¼ÆÊ±»òÑÓÊ±¹¦ÄÜ
-*ÈÎºÎÒ»¸ö¿âµÄ´úÂë¶¼¿ÉÒÔÊ¹ÓÃ¸Ã¶¨Ê±Æ÷£¬²¢ÇÒ¸Ã¶¨Ê±Æ÷¿ÉÒÔÔÚ²»Í¬µÄ¿âÖĞ±»¸´ÓÃ£¨²»ÓÃÔÙÎªÃ¿¸öÆ÷¼şµ¥¶À·ÖÅäÒ»¸öÍâÉè¶¨Ê±Æ÷ÁË£©
-*Ä¬ÈÏÇé¿öÏÂ¸Ã¶¨Ê±Æ÷ÊÇSysTick¶¨Ê±Æ÷£¨ÍÆ¼ö£©£¬µ«ÊÇÓÃ»§Ò²¿ÉÒÔÖ¸ÅäÎªÆäËû¶¨Ê±Æ÷
-*µ±ÏµÍ³¶¨Ê±Æ÷±»Ö¸¶¨ÎªSysTick¶¨Ê±Æ÷Ê±£¬ÓÃ»§²»ĞèÒªÎªÆä±àĞ´ÈÎºÎÇı¶¯´úÂë£¬¶ø¿ÉÒÔÖ±½ÓÊ¹ÓÃ
-*µ«ÊÇÒª×¢Òâ²»Í¬Æ÷¼şÖĞSysTickµÄÊ±ÖÓÆµÂÊ¿ÉÄÜ²»Í¬£¬ÔÚÅäÖÃÇøÒªÎªÏµÍ³¶¨Ê±Æ÷Ìá¹©ÕıÈ·µÄÊ±ÖÓÆµÂÊ£¬·ñÔò»áµ¼ÖÂ¶¨Ê±Ê±¼ä²»×¼
-*£¡£¡Èç¹ûÊ¹ÓÃF4/F1ÏµÁĞ£¬²»ÒªºÍÕıµãÔ­×ÓµÄdelayº¯Êı»ìÓÃ£¡£¡
-*µ¹¼ÆÊ±¹¦ÄÜÑİÊ¾£º
+*ç³»ç»Ÿå®šæ—¶å™¨æ˜¯ä¸€ä¸ªå…¬ç”¨çš„å®šæ—¶å™¨ï¼Œä¸ºæ•´ä¸ªç³»ç»Ÿæä¾›é€šç”¨çš„ã€ç®€å•çš„ã€æ ‡å‡†çš„å€’è®¡æ—¶æˆ–å»¶æ—¶åŠŸèƒ½
+*ä»»ä½•ä¸€ä¸ªåº“çš„ä»£ç éƒ½å¯ä»¥ä½¿ç”¨è¯¥å®šæ—¶å™¨ï¼Œå¹¶ä¸”è¯¥å®šæ—¶å™¨å¯ä»¥åœ¨ä¸åŒçš„åº“ä¸­è¢«å¤ç”¨ï¼ˆä¸ç”¨å†ä¸ºæ¯ä¸ªå™¨ä»¶å•ç‹¬åˆ†é…ä¸€ä¸ªå¤–è®¾å®šæ—¶å™¨äº†ï¼‰
+*é»˜è®¤æƒ…å†µä¸‹è¯¥å®šæ—¶å™¨æ˜¯SysTickå®šæ—¶å™¨ï¼ˆæ¨èï¼‰ï¼Œä½†æ˜¯ç”¨æˆ·ä¹Ÿå¯ä»¥æŒ‡é…ä¸ºå…¶ä»–å®šæ—¶å™¨
+*å½“ç³»ç»Ÿå®šæ—¶å™¨è¢«æŒ‡å®šä¸ºSysTickå®šæ—¶å™¨æ—¶ï¼Œç”¨æˆ·ä¸éœ€è¦ä¸ºå…¶ç¼–å†™ä»»ä½•é©±åŠ¨ä»£ç ï¼Œè€Œå¯ä»¥ç›´æ¥ä½¿ç”¨
+*ä½†æ˜¯è¦æ³¨æ„ä¸åŒå™¨ä»¶ä¸­SysTickçš„æ—¶é’Ÿé¢‘ç‡å¯èƒ½ä¸åŒï¼Œåœ¨é…ç½®åŒºè¦ä¸ºç³»ç»Ÿå®šæ—¶å™¨æä¾›æ­£ç¡®çš„æ—¶é’Ÿé¢‘ç‡ï¼Œå¦åˆ™ä¼šå¯¼è‡´å®šæ—¶æ—¶é—´ä¸å‡†
+*ï¼ï¼å¦‚æœä½¿ç”¨F4/F1ç³»åˆ—ï¼Œä¸è¦å’Œæ­£ç‚¹åŸå­çš„delayå‡½æ•°æ··ç”¨ï¼ï¼
+*å€’è®¡æ—¶åŠŸèƒ½æ¼”ç¤ºï¼š
 *
-*SystemTimer_Timing_Ready(1000);   //ÏµÍ³¶¨Ê±Æ÷×¼±¸£¬¼ÆÊ±Ê±¼äÎª£ºx(us)
-*SystemTimer_Timing_Begin();    //¿ªÊ¼µ¹¼ÆÊ±
+*SystemTimer_Timing_Ready(1000);   //ç³»ç»Ÿå®šæ—¶å™¨å‡†å¤‡ï¼Œè®¡æ—¶æ—¶é—´ä¸ºï¼šx(us)
+*SystemTimer_Timing_Begin();    //å¼€å§‹å€’è®¡æ—¶
 *for (i=0;i<10;i++)
 *{
-*   Process();                     //Ö´ĞĞÒ»Ğ©²Ù×÷
-*   while (SystemTimer_Timing_Check()==0);  //µÈ´ıµ¹¼ÆÊ±½áÊø
+*   Process();                     //æ‰§è¡Œä¸€äº›æ“ä½œ
+*   while (SystemTimer_Timing_Check()==0);  //ç­‰å¾…å€’è®¡æ—¶ç»“æŸ
 *}
 *
-*Ö´ĞĞÉÏÃæ³ÌĞòµÄ½á¹ûÊÇ£ºProcess()±»Ö´ĞĞÁË10´Î£¬¶øÇÒÃ¿1000us²ÅÖ´ĞĞÒ»´Î
+*æ‰§è¡Œä¸Šé¢ç¨‹åºçš„ç»“æœæ˜¯ï¼šProcess()è¢«æ‰§è¡Œäº†10æ¬¡ï¼Œè€Œä¸”æ¯1000usæ‰æ‰§è¡Œä¸€æ¬¡
 *
-*µ¹¼ÆÊ±×¼±¸ºóÈç¹ûÃ»ÓĞµ÷ÓÃ¿ªÊ¼µ¹¼ÆÊ±º¯Êı£¬ÔòÓ¦µ±È¡Ïûµ¹¼ÆÊ±£º
-*SystemTimer_Timing_Ready(1000);   //ÏµÍ³¶¨Ê±Æ÷×¼±¸£¬¼ÆÊ±Ê±¼äÎª£ºx(us)
-*SystemTimer_Timing_Cancel();    //È¡Ïûµ¹¼ÆÊ±
+*å€’è®¡æ—¶å‡†å¤‡åå¦‚æœæ²¡æœ‰è°ƒç”¨å¼€å§‹å€’è®¡æ—¶å‡½æ•°ï¼Œåˆ™åº”å½“å–æ¶ˆå€’è®¡æ—¶ï¼š
+*SystemTimer_Timing_Ready(1000);   //ç³»ç»Ÿå®šæ—¶å™¨å‡†å¤‡ï¼Œè®¡æ—¶æ—¶é—´ä¸ºï¼šx(us)
+*SystemTimer_Timing_Cancel();    //å–æ¶ˆå€’è®¡æ—¶
 *
 *
 *
 */
 
+//å¦‚æœä½¿ç”¨ç³»ç»Ÿå®šæ—¶å™¨
+#if SYSTEM_TIMER != 0
 
-
-
-
-
-
-
-//Èç¹ûÊ¹ÓÃÏµÍ³¶¨Ê±Æ÷
-#if SYSTEM_TIMER!=0
-
-#define VTIMER_MAX_NUM    16
+#define VTIMER_MAX_NUM 16
 
 typedef int8_t vtimer_handler;
 
 void SystemTimer_Init(void);
 
-//us¼¶ÑÓÊ±
+//usçº§å»¶æ—¶
 void SystemTimer_Delay_Us(float time);
 
-//ms¼¶ÑÓÊ±
+//msçº§å»¶æ—¶
 void SystemTimer_Delay_Ms(uint32_t time);
 
-//s¼¶ÑÓÊ±
+//sçº§å»¶æ—¶
 void SystemTimer_Delay_S(uint32_t time);
 
-//ĞéÄâ¶¨Ê±Æ÷×¢²á
+//è™šæ‹Ÿå®šæ—¶å™¨æ³¨å†Œ
 vtimer_handler SystemTimer_VTimer_Regist(uint32_t time);
 
-//ĞéÄâ¶¨Ê±Æ÷¸ü¸Ä¶¨Ê±Ê±¼ä
+//è™šæ‹Ÿå®šæ—¶å™¨æ›´æ”¹å®šæ—¶æ—¶é—´
 void SystemTimer_VTimer_ChangeTime(vtimer_handler vt, uint32_t time);
 
-//ĞéÄâ¶¨Ê±Æ÷¿ªÊ¼¼ÆÊ±
+//è™šæ‹Ÿå®šæ—¶å™¨å¼€å§‹è®¡æ—¶
 void SystemTimer_VTimer_Start(void);
 
-//ĞéÄâ¶¨Ê±Æ÷ÔİÍ£
+//è™šæ‹Ÿå®šæ—¶å™¨æš‚åœ
 void SystemTimer_VTimer_Pause(void);
 
-//ĞéÄâ¶¨Ê±Æ÷¼ÌĞø
+//è™šæ‹Ÿå®šæ—¶å™¨ç»§ç»­
 void SystemTimer_VTimer_Resume(void);
 
-//ĞéÄâ¶¨Ê±Æ÷µ¹¼ÆÊ±¼ì²é
+//è™šæ‹Ÿå®šæ—¶å™¨å€’è®¡æ—¶æ£€æŸ¥
 status_flag SystemTimer_VTimer_Check(vtimer_handler vt);
 
-//Èç¹ûÊ¹ÓÃSysTick¶¨Ê±Æ÷
-#if SYSTEM_TIMER==1
+//å¦‚æœä½¿ç”¨SysTickå®šæ—¶å™¨
+#if SYSTEM_TIMER == 1
 
-//¿ªÊ¼µ¹¼ÆÊ±
-#define SystemTimer_Timing_Begin()          SysTick->CTRL|=1
+//å¼€å§‹å€’è®¡æ—¶
+#define SystemTimer_Timing_Begin() SysTick->CTRL |= 1
 
-//¼ì²éµ¹¼ÆÊ±½áÊø±êÖ¾Î»
-#define SystemTimer_Timing_Check()          ((SysTick->CTRL>>16)&1)
+//æ£€æŸ¥å€’è®¡æ—¶ç»“æŸæ ‡å¿—ä½
+#define SystemTimer_Timing_Check() ((SysTick->CTRL >> 16) & 1)
 
-//È¡Ïûµ¹¼ÆÊ±
-#define SystemTimer_Timing_Cancel()         SysTick->CTRL|=1
+//å–æ¶ˆå€’è®¡æ—¶
+#define SystemTimer_Timing_Cancel() SysTick->CTRL |= 1
 
-//×¼±¸µ¹¼ÆÊ±
+//å‡†å¤‡å€’è®¡æ—¶
 void SystemTimer_Timing_Ready(float time_us);
 
-#define delay_ms(x)                         SystemTimer_Delay_Ms(x)
-#define delay_us(x)                         SystemTimer_Delay_Us(x)
+#define delay_ms(x) SystemTimer_Delay_Ms(x)
+#define delay_us(x) SystemTimer_Delay_Us(x)
 
-#elif SYSTEM_TIMER==2
+#elif SYSTEM_TIMER == 2
 
 void SystemTimer_Timing_Ready(uint32_t time_us);
 
 void SystemTimer_Reset();
-                  
+
 void SystemTimer_Timing_Begin();
 
 uint8_t SystemTimer_Timing_Check();
@@ -772,12 +714,7 @@ void SystemTimer_Reset(void);
 #endif
 
 #endif
-                        
+
 /*===========================================END========================================*/
 
-
-
-
-
 #endif
-

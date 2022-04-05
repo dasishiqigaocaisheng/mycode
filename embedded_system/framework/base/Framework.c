@@ -17,20 +17,20 @@
                                             
 #define SystemTimer_Start()                 SysTick->CTRL|=1
 
-//¼ÆËã´Óstartµ½now¾­¹ıµÄtickÊı
+//è®¡ç®—ä»startåˆ°nowç»è¿‡çš„tickæ•°
 #define SystemTimer_Get_Time(start,now)     (now<start?(start)-(now):(start)+(0xffffff-(now)))         
 
-//¼ÆËãnow¾­¹ıtickºóµÄÖµ
+//è®¡ç®—nowç»è¿‡tickåçš„å€¼
 #define SystemTimer_After_Time(now,tick)    (now>tick?(now)-(tick):0xffffff-((tick)-(now)))
 
 volatile status_flag vtimer_running=Disable;
 
 typedef struct 
 {
-    status_flag Used;           //ÊÇ·ñÒÑ¾­±»×¢²á
-    uint32_t Ticks;             //¶¨Ê±¶ÔÓ¦µÄtickÊı
-    uint32_t LastCheckValue;    //ÉÏÒ»´Î¼ì²éÊ±µÄ¼ÆÊıÆ÷Öµ
-    uint32_t PauseValue;        //ÔİÍ£Ê±µÄ¼ÆÊıÆ÷Öµ
+    status_flag Used;           //æ˜¯å¦å·²ç»è¢«æ³¨å†Œ
+    uint32_t Ticks;             //å®šæ—¶å¯¹åº”çš„tickæ•°
+    uint32_t LastCheckValue;    //ä¸Šä¸€æ¬¡æ£€æŸ¥æ—¶çš„è®¡æ•°å™¨å€¼
+    uint32_t PauseValue;        //æš‚åœæ—¶çš„è®¡æ•°å™¨å€¼
 } vtimer_info;
 
 vtimer_info vtimers[VTIMER_MAX_NUM];
@@ -49,22 +49,22 @@ void SystemTimer_Delay_Us(float time)
 {
     uint32_t ticks;
 	uint32_t told,tnow,tcnt=0;
-	uint32_t reload=SysTick->LOAD;			//LOADµÄÖµ	    
-	ticks=time*SYSTICK_1US_VALUE; 			//ĞèÒªµÄ½ÚÅÄÊı 
+	uint32_t reload=SysTick->LOAD;			//LOADçš„å€¼	    
+	ticks=time*SYSTICK_1US_VALUE; 			//éœ€è¦çš„èŠ‚æ‹æ•° 
     SystemTimer_Start();
-	told=SysTick->VAL;        				//¸Õ½øÈëÊ±µÄ¼ÆÊıÆ÷Öµ
+	told=SysTick->VAL;        				//åˆšè¿›å…¥æ—¶çš„è®¡æ•°å™¨å€¼
 	while(1)
 	{
 		tnow=SysTick->VAL;	
 		if(tnow!=told)
 		{	    
 			if(tnow<told)
-                tcnt+=told-tnow;	//ÕâÀï×¢ÒâÒ»ÏÂSYSTICKÊÇÒ»¸öµİ¼õµÄ¼ÆÊıÆ÷¾Í¿ÉÒÔÁË.
+                tcnt+=told-tnow;	//è¿™é‡Œæ³¨æ„ä¸€ä¸‹SYSTICKæ˜¯ä¸€ä¸ªé€’å‡çš„è®¡æ•°å™¨å°±å¯ä»¥äº†.
 			else 
                 tcnt+=reload-tnow+told;	    
 			told=tnow;
 			if(tcnt>=ticks)
-                break;			//Ê±¼ä³¬¹ı/µÈÓÚÒªÑÓ³ÙµÄÊ±¼ä,ÔòÍË³ö.
+                break;			//æ—¶é—´è¶…è¿‡/ç­‰äºè¦å»¶è¿Ÿçš„æ—¶é—´,åˆ™é€€å‡º.
 		}  
 	}
 }
@@ -81,19 +81,19 @@ void SystemTimer_Delay_S(uint32_t time)
     SystemTimer_Delay_Ms(time*1000);
 }
 
-//ĞéÄâ¶¨Ê±Æ÷×¢²á
+//è™šæ‹Ÿå®šæ—¶å™¨æ³¨å†Œ
 vtimer_handler SystemTimer_VTimer_Regist(uint32_t time)
 {
     int i;
     
-    //ÕÒµ½µÚÒ»¸ö¿ÕÏĞµÄĞéÄâ¶¨Ê±Æ÷
+    //æ‰¾åˆ°ç¬¬ä¸€ä¸ªç©ºé—²çš„è™šæ‹Ÿå®šæ—¶å™¨
     for (i=0;i<VTIMER_MAX_NUM;i++)
     {
         if (!vtimers[i].Used)
             break;
     }
     
-    //Èç¹ûÃ»ÓĞÕÒµ½
+    //å¦‚æœæ²¡æœ‰æ‰¾åˆ°
     if (i==VTIMER_MAX_NUM)
         return -1;
     else
@@ -108,7 +108,7 @@ vtimer_handler SystemTimer_VTimer_Regist(uint32_t time)
     return i;
 }
 
-//ĞéÄâ¶¨Ê±Æ÷¸ü¸Ä¶¨Ê±Ê±¼ä
+//è™šæ‹Ÿå®šæ—¶å™¨æ›´æ”¹å®šæ—¶æ—¶é—´
 void SystemTimer_VTimer_ChangeTime(vtimer_handler vt, uint32_t time)
 {
     uint32_t recent_value=SysTick->VAL;
@@ -118,7 +118,7 @@ void SystemTimer_VTimer_ChangeTime(vtimer_handler vt, uint32_t time)
     vtimers[vt].LastCheckValue=recent_value;
 }
 
-//ĞéÄâ¶¨Ê±Æ÷µ¹¼ÆÊ±¼ì²é
+//è™šæ‹Ÿå®šæ—¶å™¨å€’è®¡æ—¶æ£€æŸ¥
 status_flag SystemTimer_VTimer_Check(vtimer_handler vt)
 {
     if (vtimer_running)

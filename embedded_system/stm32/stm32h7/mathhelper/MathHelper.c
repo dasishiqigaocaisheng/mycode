@@ -10,15 +10,15 @@
 
 #if (MATHHELPER_HEAP_ORDER!=0)&&(MATHHELPER_HEAP_ORDER!=1)&&(MATHHELPER_HEAP_ORDER!=2)&& \
 	(MATHHELPER_HEAP_ORDER!=3)&&(MATHHELPER_HEAP_ORDER!=4)
-#error "MathHelperÃ»ÓÐÖ¸¶¨ÓÐÐ§¶Ñ¿Õ¼ä"
+#error "MathHelperæ²¡æœ‰æŒ‡å®šæœ‰æ•ˆå †ç©ºé—´"
 #endif
 
 #if (MATHHELPER_HEAP_ORDER!=0)&&(MATHHELPER_HEAP_ORDER!=1)
-#warning "MathHelperÊ¹ÓÃµÄ¶Ñ¿Õ¼äÔÚÍâ²¿´æ´¢Æ÷ÉÏ"
+#warning "MathHelperä½¿ç”¨çš„å †ç©ºé—´åœ¨å¤–éƒ¨å­˜å‚¨å™¨ä¸Š"
 #endif
 
 #ifndef ARM_MATH_CM7
-#error "Ã»ÓÐºêARM_MATH_CM7"
+#error "æ²¡æœ‰å®ARM_MATH_CM7"
 #endif
 
 float Global_Save0;
@@ -1377,22 +1377,22 @@ u8 MathHelper_FFT(u8 FFT_Plan_Order)
 	u16 Sample_Number=FFT_Plan_List[FFT_Plan_Order].Plan->Sample_Number;
 	float* input_addr;
     
-	if ((FFT_Plan_Order!=0)&&(FFT_Plan_Order!=1)&&//Èç¹ûÐòºÅ²»¶Ô
+	if ((FFT_Plan_Order!=0)&&(FFT_Plan_Order!=1)&&//å¦‚æžœåºå·ä¸å¯¹
 		(FFT_Plan_Order!=2)&&(FFT_Plan_Order!=3))
 		return 1;
 	
-	if (FFT_Plan_List[FFT_Plan_Order].Has_Been_Built==0)//Èç¹û¼Æ»®Î´³õÊ¼»¯
+	if (FFT_Plan_List[FFT_Plan_Order].Has_Been_Built==0)//å¦‚æžœè®¡åˆ’æœªåˆå§‹åŒ–
 		return 2;
 	
 	
 	
-    /*********************************ÔËËã¹ý³Ì*********************************************/
-    //Èç¹û²»ÊÇ¸´±ä»»
+    /*********************************è¿ç®—è¿‡ç¨‹*********************************************/
+    //å¦‚æžœä¸æ˜¯å¤å˜æ¢
 	if (!FFT_Plan_List[FFT_Plan_Order].Plan->Is_Complex)
     {
         for (i=0;i<Sample_Number;i++)
             FFT_Plan_List[FFT_Plan_Order].Data_Buffer[i*2]=FFT_Plan_List[FFT_Plan_Order].Plan->Input_Data[i];
-        for (i=0;i<Sample_Number;i++)//Ðé²¿ÖÃ0
+        for (i=0;i<Sample_Number;i++)//è™šéƒ¨ç½®0
             FFT_Plan_List[FFT_Plan_Order].Data_Buffer[i*2+1]=0;
         input_addr=FFT_Plan_List[FFT_Plan_Order].Data_Buffer;
     }
@@ -1401,30 +1401,30 @@ u8 MathHelper_FFT(u8 FFT_Plan_Order)
     
 	//if (FFT_Plan_List[FFT_Plan_Order].Plan->Data_Type==DATA_TYPE_FLOAT)
 	//{
-        //Èç¹û²»ÊÇ¸´±ä»»
+        //å¦‚æžœä¸æ˜¯å¤å˜æ¢
         /*if (!FFT_Plan_List[FFT_Plan_Order].Plan->Is_Complex)
         {
-            for (i=0;i<Sample_Number;i++)//²¹È«Êµ²¿
+            for (i=0;i<Sample_Number;i++)//è¡¥å…¨å®žéƒ¨
                 FFT_Plan_List[FFT_Plan_Order].Data_Buffer[i*2]=((float*)FFT_Plan_List[FFT_Plan_Order].Plan->Input_Data)[i];
 		}*/
-		//FFTÔËËã
+		//FFTè¿ç®—
 		//arm_cfft_f32(FFT_Plan_List[FFT_Plan_Order].FFT_Struct,FFT_Plan_List[FFT_Plan_Order].Data_Buffer,0,1);
     arm_cfft_f32(FFT_Plan_List[FFT_Plan_Order].FFT_Struct,input_addr,0,1);
 		
-		//ÇóÄ£Öµ
+		//æ±‚æ¨¡å€¼
 		//arm_cmplx_mag_f32(FFT_Plan_List[FFT_Plan_Order].Data_Buffer,FFT_Plan_List[FFT_Plan_Order].Plan->Output_Data,Sample_Number/2+1);
     if (!FFT_Plan_List[FFT_Plan_Order].Plan->Original_Output)
     {
         arm_cmplx_mag_f32(input_addr,FFT_Plan_List[FFT_Plan_Order].Plan->Output_Data,Sample_Number/2+1);
 
-		for (i=1;i<Sample_Number/2;i++)//·ù¶È*2
+		for (i=1;i<Sample_Number/2;i++)//å¹…åº¦*2
 			FFT_Plan_List[FFT_Plan_Order].Plan->Output_Data[i]*=2;
-		for (i=0;i<Sample_Number/2+1;i++)//³ýÒÔÊý¾Ý³¤¶È
+		for (i=0;i<Sample_Number/2+1;i++)//é™¤ä»¥æ•°æ®é•¿åº¦
 			FFT_Plan_List[FFT_Plan_Order].Plan->Output_Data[i]/=FFT_Plan_List[FFT_Plan_Order].Plan->Sample_Number;
     }
     else
     {
-        for (i=0;i<Sample_Number*2;i++)//³ýÒÔÊý¾Ý³¤¶È
+        for (i=0;i<Sample_Number*2;i++)//é™¤ä»¥æ•°æ®é•¿åº¦
         {
             FFT_Plan_List[FFT_Plan_Order].Plan->Output_Data[i]=input_addr[i];
 			FFT_Plan_List[FFT_Plan_Order].Plan->Output_Data[i]/=FFT_Plan_List[FFT_Plan_Order].Plan->Sample_Number;

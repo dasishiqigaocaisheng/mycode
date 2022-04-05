@@ -1,6 +1,6 @@
 /**************************************************************************
-*|-----------------------------Í¼ÐÎÓÃ»§½çÃæ¿â----------------------------|*
-*|-----------------------------@´óËÄÊ®Æß¸ß²ÄÉú---------------------------|*
+*|-----------------------------å›¾å½¢ç”¨æˆ·ç•Œé¢åº“----------------------------|*
+*|-----------------------------@å¤§å››åä¸ƒé«˜æç”Ÿ---------------------------|*
 *|-------------------------------2021.1.23-------------------------------|*
 ***************************************************************************/
 #ifndef _GUI_H_
@@ -13,16 +13,16 @@
 
 //#define USE_TOUCH
 
-//GUI_DisplayWaveformÖÐCover²ÎÊýÊ¹ÓÃµÄºê£¬ÓÃÓÚÍ¬Ê±ÏÔÊ¾¶à¸ö²¨ÐÎÍ¼Ïñ
-//CLEAR£ºÇå³ýÉÏÒ»´Î»æÖÆµÄ²¨ÐÎ
-//HOLD£º±£ÁôÉÏÒ»´Î»æÖÆµÄ²¨ÐÎ
+//GUI_DisplayWaveformä¸­Coverå‚æ•°ä½¿ç”¨çš„å®ï¼Œç”¨äºŽåŒæ—¶æ˜¾ç¤ºå¤šä¸ªæ³¢å½¢å›¾åƒ
+//CLEARï¼šæ¸…é™¤ä¸Šä¸€æ¬¡ç»˜åˆ¶çš„æ³¢å½¢
+//HOLDï¼šä¿ç•™ä¸Šä¸€æ¬¡ç»˜åˆ¶çš„æ³¢å½¢
 #define CLEAR 1	//canvas.s
 #define HOLD  2
 
-//ÃèÊö²¨ÐÎÇúÏßÀàÐÍµÄºê
-#define SCATTER 1	//É¢µã
-#define COLORED 2	//Ìî³ä
-#define CURVE	3	//ÆÕÍ¨ÇúÏß
+//æè¿°æ³¢å½¢æ›²çº¿ç±»åž‹çš„å®
+#define SCATTER 1	//æ•£ç‚¹
+#define COLORED 2	//å¡«å……
+#define CURVE	3	//æ™®é€šæ›²çº¿
 
 #define BASICLAYER   0
 
@@ -350,129 +350,129 @@ typedef enum
 } scope_event_type;
 
 /************************************************************************************
-*×ø±êÖáÀà£ºÃèÊöÁËÊ¾²¨Æ÷ÖÐµÄ×ø±êÖá£¨Axis£©ºÍÍø¸ñ£¨Net£©µÄÑùÊ½ÒÔ¼°ÏÔÊ¾·¶Î§µÈ²ÎÊý		*
-*AxisÏà¹ØµÄ²ÎÊýÃèÊöÁËXÖáºÍYÖáµÄÑùÊ½ÒÔ¼°·¶Î§£¬NetÏà¹ØµÄ²ÎÊýÃèÊöÁËÍø¸ñµÄÑùÊ½ºÍÃÜ¶È	*
-*µÈÐÅÏ¢¡£																			*
-*ËµÃ÷£º²ÎÊýÇ°Ãæ´øÏÂ»®Ïß£¨"_"£©µÄ²»Ó¦ÊÖ¶¯±à¼­£¬ÏµÍ³»á×Ô¶¯Éú³É						*
+*åæ ‡è½´ç±»ï¼šæè¿°äº†ç¤ºæ³¢å™¨ä¸­çš„åæ ‡è½´ï¼ˆAxisï¼‰å’Œç½‘æ ¼ï¼ˆNetï¼‰çš„æ ·å¼ä»¥åŠæ˜¾ç¤ºèŒƒå›´ç­‰å‚æ•°		*
+*Axisç›¸å…³çš„å‚æ•°æè¿°äº†Xè½´å’ŒYè½´çš„æ ·å¼ä»¥åŠèŒƒå›´ï¼ŒNetç›¸å…³çš„å‚æ•°æè¿°äº†ç½‘æ ¼çš„æ ·å¼å’Œå¯†åº¦	*
+*ç­‰ä¿¡æ¯ã€‚																			*
+*è¯´æ˜Žï¼šå‚æ•°å‰é¢å¸¦ä¸‹åˆ’çº¿ï¼ˆ"_"ï¼‰çš„ä¸åº”æ‰‹åŠ¨ç¼–è¾‘ï¼Œç³»ç»Ÿä¼šè‡ªåŠ¨ç”Ÿæˆ						*
 *************************************************************************************/
 typedef struct Axis_Class 
 {	
-	//ÊÇ·ñÏÔÊ¾×ø±êÖá£¬Èç¹û¸ÃÖµÎª0Ôò²»»áÏÔÊ¾×ø±êÖá
+	//æ˜¯å¦æ˜¾ç¤ºåæ ‡è½´ï¼Œå¦‚æžœè¯¥å€¼ä¸º0åˆ™ä¸ä¼šæ˜¾ç¤ºåæ ‡è½´
 	uint8_t Axis_Display;
 	
-	//ÊÇ·ñÏÔÊ¾Íø¸ñ£¬Èç¹û¸ÃÖµÎª0Ôò²»»áÏÔÊ¾Íø¸ñ
+	//æ˜¯å¦æ˜¾ç¤ºç½‘æ ¼ï¼Œå¦‚æžœè¯¥å€¼ä¸º0åˆ™ä¸ä¼šæ˜¾ç¤ºç½‘æ ¼
 	uint8_t Net_Display;
 	
-	//×ø±êÖáX·¶Î§ÊÇ·ñÊÇ×Ô¶¯µÄ£¬·Ç0£ºÊÇ£»0£º²»ÊÇ
+	//åæ ‡è½´XèŒƒå›´æ˜¯å¦æ˜¯è‡ªåŠ¨çš„ï¼Œéž0ï¼šæ˜¯ï¼›0ï¼šä¸æ˜¯
 	uint8_t Is_XRange_Auto;
 	
-	//×ø±êÖáY·¶Î§ÊÇ·ñÊÇ×Ô¶¯µÄ£¬·Ç0£ºÊÇ£»0£º²»ÊÇ
+	//åæ ‡è½´YèŒƒå›´æ˜¯å¦æ˜¯è‡ªåŠ¨çš„ï¼Œéž0ï¼šæ˜¯ï¼›0ï¼šä¸æ˜¯
 	uint8_t Is_YRange_Auto;
 	
-	//XÖá¿Ì¶ÈÊýÁ¿£¬XÖáÉÏ½«»á¾ùÔÈµØÏÔÊ¾X_Tick_Num¸ö¿Ì¶È
+	//Xè½´åˆ»åº¦æ•°é‡ï¼ŒXè½´ä¸Šå°†ä¼šå‡åŒ€åœ°æ˜¾ç¤ºX_Tick_Numä¸ªåˆ»åº¦
 	uint16_t X_Tick_Num;
 	
-	//YÖá¿Ì¶ÈÊýÁ¿£¬YÖáÉÏ½«»á¾ùÔÈµØÏÔÊ¾Y_Tick_Num¸ö¿Ì¶È
+	//Yè½´åˆ»åº¦æ•°é‡ï¼ŒYè½´ä¸Šå°†ä¼šå‡åŒ€åœ°æ˜¾ç¤ºY_Tick_Numä¸ªåˆ»åº¦
 	uint16_t Y_Tick_Num;
 	
-	//XÖáÉÏ£¨ÊúÖ±£©Íø¸ñÃÜ¶È£¬Ã¿X_Net_Density¸ö¿Ì¶È¾Í»áÏÔÊ¾Ò»ÌõÍø¸ñÏß
+	//Xè½´ä¸Šï¼ˆç«–ç›´ï¼‰ç½‘æ ¼å¯†åº¦ï¼Œæ¯X_Net_Densityä¸ªåˆ»åº¦å°±ä¼šæ˜¾ç¤ºä¸€æ¡ç½‘æ ¼çº¿
 	uint8_t X_Net_Density;
 	
-	//YÖáÉÏ£¨ÊúÖ±£©Íø¸ñÃÜ¶È£¬Ã¿Y_Net_Density¸ö¿Ì¶È¾Í»áÏÔÊ¾Ò»ÌõÍø¸ñÏß
+	//Yè½´ä¸Šï¼ˆç«–ç›´ï¼‰ç½‘æ ¼å¯†åº¦ï¼Œæ¯Y_Net_Densityä¸ªåˆ»åº¦å°±ä¼šæ˜¾ç¤ºä¸€æ¡ç½‘æ ¼çº¿
 	uint8_t Y_Net_Density;
 	
-	//YÖá×ø±ê
+	//Yè½´åæ ‡
 	uint16_t _Y_Position;
 	
-	//XÖá×ø±ê
+	//Xè½´åæ ‡
 	uint16_t _X_Position;
 	
-	//XÖá×î´óÖµ
+	//Xè½´æœ€å¤§å€¼
 	float X_Max;
 	
-	//XÖá×îÐ¡Öµ
+	//Xè½´æœ€å°å€¼
 	float X_Min;
 	
-	//YÖá×î´óÖµ
+	//Yè½´æœ€å¤§å€¼
 	float Y_Max;
 	
-	//YÖá×îÐ¡Öµ
+	//Yè½´æœ€å°å€¼
 	float Y_Min;
 	
-	//Íø¸ñÏßÑùÊ½
+	//ç½‘æ ¼çº¿æ ·å¼
 	line Net_Line;
 	
-	//×ø±êÖáÑùÊ½£¨×ø±êÖá¹Ì¶¨ÎªÊµÏß£¬Vacancy_Lengthºã¶¨Îª0£©
+	//åæ ‡è½´æ ·å¼ï¼ˆåæ ‡è½´å›ºå®šä¸ºå®žçº¿ï¼ŒVacancy_Lengthæ’å®šä¸º0ï¼‰
 	line Axis_Line;
 } axis;
 
 /************************************************************
-*²¨ÐÎÇúÏßÀà£ºÃèÊöÁËÊ¾²¨Æ÷ÖÐµÄ²¨ÐÎÇúÏßµÄÑùÊ½ÒÔ¼°·¶Î§µÈ²ÎÊý	*
+*æ³¢å½¢æ›²çº¿ç±»ï¼šæè¿°äº†ç¤ºæ³¢å™¨ä¸­çš„æ³¢å½¢æ›²çº¿çš„æ ·å¼ä»¥åŠèŒƒå›´ç­‰å‚æ•°	*
 *************************************************************/
 typedef struct Curve_Class
 {
-	//ÊÇ·ñÏÔÊ¾²¨ÐÎÇúÏß£¬Èç¹û¸ÃÖµÎª0Ôò²»»áÏÔÊ¾ÇúÏß
+	//æ˜¯å¦æ˜¾ç¤ºæ³¢å½¢æ›²çº¿ï¼Œå¦‚æžœè¯¥å€¼ä¸º0åˆ™ä¸ä¼šæ˜¾ç¤ºæ›²çº¿
 	uint8_t Display;
 	
-	//X·¶Î§ÊÇ·ñ×Ô¶¯
+	//XèŒƒå›´æ˜¯å¦è‡ªåŠ¨
 	uint8_t Is_XRange_Auto;
 	
-	//Y·¶Î§ÊÇ·ñ×Ô¶¯
+	//YèŒƒå›´æ˜¯å¦è‡ªåŠ¨
 	uint8_t Is_YRange_Auto;
 	
-	//X×î´óÖµ
+	//Xæœ€å¤§å€¼
 	float X_Max;
 	
-	//X×îÐ¡Öµ
+	//Xæœ€å°å€¼
 	float X_Min;
 	
-	//Y×î´óÖµ
+	//Yæœ€å¤§å€¼
 	float Y_Max;
 	
-	//Y×îÐ¡Öµ
+	//Yæœ€å°å€¼
 	float Y_Min;
 	
-	//Êý¾Ý
+	//æ•°æ®
 	float* Data;
 	
-	//Êý¾Ý³¤¶È
+	//æ•°æ®é•¿åº¦
 	uint16_t Length;
 	
-	//²¨ÐÎÇúÏßÑùÊ½£¨±ØÐëScopeÖÐStyleÖµÎªSCATTER»òCOLOREDÊ±£¬Vacancy_LengthºãÎª0£©
+	//æ³¢å½¢æ›²çº¿æ ·å¼ï¼ˆå¿…é¡»Scopeä¸­Styleå€¼ä¸ºSCATTERæˆ–COLOREDæ—¶ï¼ŒVacancy_Lengthæ’ä¸º0ï¼‰
 	line Curve_Line;
 } curve;
 
 /************************************************************************
-*²¨ÐÎÇúÏß·¶Î§£ºÃèÊöÁËÇúÏßµÄÒ»Ð©ÏÔÊ¾²ÎÊý£¬ËùÓÐµÄ³ÉÔ±¶¼²»Ó¦±»ÊÖ¶¯¸Ä±ä£¬	*
-*ÏµÍ³»á×Ô¶¯¼ÆËã¡£														*
+*æ³¢å½¢æ›²çº¿èŒƒå›´ï¼šæè¿°äº†æ›²çº¿çš„ä¸€äº›æ˜¾ç¤ºå‚æ•°ï¼Œæ‰€æœ‰çš„æˆå‘˜éƒ½ä¸åº”è¢«æ‰‹åŠ¨æ”¹å˜ï¼Œ	*
+*ç³»ç»Ÿä¼šè‡ªåŠ¨è®¡ç®—ã€‚														*
 *************************************************************************/
 typedef struct Curve_Range_Class
 {
-	//XÖáÆðÊ¼×ø±ê
+	//Xè½´èµ·å§‹åæ ‡
 	uint16_t _Valid_X_Begin;
 	
-	//XÖá½áÊø×ø±ê
+	//Xè½´ç»“æŸåæ ‡
 	uint16_t _Valid_X_End;
 	
-	//YÖáÆðÊ¼×ø±ê
+	//Yè½´èµ·å§‹åæ ‡
 	uint16_t _Valid_Y_Begin;
 	
-	//YÖá½áÊø×ø±ê
+	//Yè½´ç»“æŸåæ ‡
 	uint16_t _Valid_Y_End;
 	
-	//Êý¾Ý¿ªÊ¼Ë÷Òý
+	//æ•°æ®å¼€å§‹ç´¢å¼•
 	uint16_t _Begin_Index;
 	
-	//Êý¾Ý½áÊøË÷Òý
+	//æ•°æ®ç»“æŸç´¢å¼•
 	uint16_t _End_Index;
 	
-	//Êý¾Ý³¤¶È
+	//æ•°æ®é•¿åº¦
 	uint16_t _Length;
 } curve_range;
 
 
 /****************************************
-*Ê¾²¨Æ÷Àà£ºÓÃÓÚÏÔÊ¾²¨ÐÎ¡¢º¯ÊýÍ¼ÏñµÈ		*
+*ç¤ºæ³¢å™¨ç±»ï¼šç”¨äºŽæ˜¾ç¤ºæ³¢å½¢ã€å‡½æ•°å›¾åƒç­‰		*
 *****************************************/
 struct scope_class
 {
@@ -492,23 +492,23 @@ struct scope_class
     vro uint16_t        SaveX;
     vro uint16_t        SaveY;
     
-	//ÇúÏßÑùÊ½
-	//SCATTER£ºÉ¢µãÍ¼£¬Ã¿¸öÊý¾ÝµãµÄÎ»ÖÃ¶¼ÓÐÒ»¸öÐ¡Ô²È¦£¬²¢ÇÒÓÉÒ»¸öÊúÖ±Ïß¶ÎÁ¬µ½XÖáÎ»ÖÃ
-	//COLORED£ºÌî³ä£¬ÇúÏßºÍXÖáÎ§³ÉµÄ·â±ÕÍ¼ÐÎ»á±»Ìî³äÉÏÇúÏßµÄÑÕÉ«
-	//CURVE£ºÆÕÍ¨ÇúÏß»òÐéÏß£¨È¡¾öÓÚVacancy_Length²ÎÊý£©
+	//æ›²çº¿æ ·å¼
+	//SCATTERï¼šæ•£ç‚¹å›¾ï¼Œæ¯ä¸ªæ•°æ®ç‚¹çš„ä½ç½®éƒ½æœ‰ä¸€ä¸ªå°åœ†åœˆï¼Œå¹¶ä¸”ç”±ä¸€ä¸ªç«–ç›´çº¿æ®µè¿žåˆ°Xè½´ä½ç½®
+	//COLOREDï¼šå¡«å……ï¼Œæ›²çº¿å’ŒXè½´å›´æˆçš„å°é—­å›¾å½¢ä¼šè¢«å¡«å……ä¸Šæ›²çº¿çš„é¢œè‰²
+	//CURVEï¼šæ™®é€šæ›²çº¿æˆ–è™šçº¿ï¼ˆå–å†³äºŽVacancy_Lengthå‚æ•°ï¼‰
 	uint8_t Style;
 	
-	//ÏÔÊ¾ÇøÓò
-	//Display_AreaµÄ±³¾°·¶Î§½«»áÓÃÀ´ÏÔÊ¾²¨ÐÎ¡¢×ø±êÖáÒÔ¼°Íø¸ñ
+	//æ˜¾ç¤ºåŒºåŸŸ
+	//Display_Areaçš„èƒŒæ™¯èŒƒå›´å°†ä¼šç”¨æ¥æ˜¾ç¤ºæ³¢å½¢ã€åæ ‡è½´ä»¥åŠç½‘æ ¼
 	rectangle Display_Area;
 	
-	//ÇúÏßÏÔÊ¾·¶Î§£¬ÓÃ»§²»Ó¦ÊÖ¶¯¸ü¸ÄÆäÖÐµÄÈÎºÎÄÚÈÝ
+	//æ›²çº¿æ˜¾ç¤ºèŒƒå›´ï¼Œç”¨æˆ·ä¸åº”æ‰‹åŠ¨æ›´æ”¹å…¶ä¸­çš„ä»»ä½•å†…å®¹
 	curve_range Curve_Range;
 	
-	//×ø±êÖá
+	//åæ ‡è½´
 	axis Axis;
 	
-	//²¨ÐÎÇúÏß
+	//æ³¢å½¢æ›²çº¿
 	curve Curve;
     
     float* Data_Buffer;
@@ -516,7 +516,7 @@ struct scope_class
     vro uint16_t Data_Length;
     
     touch_area* TouchArea;
-    //»­²¼£¬²¨ÐÎÍ¼ÐÎ½«±»»æÖÆÔÚÕâÕÅ»­²¼ÉÏ
+    //ç”»å¸ƒï¼Œæ³¢å½¢å›¾å½¢å°†è¢«ç»˜åˆ¶åœ¨è¿™å¼ ç”»å¸ƒä¸Š
     canvas Canvas;
     gui_controller* Controller;
     
@@ -577,7 +577,7 @@ struct component_class
 };
 
 /********************************************
-*GUI¿â³õÊ¼»¯£¬Îª»º´æ·ÖÅäÄÚ´æ				*
+*GUIåº“åˆå§‹åŒ–ï¼Œä¸ºç¼“å­˜åˆ†é…å†…å­˜				*
 *********************************************/
 //void GUI_Init(void);
 
@@ -646,22 +646,22 @@ void GUI_Panel_Event_Disable(panel* pnl, u8 Event);*/
 
 
 /*****************************************************************************************
-*¹¦ÄÜ£º´´½¨Ò»¸öScopeÀà																	 *
-*²ÎÊý£º1.Width£º¿í¶È																	 *
-*	   2.Height£º¸ß¶È																	 *
-*	   3.FrameWidth£º±ß¿ò¿í¶È															 *
-*	   4.Frame_Color£º±ß¿òÑÕÉ«															 *
-*	   5.BackColor£º±³¾°ÑÕÉ«£¬Ò²¾ÍÊÇÊ¾²¨Æ÷µÄ±³¾°ÑÕÉ«									 *
-*·µ»ØÖµ£º³õÊ¼»¯ºóµÄÊ¾²¨Æ÷Àà																 *
+*åŠŸèƒ½ï¼šåˆ›å»ºä¸€ä¸ªScopeç±»																	 *
+*å‚æ•°ï¼š1.Widthï¼šå®½åº¦																	 *
+*	   2.Heightï¼šé«˜åº¦																	 *
+*	   3.FrameWidthï¼šè¾¹æ¡†å®½åº¦															 *
+*	   4.Frame_Colorï¼šè¾¹æ¡†é¢œè‰²															 *
+*	   5.BackColorï¼šèƒŒæ™¯é¢œè‰²ï¼Œä¹Ÿå°±æ˜¯ç¤ºæ³¢å™¨çš„èƒŒæ™¯é¢œè‰²									 *
+*è¿”å›žå€¼ï¼šåˆå§‹åŒ–åŽçš„ç¤ºæ³¢å™¨ç±»																 *
 ******************************************************************************************/
 void GUI_CreateScope(scope* s, uint16_t x, uint16_t y, uint16_t Width, uint16_t Height, uint8_t FrameWidth, uint16_t FrameColor, uint16_t BackColor);
 
 /*****************************************************************************
-*¹¦ÄÜ£ºÏÔÊ¾²¨ÐÎ																 *
-*²ÎÊý£º1.Canvas£º»­²¼µØÖ·													 *
-*	   2.Scope£ºÊ¾²¨Æ÷½á¹¹ÌåµØÖ·											 *
-*	   3.X£ºÊ¾²¨Æ÷×óÉÏ½ÇÏà¶ÔÓÚ»­²¼µÄºá×ø±ê									 *
-*	   4.Y£ºÊ¾²¨Æ÷×óÉÏ½ÇÏà¶ÔÓÚ»­²¼µÄ×Ý×ø±ê									 *
+*åŠŸèƒ½ï¼šæ˜¾ç¤ºæ³¢å½¢																 *
+*å‚æ•°ï¼š1.Canvasï¼šç”»å¸ƒåœ°å€													 *
+*	   2.Scopeï¼šç¤ºæ³¢å™¨ç»“æž„ä½“åœ°å€											 *
+*	   3.Xï¼šç¤ºæ³¢å™¨å·¦ä¸Šè§’ç›¸å¯¹äºŽç”»å¸ƒçš„æ¨ªåæ ‡									 *
+*	   4.Yï¼šç¤ºæ³¢å™¨å·¦ä¸Šè§’ç›¸å¯¹äºŽç”»å¸ƒçš„çºµåæ ‡									 *
 ******************************************************************************/
 void GUI_DisplayWaveform(scope* Scope, uint8_t Cover, uint8_t refresh);
 

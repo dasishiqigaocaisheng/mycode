@@ -3,166 +3,170 @@
 
 #include "USART.h"
 
-
 #define LINKEDLIST_HEAP HEAP0
 
-#define FIND_NEXTADDR(l,index) ((void**)((uint32_t)LinkedList_Find(l,index)+l->Node_Size-4))
+#define FIND_NEXTADDR(l, index) ((void **)((uint32_t)LinkedList_Find(l, index) + l->Node_Size - 4))
 
-void LinkedList_Prepare(linkedlist* l, uint16_t obsize)
+void LinkedList_Prepare(linkedlist *l, uint16_t obsize)
 {
-    l->DataField_Size=obsize;
-    l->Node_Size=(obsize/4+1)*4;
-    l->Nodes_Num=0;
-    l->Head_Addr=NULL;
+    l->DataField_Size = obsize;
+    l->Node_Size = (obsize / 4 + 1) * 4;
+    l->Nodes_Num = 0;
+    l->Head_Addr = NULL;
 }
 
-void* LinkedList_Find(linkedlist* l, int index)
+void *LinkedList_Find(linkedlist *l, int index)
 {
     int i;
-    void* next;
-    
-    next=l->Head_Addr;
-    for (i=0;i<index;i++)
+    void *next;
+
+    next = l->Head_Addr;
+    for (i = 0; i < index; i++)
     {
-        if (next==NULL)
+        if (next == NULL)
             break;
-        next=(void*)(*(uint32_t*)((uint32_t)next+l->Node_Size-4));
+        next = (void *)(*(uint32_t *)((uint32_t)next + l->Node_Size - 4));
     }
     return next;
 }
 
-void* LinkedList_Add(linkedlist* l, int index)
+void *LinkedList_Get_FirstNode(linkedlist *l)
 {
-    if (index>l->Nodes_Num)
+    return l->Head_Addr;
+}
+
+void *LinkedList_Add(linkedlist *l, int index)
+{
+    if (index > l->Nodes_Num)
         return NULL;
-    
-    void* save;
-    if (index==0)
+
+    void *save;
+    if (index == 0)
     {
-        save=l->Head_Addr;
-        l->Head_Addr=Malloc(LINKEDLIST_HEAP,l->Node_Size);
-        *FIND_NEXTADDR(l,0)=save;
+        save = l->Head_Addr;
+        l->Head_Addr = Malloc(LINKEDLIST_HEAP, l->Node_Size);
+        *FIND_NEXTADDR(l, 0) = save;
         l->Nodes_Num++;
         return l->Head_Addr;
     }
     else
     {
-        save=LinkedList_Find(l,index);
-        *FIND_NEXTADDR(l,index-1)=Malloc(LINKEDLIST_HEAP,l->Node_Size);
-        *FIND_NEXTADDR(l,index)=save;
+        save = LinkedList_Find(l, index);
+        *FIND_NEXTADDR(l, index - 1) = Malloc(LINKEDLIST_HEAP, l->Node_Size);
+        *FIND_NEXTADDR(l, index) = save;
         l->Nodes_Num++;
-        return LinkedList_Find(l,index);
+        return LinkedList_Find(l, index);
     }
 }
 
-void LinkedList_Add2(linkedlist* l, int index, void* object)
+void LinkedList_Add2(linkedlist *l, int index, void *object)
 {
-    if (index>l->Nodes_Num)
+    if (index > l->Nodes_Num)
         return;
-    
-    void* save;
-    if (index==0)
+
+    void *save;
+    if (index == 0)
     {
-        save=l->Head_Addr;
-        l->Head_Addr=object;
-        *FIND_NEXTADDR(l,0)=save;
+        save = l->Head_Addr;
+        l->Head_Addr = object;
+        *FIND_NEXTADDR(l, 0) = save;
         l->Nodes_Num++;
     }
     else
     {
-        save=LinkedList_Find(l,index);
-        *FIND_NEXTADDR(l,index-1)=object;
-        *FIND_NEXTADDR(l,index)=save;
+        save = LinkedList_Find(l, index);
+        *FIND_NEXTADDR(l, index - 1) = object;
+        *FIND_NEXTADDR(l, index) = save;
         l->Nodes_Num++;
-        return;
     }
 }
 
-void* LinkedList_Remove(linkedlist* l, int index)
+void *LinkedList_AddtoEnd(linkedlist *l)
 {
-    if (index+1>l->Nodes_Num)
+    return LinkedList_Add(l, l->Nodes_Num);
+}
+
+void LinkedList_AddtoEnd2(linkedlist *l, void *object)
+{
+    LinkedList_Add2(l, l->Nodes_Num, object);
+}
+
+void *LinkedList_Remove(linkedlist *l, int index)
+{
+    if (index + 1 > l->Nodes_Num)
         return NULL;
-    
-    void* save;
-    if (index==0)
+
+    void *save;
+    if (index == 0)
     {
-        save=l->Head_Addr;
-        l->Head_Addr=LinkedList_Find(l,1);
-        //Free(LINKEDLIST_HEAP,save);
+        save = l->Head_Addr;
+        l->Head_Addr = LinkedList_Find(l, 1);
+        // Free(LINKEDLIST_HEAP,save);
         l->Nodes_Num--;
     }
     else
     {
-        save=LinkedList_Find(l,index);
-        *FIND_NEXTADDR(l,index-1)=LinkedList_Find(l,index+1);
-        //Free(LINKEDLIST_HEAP,save);
+        save = LinkedList_Find(l, index);
+        *FIND_NEXTADDR(l, index - 1) = LinkedList_Find(l, index + 1);
+        // Free(LINKEDLIST_HEAP,save);
         l->Nodes_Num--;
     }
     return save;
 }
 
-void LinkedList_Remove2(linkedlist* l, void* object)
+void LinkedList_Remove2(linkedlist *l, void *object)
 {
     int i;
-    
-    for (i=0;i<l->Nodes_Num;i++)
+
+    for (i = 0; i < l->Nodes_Num; i++)
     {
-        if (LinkedList_Find(l,i)==object)
+        if (LinkedList_Find(l, i) == object)
             break;
     }
-    LinkedList_Remove(l,i);
+    LinkedList_Remove(l, i);
 }
 
-void LinkedList_Dispose(linkedlist* l, int index)
+void LinkedList_Dispose(linkedlist *l, int index)
 {
-    if (index+1>l->Nodes_Num)
+    if (index + 1 > l->Nodes_Num)
         return;
-    
-    void* save;
-    if (index==0)
+
+    void *save;
+    if (index == 0)
     {
-        save=l->Head_Addr;
-        l->Head_Addr=LinkedList_Find(l,1);
-        Free(LINKEDLIST_HEAP,save);
+        save = l->Head_Addr;
+        l->Head_Addr = LinkedList_Find(l, 1);
+        Free(LINKEDLIST_HEAP, save);
         l->Nodes_Num--;
     }
     else
     {
-        save=LinkedList_Find(l,index);
-        *FIND_NEXTADDR(l,index-1)=LinkedList_Find(l,index+1);
-        Free(LINKEDLIST_HEAP,save);
+        save = LinkedList_Find(l, index);
+        *FIND_NEXTADDR(l, index - 1) = LinkedList_Find(l, index + 1);
+        Free(LINKEDLIST_HEAP, save);
         l->Nodes_Num--;
     }
 }
 
-
-
-void LinkedList_Dispose2(linkedlist* l, void* object)
+void LinkedList_Dispose2(linkedlist *l, void *object)
 {
     int i;
-    
-    for (i=0;i<l->Nodes_Num;i++)
+
+    for (i = 0; i < l->Nodes_Num; i++)
     {
-        if (LinkedList_Find(l,i)==object)
+        if (LinkedList_Find(l, i) == object)
             break;
     }
-    LinkedList_Dispose(l,i);
+    LinkedList_Dispose(l, i);
 }
 
-
-
-void LinkeList_InfoPrint(USART_TypeDef* usart, linkedlist* l)
+void LinkeList_InfoPrint(USART_TypeDef *usart, linkedlist *l)
 {
     int i;
-    
-    USART_Printf(usart,"\nDatafield size: %d\n",l->DataField_Size);
-    USART_Printf(usart,"Node size:       %d\n",l->Node_Size);
-    USART_Printf(usart,"Nodes Num:       %d\n",l->Nodes_Num);
-    for (i=0;i<l->Nodes_Num;i++)
-        USART_Printf(USART1,"Node%d {Addr:%#x,NextAddr:%#x}\n",i,LinkedList_Find(l,i),*FIND_NEXTADDR(l,i));
+
+    USART_Printf(usart, "\nDatafield size: %d\n", l->DataField_Size);
+    USART_Printf(usart, "Node size:       %d\n", l->Node_Size);
+    USART_Printf(usart, "Nodes Num:       %d\n", l->Nodes_Num);
+    for (i = 0; i < l->Nodes_Num; i++)
+        USART_Printf(USART1, "Node%d {Addr:%#x,NextAddr:%#x}\n", i, LinkedList_Find(l, i), *FIND_NEXTADDR(l, i));
 }
-
-
-
-
-

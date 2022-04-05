@@ -5,25 +5,25 @@
 #include "LinkedList.h"
 
 /*
-*ÊÂ¼ş¶¨Òå
+*äº‹ä»¶å®šä¹‰
 */
 typedef enum
 {
-    PressDown,  //°´ÏÂÊÂ¼ş
-    Release,    //ËÉ¿ªÊÂ¼ş
-    KeepPress,  //³ÖĞø°´ÏÂÊÂ¼ş
+    PressDown,  //æŒ‰ä¸‹äº‹ä»¶
+    Release,    //æ¾å¼€äº‹ä»¶
+    KeepPress,  //æŒç»­æŒ‰ä¸‹äº‹ä»¶
     Click
 } touch_event_type;
 
 /*
-*¶¨ÒåÆÁÄ»µÄĞı×ªÀàĞÍ
+*å®šä¹‰å±å¹•çš„æ—‹è½¬ç±»å‹
 */
 typedef enum
 {
-    CLOCKWISE0,      //²»Ğı×ª
-    CLOCKWISE90,     //Ë³Ê±Õë90¡ã
-    CLOCKWISE180,    //Ë³Ê±Õë180¡ã
-    CLOCKWISE270     //Ë³Ê±Õë270¡ã
+    CLOCKWISE0,      //ä¸æ—‹è½¬
+    CLOCKWISE90,     //é¡ºæ—¶é’ˆ90Â°
+    CLOCKWISE180,    //é¡ºæ—¶é’ˆ180Â°
+    CLOCKWISE270     //é¡ºæ—¶é’ˆ270Â°
 } rotation_type;
 
 typedef struct touch_area_class     touch_area;
@@ -32,41 +32,41 @@ typedef struct touch_device_class   touch_device;
 typedef void (*Touch_Event_Callback)(touch_device* td, touch_area* ta);
 
 /*
-*´¥ÃşÇøÓòÀà
-*ÃèÊö´¥ÃşÇøÓòµÄ»ù±¾²ÎÊı
+*è§¦æ‘¸åŒºåŸŸç±»
+*æè¿°è§¦æ‘¸åŒºåŸŸçš„åŸºæœ¬å‚æ•°
 */
 struct touch_area_class
 {
-                short        X;                     //ÇøÓòX×ø±ê
-                short        Y;                     //ÇøÓòY×ø±ê
-                uint16_t     Width;                 //ÇøÓò¿í¶È
-                uint16_t     Height;                //ÇøÓò¸ß¶È
+                short        X;                     //åŒºåŸŸXåæ ‡
+                short        Y;                     //åŒºåŸŸYåæ ‡
+                uint16_t     Width;                 //åŒºåŸŸå®½åº¦
+                uint16_t     Height;                //åŒºåŸŸé«˜åº¦
     
-    volatile    status_flag  All_Event_Enable;      //ËùÓĞÊÂ¼şÊ¹ÄÜ
+    volatile    status_flag  All_Event_Enable;      //æ‰€æœ‰äº‹ä»¶ä½¿èƒ½
     
-    volatile    status_flag  PressDown_Enable;      //°´ÏÂÊÂ¼şÊ¹ÄÜ
-    volatile    status_flag  Release_Enable;        //ËÉ¿ªÊÂ¼şÊ¹ÄÜ
-    volatile    status_flag  KeepPress_Enable;      //³ÖĞø´¥ÃşÊÂ¼şÊ¹ÄÜ
+    volatile    status_flag  PressDown_Enable;      //æŒ‰ä¸‹äº‹ä»¶ä½¿èƒ½
+    volatile    status_flag  Release_Enable;        //æ¾å¼€äº‹ä»¶ä½¿èƒ½
+    volatile    status_flag  KeepPress_Enable;      //æŒç»­è§¦æ‘¸äº‹ä»¶ä½¿èƒ½
     volatile    status_flag  Click_Enable;
     
-    vro         status_flag  PressDown_Happened;    //°´ÏÂÊÂ¼ş·¢Éú
-    vro         status_flag  Release_Happened;      //ËÉ¿ªÊÂ¼ş·¢Éú
-    vro         status_flag  KeepPress_Happened;    //³ÖĞø´¥ÃşÊÂ¼ş·¢Éú
+    vro         status_flag  PressDown_Happened;    //æŒ‰ä¸‹äº‹ä»¶å‘ç”Ÿ
+    vro         status_flag  Release_Happened;      //æ¾å¼€äº‹ä»¶å‘ç”Ÿ
+    vro         status_flag  KeepPress_Happened;    //æŒç»­è§¦æ‘¸äº‹ä»¶å‘ç”Ÿ
     vro         status_flag  Click_Happened;
     
-    vro         status_flag  IsKeyDown;             //ÊÇ·ñÓĞ´¥µã°´ÏÂ
+    vro         status_flag  IsKeyDown;             //æ˜¯å¦æœ‰è§¦ç‚¹æŒ‰ä¸‹
     vro         status_flag  IsKeyDown_Old;
     
-    vro         status_flag  IsMoved;               //´¥µã°´ÏÂºóÊÇ·ñ·¢ÉúÒÆ¶¯
+    vro         status_flag  IsMoved;               //è§¦ç‚¹æŒ‰ä¸‹åæ˜¯å¦å‘ç”Ÿç§»åŠ¨
     
-    vro         short        PointX;                //´¥µãX×ø±ê
-    vro         short        PointY;                //´¥µãY×ø±ê
-    vro         short        PointX_Old;            //´¥µãX×ø±ê
-    vro         short        PointY_Old;            //´¥µãY×ø±ê
+    vro         short        PointX;                //è§¦ç‚¹Xåæ ‡
+    vro         short        PointY;                //è§¦ç‚¹Yåæ ‡
+    vro         short        PointX_Old;            //è§¦ç‚¹Xåæ ‡
+    vro         short        PointY_Old;            //è§¦ç‚¹Yåæ ‡
     
-                void*        Association;           //¹ØÁª¶ÔÏó
+                void*        Association;           //å…³è”å¯¹è±¡
     
-    /*¸÷ÊÂ¼şµÄ»Øµ÷º¯Êı*/
+    /*å„äº‹ä»¶çš„å›è°ƒå‡½æ•°*/
     Touch_Event_Callback         PressDown_CallBackFunc;
     Touch_Event_Callback         Release_CallBackFunc;
     Touch_Event_Callback         KeepPress_CallBackFunc;
@@ -74,95 +74,95 @@ struct touch_area_class
 };
 
 /*
-*´¥ÃşÉè±¸Àà
-*ÃèÊö´¥ÃşÉè±¸µÄ»ù±¾²ÎÊı
+*è§¦æ‘¸è®¾å¤‡ç±»
+*æè¿°è§¦æ‘¸è®¾å¤‡çš„åŸºæœ¬å‚æ•°
 */
 struct touch_device_class
 {
     
-    /************************************³ÉÔ±************************************/
+    /************************************æˆå‘˜************************************/
     
     /*
-    *ÆÁ¿í/¸ß£¬ÕâÁ½¸ö²ÎÊıÖ¸Ã÷¶ÁÈ¡µ½µÄÔ­Ê¼×ø±ê²ÎÊıµÄ·¶Î§
-    *Õâ¼¸¸öÖµÓÉ´¥ÃşÆÁµÄÓ²¼şÉè±¸¾ö¶¨
+    *å±å®½/é«˜ï¼Œè¿™ä¸¤ä¸ªå‚æ•°æŒ‡æ˜è¯»å–åˆ°çš„åŸå§‹åæ ‡å‚æ•°çš„èŒƒå›´
+    *è¿™å‡ ä¸ªå€¼ç”±è§¦æ‘¸å±çš„ç¡¬ä»¶è®¾å¤‡å†³å®š
     */
-    vro uint16_t        ScreenWidth;    //ÆÁ¿í
-    vro uint16_t        ScreenHeight;   //ÆÁ¸ß
+    vro uint16_t        ScreenWidth;    //å±å®½
+    vro uint16_t        ScreenHeight;   //å±é«˜
     
     /*
-    *ÕâĞ©²ÎÊıÖ¸Ã÷Éè¶¨µÄ×ø±ê·¶Î§ÒÔ¼°Ğı×ª½Ç¶È
-    *ÕâĞ©ÖµÓÉÓÃ»§×Ô¼º¶¨Òå
+    *è¿™äº›å‚æ•°æŒ‡æ˜è®¾å®šçš„åæ ‡èŒƒå›´ä»¥åŠæ—‹è½¬è§’åº¦
+    *è¿™äº›å€¼ç”±ç”¨æˆ·è‡ªå·±å®šä¹‰
     */
-    vro short           X_Max;      //X×î´óÖµ
-    vro short           X_Min;      //X×îĞ¡Öµ
-    vro short           Y_Max;      //Y×î´óÖµ
-    vro short           Y_Min;      //Y×îĞ¡Öµ
-    vro rotation_type   Rotation;   //Ğı×ª½Ç¶È
+    vro short           X_Max;      //Xæœ€å¤§å€¼
+    vro short           X_Min;      //Xæœ€å°å€¼
+    vro short           Y_Max;      //Yæœ€å¤§å€¼
+    vro short           Y_Min;      //Yæœ€å°å€¼
+    vro rotation_type   Rotation;   //æ—‹è½¬è§’åº¦
     
-    /*ÓÃÓÚ×ø±ê±ä»»µÄ²ÎÊı*/
+    /*ç”¨äºåæ ‡å˜æ¢çš„å‚æ•°*/
     vro float           Xk;
     vro float           Xb;
     vro float           Yk;
     vro float           Yb;
     
-    /*Õâ¼¸¸öÖµÓÃÓÚÉè¶¨ÓĞĞ§µÄ´¥Ãş·¶Î§*/
+    /*è¿™å‡ ä¸ªå€¼ç”¨äºè®¾å®šæœ‰æ•ˆçš„è§¦æ‘¸èŒƒå›´*/
         short           ValidArea_X;
         short           ValidArea_Y;
         short           ValidArea_Width;
         short           ValidArea_Height;
         
-    /*ÊÇ·ñÓĞ´¥µã°´ÏÂ*/
+    /*æ˜¯å¦æœ‰è§¦ç‚¹æŒ‰ä¸‹*/
     vro status_flag     IsKeyDown;
     
-    /*´¥µãµÄ×ø±ê*/
+    /*è§¦ç‚¹çš„åæ ‡*/
     vro short           PointX;
     vro short           PointY;
     
-        linkedlist      TouchArea_List; //´æ´¢ËùÓĞ´¥ÃşÇøÓòµÄÁ´±í
+        linkedlist      TouchArea_List; //å­˜å‚¨æ‰€æœ‰è§¦æ‘¸åŒºåŸŸçš„é“¾è¡¨
         
-        void*           Association;    //¹ØÁª¶ÔÏó
+        void*           Association;    //å…³è”å¯¹è±¡
     
     
     
     
     
-    /************************************·½·¨************************************/
+    /************************************æ–¹æ³•************************************/
     
     /***************************************************************************************************************
-    *¹¦ÄÜ£º´´½¨´¥ÃşÇøÓò
-    *²ÎÊı£º1.td£º´¥ÃşÉè±¸µÄÊµÀı£¬´¥ÃşÇøÓò½«´´½¨ÔÚ¸ÃÉè±¸ÉÏ
-    *      2.x£ºÇøÓòµÄx×ø±ê
-    *      3.y£ºÇøÓòµÄy×ø±ê
-    *      4.width£ºÇøÓòµÄ¿í¶È
-    *      5.height£»ÇøÓòµÄ¸ß¶È
-    *·µ»ØÖµ£ºÊµÀıµÄµØÖ·
+    *åŠŸèƒ½ï¼šåˆ›å»ºè§¦æ‘¸åŒºåŸŸ
+    *å‚æ•°ï¼š1.tdï¼šè§¦æ‘¸è®¾å¤‡çš„å®ä¾‹ï¼Œè§¦æ‘¸åŒºåŸŸå°†åˆ›å»ºåœ¨è¯¥è®¾å¤‡ä¸Š
+    *      2.xï¼šåŒºåŸŸçš„xåæ ‡
+    *      3.yï¼šåŒºåŸŸçš„yåæ ‡
+    *      4.widthï¼šåŒºåŸŸçš„å®½åº¦
+    *      5.heightï¼›åŒºåŸŸçš„é«˜åº¦
+    *è¿”å›å€¼ï¼šå®ä¾‹çš„åœ°å€
     ***************************************************************************************************************/
     touch_area* (*Create_Area)    (struct touch_device_class* td, short x, short y, uint16_t width, uint16_t height);
     
     /*************************************************************************************************************
-    *¹¦ÄÜ£º´´½¨´¥ÃşÇøÓò£¬¸Ã·½·¨ÊÇCreate_AreaµÄÑÜÉú
-    *²ÎÊı£º1.td£º´¥ÃşÉè±¸µÄÊµÀı£¬´¥ÃşÇøÓò½«´´½¨ÔÚ¸ÃÉè±¸ÉÏ
-    *      2.xmin£ºx×îĞ¡×ø±ê
-    *      3.xmax£ºx×î´ó×ø±ê
-    *      4.ymin£ºy×îĞ¡×ø±ê
-    *      5.ymax£ºy×î´ó×ø±ê
-    *·µ»ØÖµ£ºÊµÀıµÄµØÖ·
-    *ËµÃ÷£º¸Ã·½·¨¹¹½¨Ò»¸öÓÉxÖáÇø¼ä(xmin,xmax)ºÍyÖáÇø¼ä(ymin,ymax)ÏŞ¶¨µÄ´¥ÃşÇøÓò
+    *åŠŸèƒ½ï¼šåˆ›å»ºè§¦æ‘¸åŒºåŸŸï¼Œè¯¥æ–¹æ³•æ˜¯Create_Areaçš„è¡ç”Ÿ
+    *å‚æ•°ï¼š1.tdï¼šè§¦æ‘¸è®¾å¤‡çš„å®ä¾‹ï¼Œè§¦æ‘¸åŒºåŸŸå°†åˆ›å»ºåœ¨è¯¥è®¾å¤‡ä¸Š
+    *      2.xminï¼šxæœ€å°åæ ‡
+    *      3.xmaxï¼šxæœ€å¤§åæ ‡
+    *      4.yminï¼šyæœ€å°åæ ‡
+    *      5.ymaxï¼šyæœ€å¤§åæ ‡
+    *è¿”å›å€¼ï¼šå®ä¾‹çš„åœ°å€
+    *è¯´æ˜ï¼šè¯¥æ–¹æ³•æ„å»ºä¸€ä¸ªç”±xè½´åŒºé—´(xmin,xmax)å’Œyè½´åŒºé—´(ymin,ymax)é™å®šçš„è§¦æ‘¸åŒºåŸŸ
     *************************************************************************************************************/
     touch_area* (*Create_Area2)   (struct touch_device_class* td, short xmin, short xmax, short ymin, short ymax);
     
     /*****************************************************************************
-    *¹¦ÄÜ£ºÉ¾³ı´¥ÃşÇøÓò£¬²¢ÊÍ·ÅÆä×ÊÔ´
-    *²ÎÊı£º1.td£º´¥ÃşÉè±¸µÄÊµÀı
-    *      2.ta£ºÒªÉ¾³ıµÄ´¥ÃşÇøÓòµÄÊµÀı
+    *åŠŸèƒ½ï¼šåˆ é™¤è§¦æ‘¸åŒºåŸŸï¼Œå¹¶é‡Šæ”¾å…¶èµ„æº
+    *å‚æ•°ï¼š1.tdï¼šè§¦æ‘¸è®¾å¤‡çš„å®ä¾‹
+    *      2.taï¼šè¦åˆ é™¤çš„è§¦æ‘¸åŒºåŸŸçš„å®ä¾‹
     *****************************************************************************/
     void        (*Delete_Area)    (struct touch_device_class* td, touch_area* ta);
 
     /*********************************************************************************
-    *¹¦ÄÜ£ºÖ´ĞĞ´¥Ãş¿âÖ÷½ø³Ìº¯Êı£¬
-    *²ÎÊı£º1.td£º´¥ÃşÉè±¸µÄÊµÀı
-    *ËµÃ÷£º³ÌĞòÔÚ¸Ãº¯ÊıÖĞ¸üĞÂ´¥ÃşÆÁ×´Ì¬²¢¼ì²âÊÂ¼şÊÇ·ñ·¢Éú£¬Ó¦¸ÃÖÜÆÚĞÔÖ´ĞĞ¸Ãº¯Êı²»¶Ï
-    *      ¼ì²â´¥ÃşÆÁ×´Ì¬£¬¶Ô´¥Ãş¼°Ê±×ö³ö·´Ó¦
+    *åŠŸèƒ½ï¼šæ‰§è¡Œè§¦æ‘¸åº“ä¸»è¿›ç¨‹å‡½æ•°ï¼Œ
+    *å‚æ•°ï¼š1.tdï¼šè§¦æ‘¸è®¾å¤‡çš„å®ä¾‹
+    *è¯´æ˜ï¼šç¨‹åºåœ¨è¯¥å‡½æ•°ä¸­æ›´æ–°è§¦æ‘¸å±çŠ¶æ€å¹¶æ£€æµ‹äº‹ä»¶æ˜¯å¦å‘ç”Ÿï¼Œåº”è¯¥å‘¨æœŸæ€§æ‰§è¡Œè¯¥å‡½æ•°ä¸æ–­
+    *      æ£€æµ‹è§¦æ‘¸å±çŠ¶æ€ï¼Œå¯¹è§¦æ‘¸åŠæ—¶åšå‡ºååº”
     *********************************************************************************/
     void        (*Process)        (struct touch_device_class* td);
 };
@@ -171,15 +171,15 @@ struct touch_device_class
 
 
 /*****************************************************************************************************************************************
-*¹¦ÄÜ£º´¥ÃşÉè±¸³õÊ¼»¯
-*²ÎÊı£º1.td£º´¥ÃşÉè±¸ÀàÊµÀı
-*      2.sw£ºÆÁ¿í
-*      3.sh£ºÆÁ¸ß
-*      4.xmax£ºX×ø±ê×î´óÖµ
-*      5.xmin£ºX×ø±ê×îĞ¡Öµ
-*      6.ymax£ºY×ø±ê×î´óÖµ
-*      7.ymin£ºY×ø±ê×îĞ¡Öµ
-*      8.rotation£ºĞı×ª½Ç¶È
+*åŠŸèƒ½ï¼šè§¦æ‘¸è®¾å¤‡åˆå§‹åŒ–
+*å‚æ•°ï¼š1.tdï¼šè§¦æ‘¸è®¾å¤‡ç±»å®ä¾‹
+*      2.swï¼šå±å®½
+*      3.shï¼šå±é«˜
+*      4.xmaxï¼šXåæ ‡æœ€å¤§å€¼
+*      5.xminï¼šXåæ ‡æœ€å°å€¼
+*      6.ymaxï¼šYåæ ‡æœ€å¤§å€¼
+*      7.yminï¼šYåæ ‡æœ€å°å€¼
+*      8.rotationï¼šæ—‹è½¬è§’åº¦
 *****************************************************************************************************************************************/
 void TouchDevice_Init(touch_device* td, uint16_t sw, uint16_t sh ,short xmax, short xmin, short ymax, short ymin, rotation_type rotation);
 

@@ -2,12 +2,12 @@
 
 #include "USART.h"
 
-//////////////////////////////ÓÃ»§ÅäÖÃÇø//////////////////////////////////
+//////////////////////////////ç”¨æˆ·é…ç½®åŒº//////////////////////////////////
 
 /********************************************************************
-*¹¦ÄÜ£ºSPIĞ´×Ö½Ú													*
-*²ÎÊı£º1.dat£ºÒªĞ´µÄ×Ö½Ú											*
-*ËµÃ÷£ºµ÷ÓÃ´Ë·½·¨ºó£¬Ó¦ÓĞÒ»¸ö×Ö½ÚµÄÊı¾İÔÚMOSIÉÏ·¢³ö					*
+*åŠŸèƒ½ï¼šSPIå†™å­—èŠ‚													*
+*å‚æ•°ï¼š1.datï¼šè¦å†™çš„å­—èŠ‚											*
+*è¯´æ˜ï¼šè°ƒç”¨æ­¤æ–¹æ³•åï¼Œåº”æœ‰ä¸€ä¸ªå­—èŠ‚çš„æ•°æ®åœ¨MOSIä¸Šå‘å‡º					*
 *********************************************************************/
 void Hard_SPI_Write(ro periperal* spi, uint8_t dat)
 {
@@ -19,9 +19,9 @@ void Hard_SPI_Write(ro periperal* spi, uint8_t dat)
 }
 	
 /********************************************************************
-*¹¦ÄÜ£ºSPI¶Á×Ö½Ú													*
-*·µ»ØÖµ£º¶Áµ½µÄÊı¾İ													*
-*ËµÃ÷£ºµ÷ÓÃ´Ë·½·¨ºó£¬Ó¦´ÓMISOÉÏ¶ÁÈ¡Ò»¸ö×Ö½ÚÊı¾İ						*
+*åŠŸèƒ½ï¼šSPIè¯»å­—èŠ‚													*
+*è¿”å›å€¼ï¼šè¯»åˆ°çš„æ•°æ®													*
+*è¯´æ˜ï¼šè°ƒç”¨æ­¤æ–¹æ³•åï¼Œåº”ä»MISOä¸Šè¯»å–ä¸€ä¸ªå­—èŠ‚æ•°æ®						*
 *********************************************************************/
 uint8_t Hard_SPI_Read(ro periperal* spi)
 {
@@ -38,24 +38,24 @@ uint8_t Hard_SPI_Read(ro periperal* spi)
 
 
 
-////////////////////´úÂëÇø//////////////////////////
-//³£ÓÃÖ¸Áî¶¨Òå
-#define WAKEUP		0x00	//»½ĞÑ
-#define RDATA		0x01	//¶ÁÊı¾İ
-#define RDATAC		0x03	//Á¬Ğø¶ÁÊı¾İ
-#define SDATAC		0x0f	//Í£Ö¹Á¬Ğø¶ÁÊı¾İ
-#define RREG		0x10	//¶Á¼Ä´æÆ÷
-#define WREG		0x50	//Ğ´¼Ä´æÆ÷
-#define RESET		0xfe	//¸´Î»
-#define SELFCAL		0xf0	//×ÔĞ£×¼
+////////////////////ä»£ç åŒº//////////////////////////
+//å¸¸ç”¨æŒ‡ä»¤å®šä¹‰
+#define WAKEUP		0x00	//å”¤é†’
+#define RDATA		0x01	//è¯»æ•°æ®
+#define RDATAC		0x03	//è¿ç»­è¯»æ•°æ®
+#define SDATAC		0x0f	//åœæ­¢è¿ç»­è¯»æ•°æ®
+#define RREG		0x10	//è¯»å¯„å­˜å™¨
+#define WREG		0x50	//å†™å¯„å­˜å™¨
+#define RESET		0xfe	//å¤ä½
+#define SELFCAL		0xf0	//è‡ªæ ¡å‡†
 
-//³£ÓÃ¼Ä´æÆ÷µØÖ·¶¨Òå
+//å¸¸ç”¨å¯„å­˜å™¨åœ°å€å®šä¹‰
 #define REG_STATUS	0		//STATUS
 #define REG_MUX		1		//MUX
 #define REG_ADCON	2		//ADCON
 #define REG_DRATE	3		//DRATE
 
-//Èí¼şSPIĞ´×Ö½Ú
+//è½¯ä»¶SPIå†™å­—èŠ‚
 void Soft_SPI_Write(gpio_type sclk, gpio_type mosi, uint8_t dat)
 {
     int i;
@@ -70,7 +70,7 @@ void Soft_SPI_Write(gpio_type sclk, gpio_type mosi, uint8_t dat)
     
 }
 
-//Èí¼şSPI¶Á×Ö½Ú
+//è½¯ä»¶SPIè¯»å­—èŠ‚
 uint8_t Soft_SPI_Read(gpio_type sclk, gpio_type miso)
 {
     uint8_t save=0;
@@ -87,7 +87,7 @@ uint8_t Soft_SPI_Read(gpio_type sclk, gpio_type miso)
     return save;
 }
 
-//Èí¼ş/Ó²¼şSPIĞ´×Ö½Ú
+//è½¯ä»¶/ç¡¬ä»¶SPIå†™å­—èŠ‚
 void SPI_Write_Byte(ads1256* device, uint8_t dat)
 {
     if (device->SPI_Mode==HARDWARE)
@@ -96,7 +96,7 @@ void SPI_Write_Byte(ads1256* device, uint8_t dat)
         Soft_SPI_Write(device->SCLK,device->MOSI,dat);
 }
 
-//Èí¼ş/Ó²¼şSPI¶Á×Ö½Ú
+//è½¯ä»¶/ç¡¬ä»¶SPIè¯»å­—èŠ‚
 uint8_t SPI_Read_Byte(ads1256* device)
 {
     if (device->SPI_Mode==HARDWARE)
@@ -105,7 +105,7 @@ uint8_t SPI_Read_Byte(ads1256* device)
         return Soft_SPI_Read(device->SCLK,device->MISO);   
 }
 
-//¶ÁÈ¡Ò»´ÎÊı¾İ
+//è¯»å–ä¸€æ¬¡æ•°æ®
 uint32_t ADS1256_Read_Once(ads1256* device);
 
 uint32_t ADS1256_Read_24Bit(ads1256* device);
@@ -141,7 +141,7 @@ uint32_t ADS1256_Read_24Bit(ads1256* device)
 	return save;
 }
 
-//ÀàÀï¸÷ÖÖ·½·¨µÄ¶¨Òå£¬ÒÔMethod¿ªÍ·
+//ç±»é‡Œå„ç§æ–¹æ³•çš„å®šä¹‰ï¼Œä»¥Methodå¼€å¤´
 void 	Method_Self_Calibration		(ads1256* device);
 uint8_t Method_Get_DRDY_Bit			(ads1256* device);
 void 	Method_Set_Gain				(ads1256* device, ads1256_pga_type gain);
@@ -204,7 +204,7 @@ void ADS1256_Prepare(ads1256* dev, S_H_type mode, gpio_type drdy, uint32_t spi_v
     
     if (mode==HARDWARE)
     {
-        //ÅäÖÃdev->spi£¨ÍâÉè½Ó¿Ú£©
+        //é…ç½®dev->spiï¼ˆå¤–è®¾æ¥å£ï¼‰
         _RO_WRITE(dev->SPI.Value,uint32_t,spi_value);
         _RO_WRITE(dev->SPI.Register0,void*,spi_reg0);
         _RO_WRITE(dev->SPI.Register1,void*,spi_reg1);
@@ -217,19 +217,19 @@ void ADS1256_Prepare(ads1256* dev, S_H_type mode, gpio_type drdy, uint32_t spi_v
         _RO_WRITE(dev->MISO,gpio_type,miso);
     }
     
-    //µÈ´ıÉÏµç
+    //ç­‰å¾…ä¸Šç”µ
 	SystemTimer_Delay_Ms(40);
 	
     
     USART_Printf(USART1,"%#x\n",dev->DRDY);
     
-	//¸´Î»
+	//å¤ä½
 	Method_Send_Command(dev,RESET);
 	while (GPIO_Read(dev->DRDY));
-	//»½ĞÑ
+	//å”¤é†’
 	Method_Send_Command(dev,WAKEUP);
 	while (GPIO_Read(dev->DRDY));
-	//×ÔĞ£×¼
+	//è‡ªæ ¡å‡†
 	Method_Send_Command(dev,SELFCAL);
 	while (GPIO_Read(dev->DRDY));
 	SystemTimer_Delay_Ms(10);
@@ -384,7 +384,7 @@ float Method_Read_Once(ads1256* device)
     dat=ADS1256_Read_24Bit(device);
     save1=device->Gain*8388607;
 
-	//ÅĞ¶ÏÕı¸ºĞÔ
+	//åˆ¤æ–­æ­£è´Ÿæ€§
 	if (dat>>23)
 		return (0x1000000-dat)*-5.0f/save1;
 	else
@@ -395,15 +395,15 @@ void Method_Get_Data(struct ads1256_class* device, uint32_t fs, void* dat_buf, u
 {
 	uint32_t i,save1,save2;
 
-    //¿ªÆôÏµÍ³¶¨Ê±Æ÷µÄµ¹¼ÆÊ±
-    //¿ªÆôÒÔºóÃ¿´Î´ïµ½ÉèÖÃµÄ¼ÆÊ±Ê±¼äºó£¬SystemTimer_Timing_Check()»á·µ»Ø1
-    //µ±¶Áµ½SystemTimer_Timing_Check()==1ºó£¬¸Ã±êÖ¾Î»»á×Ô¶¯ÇåÁã
-    //Èç¹ûÔÚµ½´ï¼ÆÊ±Ê±¼äºó£¬Ò»Ö±Î´¶ÁÈ¡SystemTimer_Timing_Check()£¬ÄÇÃ´¸Ã±êÖ¾Î»»á
-    //Ò»Ö±Îª1£¬Ö±µ½ÓÃ»§È¥¶ÁÈ¡
+    //å¼€å¯ç³»ç»Ÿå®šæ—¶å™¨çš„å€’è®¡æ—¶
+    //å¼€å¯ä»¥åæ¯æ¬¡è¾¾åˆ°è®¾ç½®çš„è®¡æ—¶æ—¶é—´åï¼ŒSystemTimer_Timing_Check()ä¼šè¿”å›1
+    //å½“è¯»åˆ°SystemTimer_Timing_Check()==1åï¼Œè¯¥æ ‡å¿—ä½ä¼šè‡ªåŠ¨æ¸…é›¶
+    //å¦‚æœåœ¨åˆ°è¾¾è®¡æ—¶æ—¶é—´åï¼Œä¸€ç›´æœªè¯»å–SystemTimer_Timing_Check()ï¼Œé‚£ä¹ˆè¯¥æ ‡å¿—ä½ä¼š
+    //ä¸€ç›´ä¸º1ï¼Œç›´åˆ°ç”¨æˆ·å»è¯»å–
     while (Method_Get_DRDY_Bit(device));
     Method_Send_Command(device,RDATAC);
     SystemTimer_Delay_Us(10);
-    //×¼±¸µ¹¼ÆÊ±£¬1000000/fs(us)¶ÔÓ¦ÆµÂÊÒ²¾ÍÊÇfs
+    //å‡†å¤‡å€’è®¡æ—¶ï¼Œ1000000/fs(us)å¯¹åº”é¢‘ç‡ä¹Ÿå°±æ˜¯fs
     SystemTimer_Timing_Ready(1000000.0f/fs);
     SystemTimer_Timing_Begin();
 	for (i=0;i<num;i++)
@@ -426,7 +426,7 @@ void Method_Get_Data(struct ads1256_class* device, uint32_t fs, void* dat_buf, u
 		for (i=0;i<num;i++)
 		{
 			save2=((uint32_t*)dat_buf)[i];
-			//ÅĞ¶ÏÕı¸ºĞÔ
+			//åˆ¤æ–­æ­£è´Ÿæ€§
 			if (save2>>23)
 				((float*)dat_buf)[i]=(0x1000000-save2)*-5.0f/save1;
 			else

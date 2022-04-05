@@ -3,7 +3,7 @@
 
 #include "sys.h"
 
-/*Ä£¿éÒý½ÅÎ»ÖÃ
+/*æ¨¡å—å¼•è„šä½ç½®
 SDI		RST
 CLK		CS
 SDO		GND

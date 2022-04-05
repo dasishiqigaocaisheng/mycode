@@ -1,2594 +1,2594 @@
-#include "GUI.h"
-#include "Memory.h"
-#include "MathHelper.h"
-#include <string.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include "USART.h"
+//#include "GUI.h"
+//#include "Memory.h"
+//#include "MathHelper.h"
+//#include <string.h>
+//#include <stdio.h>
+//#include <stdarg.h>
+//#include "USART.h"
 
 
-#define GRAM_MODE                   0
+//#define GRAM_MODE                   0
 
-#define GUI_HEAP	HEAP1
+//#define GUI_HEAP	HEAP1
 
-//GUI»º´æËùÔÚµÄ¶Ñ¿Õ¼ä
-#define GUI_BUFFER_HEAP HEAP1
+////GUIç¼“å­˜æ‰€åœ¨çš„å †ç©ºé—´
+//#define GUI_BUFFER_HEAP HEAP1
 
-//GUI»º´æ´óĞ¡£¬Êµ¼ÊÉÏ»áÓĞÁ½¸ö´óĞ¡ÎªGUI_BUFFER_SIZEµÄ¶ÀÁ¢»º´æ
-//Ê¾²¨Æ÷ÄÜÏÔÊ¾µÄ×î´óµãÊıÓë¸ÃÖµ´óĞ¡ÓĞ¹Ø£º×î´óµãÊı=GUI_BUFFER_SIZE/4
-#define GUI_BUFFER_SIZE 4096
+////GUIç¼“å­˜å¤§å°ï¼Œå®é™…ä¸Šä¼šæœ‰ä¸¤ä¸ªå¤§å°ä¸ºGUI_BUFFER_SIZEçš„ç‹¬ç«‹ç¼“å­˜
+////ç¤ºæ³¢å™¨èƒ½æ˜¾ç¤ºçš„æœ€å¤§ç‚¹æ•°ä¸è¯¥å€¼å¤§å°æœ‰å…³ï¼šæœ€å¤§ç‚¹æ•°=GUI_BUFFER_SIZE/4
+//#define GUI_BUFFER_SIZE 4096
 
-#define COLOR_UNFOCUS	0xb596
-#define COLOR_FRAME		0x4a69
-#define COLOR_FOCUS		0xc618
-#define COLOR_TEXTBOX	0xa534
-#define COLOR_TEXTFRAME	BLACK
-
-//GUI»º´æ0
-void* GUI_Buffer0;
-//GUI»º´æ1
-void* GUI_Buffer1;
-
-
-
-#define ROUND(x)                ((int32_t)(x+0.5f))
-#define GET_COMPONENT_ADDR(x)   ((component*)(((uint32_t)(x))-4))
-
-/*GUI Controller*/
-layer_handler   Method_GUI_Controller_Add_Layer            (gui_controller* guictrl, uint16_t color);
-void            Method_GUI_Controller_Remove_Layer         (gui_controller* guictrl, layer_handler layer);
-void            Method_GUI_Controller_ActiveLayer_Set      (gui_controller* guictrl, layer_handler layer);
-button*         Method_GUI_Controller_Create_Button        (gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
-label*          Method_GUI_Controller_Create_Label         (gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
-panel*          Method_GUI_COntroller_Create_Panel         (gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t rownum, uint8_t linenum, layer_handler layer);
-toolbox*        Method_GUI_Controller_Create_ToolBox       (gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
-scope*          Method_GUI_Controller_Create_Scope         (gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, uint16_t max_dlen, status_flag vscale, layer_handler layer); 
-void            Method_GUI_Controller_Process              (gui_controller* guictrl);
-
-
-/*Component*/
-void            Method_Component_Repaint    (component* cm);
-void            Method_Component_Dispose    (component* cm);
-void            Method_Component_FocusSet   (component* cm, status_flag state);
-void            Method_Component_ActiveSet  (component* cm, status_flag state);
-
-void            _Layer_Init                 (component_layer* cl, uint16_t color);
-
-void            Global_PressDown_Callback   (touch_device* td, touch_area* ta);
-void            Global_Release_Callback     (touch_device* td, touch_area* ta);
-void            Global_KeepPress_Callback   (touch_device* td, touch_area* ta);
-void            Global_Click_Callback       (touch_device* td, touch_area* ta);
-void            Overall_Click_Callback      (touch_device* td, touch_area* ta);
-    
-
-/********************************************************************************************************/
-/*                                              Button                                                  */
-/********************************************************************************************************/
-
-void            Method_Button_Event_Set     (button* btn, button_event_type event, status_flag status);
-void            Method_Button_Active_Set    (button* btn, status_flag status);
-void            Method_Button_Change_Text   (button* btn, char* fmtstr, ...);
-void            Method_Button_Repaint       (button* btn);
-void            Method_Button_Dispose       (button* btn);
-
-void            _Button_Init                (button* btn, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
-
-
-/********************************************************************************************************/
-/*                                              Label                                                   */
-/********************************************************************************************************/
-
-void            Method_Label_Event_Set     (label* lbl, label_event_type event, status_flag status);
-void            Method_Label_Active_Set    (label* lbl, status_flag status);
-void            Method_Label_Change_Text   (label* lbl, char* fmtstr, ...);
-void            Method_Label_Repaint       (label* lbl);
-void            Method_Label_Dispose       (label* lbl);
-
-void            _Label_Init                (label* lbl, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
-
-
-/********************************************************************************************************/
-/*                                              Panel                                                   */
-/********************************************************************************************************/
-void            Method_Panel_Data_Update               (panel* pnl);
-void            Method_Panel_Dispose                   (panel* pnl);
-
-void            _Panel_Init                            (panel* pnl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t rownum, uint8_t linenum, layer_handler layer);
-void            _Panel_Data_Calculate                  (panel* pnl);
-
-
-/********************************************************************************************************/
-/*                                              ToolBox                                                 */
-/********************************************************************************************************/
-void            Method_ToolBox_Event_Set                (toolbox* tbx, toolbox_event_type event, status_flag status);
-void            Method_ToolBox_Active_Set               (toolbox* tbx, status_flag status);
-void            Method_ToolBox_Change_Text              (toolbox* tbx, char* fmtstr, ...);
-toolbox_button* Method_ToolBox_Add_Button               (toolbox* tbx, char* text);
-void            Method_ToolBox_Delete_Button            (toolbox* tbx, toolbox_button* tbx_btn);
-void            Method_ToolBox_Repaint                  (toolbox* tbx);
-void            Method_ToolBox_Dispose                  (toolbox* tbx);
-
-void            _ToolBox_Init                           (toolbox* tbx, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
-void            _ToolBox_Button_Init                    (toolbox_button* tbx_btn, touch_device* td, uint16_t width, uint16_t height, status_flag virt, char* text);
-void            _ToolBox_Button_Repermutation           (toolbox* tbx);
-
-void            Method_ToolBox_Button_Event_Set           (toolbox_button* tbx_btn, toolbox_event_type event, status_flag status);    
-void            Method_ToolBox_Button_Active_Set          (toolbox_button* tbx_btn, status_flag status);
-void            Method_ToolBox_Button_Change_Text         (toolbox_button* tbx_btn, char* fmtstr, ...);
-
-
-/********************************************************************************************************/
-/*                                              Scope                                                   */
-/********************************************************************************************************/
-void            Method_Scope_Event_Set                (scope* scp, scope_event_type event, status_flag status);
-void            Method_Scope_Active_Set               (scope* scp, status_flag status);
-void            Method_Scope_Unfixed_Axis_Set         (scope* scp, status_flag state);
-void            Method_Scope_Repaint                  (scope* scp);
-void            Method_Scope_Dispose                  (scope* scp);
-    
-void            _Scope_Init                           (scope* scp, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, uint16_t max_dlen, status_flag vscale, layer_handler layer);
-void            _Scope_CurveRange_Update              (float* data, uint16_t dlen,axis* ax, curve* cur, curve_range* cur_range, rectangle* area);
-void            _Scope_Data_Prepare                   (float* datin, float* datout, axis* ax, curve_range* cur_range);
-void            _Scope_Draw_Waveform                  (canvas* c, float* dat, line* l, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t axis_pos, uint16_t dlen, uint8_t style);
-void            _Scope_Repaint                        (scope* scp);
-    
-    
-void _Layer_Init(component_layer* cl, uint16_t color)
-{
-    cl->Active=Disable;
-    cl->Color=color;
-    LinkedList_Prepare(&cl->Components,sizeof(components_union));
-}
-
-layer_handler Method_GUI_Controller_Add_Layer(struct gui_controller_class* guictrl, uint16_t color)
-{
-    component_layer* cl;
-
-    cl=LinkedList_Add(&guictrl->Layers,guictrl->Layers.Nodes_Num);
-    _Layer_Init(cl,color);
-    return guictrl->Layers.Nodes_Num-1;
-}
-
-void Method_GUI_Controller_Remove_Layer(struct gui_controller_class* guictrl, layer_handler layer)
-{
-    int i;
-    component_layer* cl;
-    component* cm;
-    
-    //ÕÒµ½²ã
-    cl=LinkedList_Find(&guictrl->Layers,layer);
-    for (i=0;i<cl->Components.Nodes_Num;i++)    //ÒÆ³ı²ãÄÚÃ¿¸ö¿Ø¼ş
-    {
-        cm=LinkedList_Find(&cl->Components,i);
-        cm->Dispose(cm);
-    }
-    LinkedList_Dispose(&guictrl->Layers,layer);  //ÒÆ³ı²ã
-}
-
-void Method_GUI_Controller_ActiveLayer_Set(gui_controller* guictrl, layer_handler layer)
-{
-    uint16_t i;
-    component_layer* cl;
-    component* cm;
-    
-    //ÕÒµ½µ±Ç°»îÔ¾²ã
-    cl=LinkedList_Find(&guictrl->Layers,guictrl->Active_Layer);
-    for (i=0;i<cl->Components.Nodes_Num;i++)
-    {
-        cm=LinkedList_Find(&cl->Components,i);
-        cm->Active_Set(cm,Disable);
-    }
-    
-    //ÕÒµ½²ã
-    cl=LinkedList_Find(&guictrl->Layers,layer);
-    for (i=0;i<cl->Components.Nodes_Num;i++)
-    {
-        cm=LinkedList_Find(&cl->Components,i);
-        cm->Active_Set(cm,Enable);
-    }
-    //¸ü¸Ä»îÔ¾²ã
-    _RO_WRITE(guictrl->Active_Layer,layer_handler,layer);
-    //¸üĞÂ±ê¼Ç
-    guictrl->Updated=Enable;
-}
-
-button* Method_GUI_Controller_Create_Button(struct gui_controller_class* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
-{
-    component_layer* cl;
-    component* cm;
-    
-    //»ñÈ¡²ã
-    cl=LinkedList_Find(&guictrl->Layers,layer);
-    //ĞÂ½¨¿Ø¼ş
-    cm=LinkedList_Add(&cl->Components,cl->Components.Nodes_Num);
-    
-    //°ó¶¨·½·¨
-    cm->Repaint=Method_Component_Repaint;
-    cm->Active_Set=Method_Component_ActiveSet;
-    cm->Focus_Set=Method_Component_FocusSet;
-    cm->Dispose=Method_Component_Dispose;
-    
-    
-    //×ª»»Îªbutton
-    cm->Type=BUTTON;
-    //button²ÎÊı³õÊ¼»¯
-    _Button_Init(&cm->Component.Button,guictrl->TouchDevice,x,y,width,height,virt,text,layer);
-    //Óë´¥ÃşÇøÓò´´½¨¹ØÁª
-    cm->Component.Button.TouchArea->Association=cm;
-    //Óë¿ØÖÆÆ÷¹ØÁª
-    cm->Component.Button.Controller=guictrl;
-    
-    return &cm->Component.Button;
-}
-
-label* Method_GUI_Controller_Create_Label(gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
-{
-    component_layer* cl;
-    component* cm;
-    
-    //»ñÈ¡²ã
-    cl=LinkedList_Find(&guictrl->Layers,layer);
-    //ĞÂ½¨¿Ø¼ş
-    cm=LinkedList_Add(&cl->Components,cl->Components.Nodes_Num);
-    
-    //°ó¶¨·½·¨
-    cm->Repaint=Method_Component_Repaint;
-    cm->Active_Set=Method_Component_ActiveSet;
-    cm->Focus_Set=Method_Component_FocusSet;
-    cm->Dispose=Method_Component_Dispose;
-    
-    //×ª»»Îªlabel
-    cm->Type=LABEL;
-    //label²ÎÊı³õÊ¼»¯
-    _Label_Init(&cm->Component.Label,guictrl->TouchDevice,x,y,width,height,virt,text,layer);
-    //Óë¿ØÖÆÆ÷¹ØÁª
-    cm->Component.Label.Controller=guictrl;
-    
-    return &cm->Component.Label;
-}
-
-panel* Method_GUI_COntroller_Create_Panel(gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t rownum, uint8_t linenum, layer_handler layer)
-{
-    component_layer* cl;
-    component* cm;
-    
-    //»ñÈ¡²ã
-    cl=LinkedList_Find(&guictrl->Layers,layer);
-    //ĞÂ½¨¿Ø¼ş
-    cm=LinkedList_Add(&cl->Components,cl->Components.Nodes_Num);
-    
-    //°ó¶¨·½·¨
-    cm->Repaint=Method_Component_Repaint;
-    cm->Active_Set=Method_Component_ActiveSet;
-    cm->Focus_Set=Method_Component_FocusSet;
-    cm->Dispose=Method_Component_Dispose;
-    
-    //×ª»»Îªpanel
-    cm->Type=PANEL;
-    //panel²ÎÊı³õÊ¼»¯
-    _Panel_Init(&cm->Component.Panel,x,y,width,height,rownum,linenum,layer);
-    //Óë¿ØÖÆÆ÷¹ØÁª
-    cm->Component.Panel.Controller=guictrl;
-    
-    return &cm->Component.Panel;
-}
-
-toolbox* Method_GUI_Controller_Create_ToolBox(gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
-{
-    component_layer* cl;
-    component* cm;
-    
-    //»ñÈ¡²ã
-    cl=LinkedList_Find(&guictrl->Layers,layer);
-    //ĞÂ½¨¿Ø¼ş
-    cm=LinkedList_Add(&cl->Components,cl->Components.Nodes_Num);
-    
-    //°ó¶¨·½·¨
-    cm->Repaint=Method_Component_Repaint;
-    cm->Active_Set=Method_Component_ActiveSet;
-    cm->Focus_Set=Method_Component_FocusSet;
-    cm->Dispose=Method_Component_Dispose;
-    
-    //×ª»»Îªtoolbox
-    cm->Type=TOOLBOX;
-    //toolbox²ÎÊı³õÊ¼»¯
-    _ToolBox_Init(&cm->Component.ToolBox,guictrl->TouchDevice,x,y,width,height,virt,text,layer);
-    //Óë´¥ÃşÇøÓò´´½¨¹ØÁª
-    cm->Component.ToolBox.TouchArea->Association=cm;
-    //Óë¿ØÖÆÆ÷¹ØÁª
-    cm->Component.ToolBox.Controller=guictrl;
-    
-    return &cm->Component.ToolBox;
-}
-
-scope* Method_GUI_Controller_Create_Scope(gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, uint16_t max_dlen, status_flag vscale, layer_handler layer)
-{
-    component_layer* cl;
-    component* cm;
-    
-    //»ñÈ¡²ã
-    cl=LinkedList_Find(&guictrl->Layers,layer);
-    //ĞÂ½¨¿Ø¼ş
-    cm=LinkedList_Add(&cl->Components,cl->Components.Nodes_Num);
-    
-    //°ó¶¨·½·¨
-    cm->Repaint=Method_Component_Repaint;
-    cm->Active_Set=Method_Component_ActiveSet;
-    cm->Focus_Set=Method_Component_FocusSet;
-    cm->Dispose=Method_Component_Dispose;
-    
-    //×ª»»Îªscope
-    cm->Type=SCOPE;
-    //button²ÎÊı³õÊ¼»¯
-    _Scope_Init(&cm->Component.Scope,guictrl->TouchDevice,x,y,width,height,virt,max_dlen,Disable,layer);
-    //Óë´¥ÃşÇøÓò´´½¨¹ØÁª
-    cm->Component.Scope.TouchArea->Association=cm;
-    //Óë¿ØÖÆÆ÷¹ØÁª
-    cm->Component.Scope.Controller=guictrl;
-    
-    return &cm->Component.Scope;
-}
-
-
-
-
-
-
-
-
-
-
-
-void Method_GUI_Controller_Process(gui_controller* guictrl)
-{
-    int i,j;
-    status_flag AnyCompUpdated=Disable;
-    status_flag ToolboxFocus=Disable;   //¹¤¾ßÏä»ñµÃ½¹µã
-    component* cm;
-    component_layer* cl;
-    
-    //´¥ÃşĞÅÏ¢¸üĞÂ
-    guictrl->TouchDevice->Process(guictrl->TouchDevice);
-    cl=LinkedList_Find(&guictrl->Layers,guictrl->Active_Layer);
-    for (i=0;i<cl->Components.Nodes_Num;i++)
-    {
-        cm=LinkedList_Find(&cl->Components,i);
-        switch (cm->Type)
-        {
-            //°´¼ü£¨Button£©ÊÂ¼ş¸üĞÂ
-            case BUTTON:
-            {
-                button* btn=&cm->Component.Button;
-                if (btn->Event_PressDown_Happened)
-                {
-                    if (btn->AllEvent_Enable&&btn->Event_PressDown_Enable)
-                        btn->PressDown_Callback(btn);
-                    _RO_WRITE(btn->Event_PressDown_Happened,status_flag,Disable);
-                }
-                if (btn->Event_Release_Happened)
-                {
-                    if (btn->AllEvent_Enable&&btn->Event_Release_Enable)
-                        btn->Release_Callback(btn);
-                    _RO_WRITE(btn->Event_Release_Happened,status_flag,Disable);
-                }
-                if (btn->Event_KeepPress_Happened)
-                {
-                    if (btn->AllEvent_Enable&&btn->Event_KeepPress_Enable)
-                        btn->KeepPress_Callback(&cm->Component);
-                    _RO_WRITE(btn->Event_KeepPress_Happened,status_flag,Disable);
-                }
-                if (btn->Event_Click_Happened)
-                {
-                    if (!btn->Focus)    //»ñµÃ½¹µã
-                        _RO_WRITE(btn->Event_GetFocus_Happened,status_flag,Enable);
-                    else    //Ê§È¥½¹µã
-                        _RO_WRITE(btn->Event_LostFocus_Happened,status_flag,Enable);
-                    //Èç¹ûµ¥»÷ÊÂ¼şÊ¹ÄÜ
-                    if (btn->AllEvent_Enable&&btn->Event_Click_Enable)
-                        btn->Click_Callback(btn);
-                    _RO_WRITE(btn->Event_Click_Happened,status_flag,Disable);
-                }
-                if (btn->Event_GetFocus_Happened)
-                {
-                    if (guictrl->Focus_Component!=NULL)
-                        guictrl->Focus_Component->Focus_Set(guictrl->Focus_Component,Disable);
-                    _RO_WRITE(btn->Focus,status_flag,Enable);
-                    _RO_WRITE(guictrl->Focus_Component,component*,cm);
-                    if (btn->AllEvent_Enable&&btn->Event_GetFocus_Enable)
-                        btn->GetFocus_Callback(btn);
-                    _RO_WRITE(btn->Event_GetFocus_Happened,status_flag,Disable);
-                }
-                if (btn->Event_LostFocus_Happened)
-                {
-                    _RO_WRITE(btn->Focus,status_flag,Disable);
-                    _RO_WRITE(guictrl->Focus_Component,component*,NULL);
-                    if (btn->AllEvent_Enable&&btn->Event_LostFocus_Enable)
-                        btn->LostFocus_Callback(btn);
-                    _RO_WRITE(btn->Event_LostFocus_Happened,status_flag,Disable);
-                }
-                if (btn->Updated&&(!guictrl->Updated))
-                {
-                    btn->Repaint(btn);
-                    btn->Updated=Disable;
-                    AnyCompUpdated=Enable;
-                }
-                else if (guictrl->Updated)
-                    btn->Updated=Disable;
-                break;
-            }
-            //±êÇ©£¨Label£©ÊÂ¼ş¸üĞÂ
-            case LABEL:
-            {
-                label* lbl=&cm->Component.Label;
-                if (lbl->Updated&&(!guictrl->Updated))
-                {
-                    lbl->Repaint(lbl);
-                    lbl->Updated=Disable;
-                    AnyCompUpdated=Enable;
-                }
-                else if (guictrl->Updated)
-                    lbl->Updated=Disable;
-                break;
-            }
-            //¹¤¾ßÏä£¨ToolBox£©ÊÂ¼ş¸üĞÂ
-            case TOOLBOX:
-            {
-                toolbox* tbx=&cm->Component.ToolBox;
-                toolbox_button* tbx_btn;
-                for (j=0;j<tbx->Buttons.Nodes_Num;j++)
-                {
-                    tbx_btn=&((component*)LinkedList_Find(&tbx->Buttons,j))->Component.ToolBox_Button;
-                    if (tbx_btn->Event_Click_Happened)
-                    {
-                        if (tbx_btn->AllEvent_Enable&&tbx_btn->Event_Click_Enable)
-                            tbx_btn->Click_Callback(tbx_btn);
-                        _RO_WRITE(tbx_btn->Event_Click_Happened,status_flag,Disable);
-                    }
-                }
-                
-                if (tbx->Event_PressDown_Happened)
-                {
-                    if (tbx->AllEvent_Enable&&tbx->Event_PressDown_Enable)
-                        tbx->PressDown_Callback(tbx);
-                    _RO_WRITE(tbx->Event_PressDown_Happened,status_flag,Disable);
-                }
-                if (tbx->Event_Release_Happened)
-                {
-                    if (tbx->AllEvent_Enable&&tbx->Event_Release_Enable)
-                        tbx->Release_Callback(tbx);
-                    _RO_WRITE(tbx->Event_Release_Happened,status_flag,Disable);
-                }
-                if (tbx->Event_KeepPress_Happened)
-                {
-                    if (tbx->AllEvent_Enable&&tbx->Event_KeepPress_Enable)
-                        tbx->KeepPress_Callback(&cm->Component);
-                    _RO_WRITE(tbx->Event_KeepPress_Happened,status_flag,Disable);
-                }
-                if (tbx->Event_Click_Happened)
-                {
-                    if (!tbx->Focus)    //»ñµÃ½¹µã
-                        _RO_WRITE(tbx->Event_GetFocus_Happened,status_flag,Enable);
-                    //Èç¹ûµ¥»÷ÊÂ¼şÊ¹ÄÜ
-                    if (tbx->AllEvent_Enable&&tbx->Event_Click_Enable)
-                        tbx->Click_Callback(tbx);
-                    _RO_WRITE(tbx->Event_Click_Happened,status_flag,Disable);
-                }
-                if (tbx->Event_GetFocus_Happened)
-                {
-                    
-                    if (guictrl->Focus_Component!=NULL)
-                        guictrl->Focus_Component->Focus_Set(guictrl->Focus_Component,Disable);
-                    _RO_WRITE(tbx->Focus,status_flag,Enable);
-                    _RO_WRITE(guictrl->Focus_Component,component*,cm);
-                    //¹¤¾ßÏä±»´ò¿ª£¬È«¾ÖË¢ĞÂ
-                    guictrl->Updated=Enable;
-                    //È«¾Ö´¥ÃşÇøÓòÊÂ¼şÊ¹ÄÜ
-                    guictrl->Overall_TouchArea->All_Event_Enable=Enable;
-                    if (tbx->AllEvent_Enable&&tbx->Event_GetFocus_Enable)
-                        tbx->GetFocus_Callback(tbx);
-                    _RO_WRITE(tbx->Event_GetFocus_Happened,status_flag,Disable);
-                    
-                    //ËùÓĞ¿Ø¼ş´¥ÃşÊÂ¼şÊ§ÄÜ
-                    component* cm;
-                    for (j=0;j<cl->Components.Nodes_Num;j++)
-                    {
-                        cm=LinkedList_Find(&cl->Components,j);
-                        cm->Active_Set(cm,Disable);
-                    }
-                    //ËùÓĞ°´¼ü´¥ÃşÊÂ¼şÊ¹ÄÜ
-                    for (j=0;j<tbx->Buttons.Nodes_Num;j++)
-                    {
-                        cm=LinkedList_Find(&tbx->Buttons,j);
-                        cm->Component.ToolBox_Button.TouchArea->All_Event_Enable=Enable;
-                    }
-                }
-                if (tbx->Event_LostFocus_Happened)
-                {
-                    _RO_WRITE(guictrl->Focus_Component,component*,NULL);
-                    _RO_WRITE(tbx->Focus,status_flag,Disable);
-                    //¹¤¾ßÏä±»¹Ø±Õ£¬È«¾ÖË¢ĞÂ
-                    guictrl->Updated=Enable;
-                    //È«¾Ö´¥ÃşÇøÓòÊÂ¼şÊ§ÄÜ
-                    guictrl->Overall_TouchArea->All_Event_Enable=Disable;
-                    if (tbx->AllEvent_Enable&&tbx->Event_LostFocus_Enable)
-                        tbx->LostFocus_Callback(tbx);
-                    _RO_WRITE(tbx->Event_LostFocus_Happened,status_flag,Disable);
-                    
-                    //ËùÓĞ¿Ø¼ş´¥ÃşÊÂ¼şÊ¹ÄÜ
-                    component* cm;
-                    for (j=0;j<cl->Components.Nodes_Num;j++)
-                    {
-                        cm=LinkedList_Find(&cl->Components,j);
-                        cm->Active_Set(cm,Enable);
-                    }
-                    //ËùÓĞ°´¼ü´¥ÃşÊÂ¼şÊ§ÄÜ
-                    for (j=0;j<tbx->Buttons.Nodes_Num;j++)
-                    {
-                        cm=LinkedList_Find(&tbx->Buttons,j);
-                        cm->Component.ToolBox_Button.TouchArea->All_Event_Enable=Disable;
-                    }
-                }
-                if (tbx->Updated&&(!guictrl->Updated))
-                {
-                    tbx->Repaint(tbx);
-                    tbx->Updated=Disable;
-                    AnyCompUpdated=Enable;
-                }
-                else if (guictrl->Updated)
-                    tbx->Updated=Disable;
-                break;
-            }
-            case SCOPE:
-            {
-                scope* scp=&cm->Component.Scope;
-                if (scp->Event_PressDown_Happened)
-                {
-                    //Èç¹ûÊÇ¿É±ä×ø±êÖá
-                    if (scp->Unfixed_Axis)
-                    {
-                        _RO_WRITE(scp->SaveX,uint16_t,scp->TouchArea->PointX);
-                        _RO_WRITE(scp->SaveY,uint16_t,scp->TouchArea->PointY);
-                        _RO_WRITE(scp->Operating,status_flag,Enable);    //ÕıÔÚ²Ù×÷
-                        if ((scp->SaveX<scp->Axis._Y_Position+10)&&(scp->SaveX>scp->Axis._Y_Position-10))   //¶ÔYÖá²Ù×÷
-                        {
-                            _RO_WRITE(scp->InYAxisRange,status_flag,Enable);
-                            _RO_WRITE(scp->InXAxisRange,status_flag,Disable);
-                        }
-                        else if ((scp->SaveY<scp->Axis._X_Position+10)&&(scp->SaveY>scp->Axis._X_Position-10))  //¶ÔXÖá²Ù×÷
-                        {
-                            _RO_WRITE(scp->InXAxisRange,status_flag,Enable);
-                            _RO_WRITE(scp->InYAxisRange,status_flag,Disable);
-                        }
-                    }
-                    
-                    if (scp->AllEvent_Enable&&scp->Event_PressDown_Enable)
-                        scp->PressDown_Callback(scp);
-                    _RO_WRITE(scp->Event_PressDown_Happened,status_flag,Disable);
-                }
-                if (scp->Event_Release_Happened)
-                {
-                    //Èç¹ûÊÇ¿É±ä×ø±êÖá
-                    if (scp->Unfixed_Axis)
-                    {
-                        _RO_WRITE(scp->Operating,status_flag,Disable);
-                        _RO_WRITE(scp->InXAxisRange,status_flag,Disable);
-                        _RO_WRITE(scp->InYAxisRange,status_flag,Disable);
-                    }
-                    
-                    if (scp->AllEvent_Enable&&scp->Event_Release_Enable)
-                        scp->Release_Callback(scp);
-                    _RO_WRITE(scp->Event_Release_Happened,status_flag,Disable);
-                }
-                if (scp->Event_KeepPress_Happened)
-                {
-                    //Èç¹ûÊÇ¿É±ä×ø±êÖá
-                    if (scp->Unfixed_Axis)
-                    {
-                        //ÕıÔÚ²Ù×÷
-                        if (scp->Operating)
-                        {
-                            short deltax,deltay;
-                            
-                            deltax=scp->TouchArea->PointX-scp->SaveX;
-                            deltay=scp->TouchArea->PointY-scp->SaveY;
-                            if (scp->InXAxisRange)  //¶ÔXÖá²Ù×÷
-                            {
-                                deltax*=-1;
-                                scp->Axis.X_Max*=1+(float)deltax/scp->Canvas.Area.Width;
-                                scp->Axis.X_Min*=1+(float)deltax/scp->Canvas.Area.Width;
-                            }
-                            else if (scp->InYAxisRange) //¶ÔYÖá²Ù×÷
-                            {
-                                deltay*=-1;
-                                scp->Axis.Y_Max*=1+(float)deltay/scp->Canvas.Area.Height;
-                                scp->Axis.Y_Min*=1+(float)deltay/scp->Canvas.Area.Height;
-                            }
-                            else
-                            {
-                                deltax*=-1;
-                                scp->Axis.X_Max+=(float)deltax*(scp->Axis.X_Max-scp->Axis.X_Min)/scp->Canvas.Area.Width;
-                                scp->Axis.X_Min+=(float)deltax*(scp->Axis.X_Max-scp->Axis.X_Min)/scp->Canvas.Area.Width;
-                                scp->Axis.Y_Max+=(float)deltay*(scp->Axis.Y_Max-scp->Axis.Y_Min)/scp->Canvas.Area.Height;
-                                scp->Axis.Y_Min+=(float)deltay*(scp->Axis.Y_Max-scp->Axis.Y_Min)/scp->Canvas.Area.Height;
-                            }
-                            
-                            _RO_WRITE(scp->SaveX,uint16_t,scp->TouchArea->PointX);
-                            _RO_WRITE(scp->SaveY,uint16_t,scp->TouchArea->PointY);
-                        }
-                    }
-                    
-                    if (scp->AllEvent_Enable&&scp->Event_KeepPress_Enable)
-                        scp->KeepPress_Callback(&cm->Component);
-                    _RO_WRITE(scp->Event_KeepPress_Happened,status_flag,Disable);
-                }
-                if (scp->Event_Click_Happened)
-                {
-                    if (scp->Unfixed_Axis)
-                    {
-                        if (scp->Stop)
-                            _RO_WRITE(scp->Stop,status_flag,Disable);
-                        else
-                            _RO_WRITE(scp->Stop,status_flag,Enable);
-                        scp->Update=Enable;
-                    }
-                    if (!scp->Focus)    //»ñµÃ½¹µã
-                        _RO_WRITE(scp->Event_GetFocus_Happened,status_flag,Enable);
-                    else    //Ê§È¥½¹µã
-                        _RO_WRITE(scp->Event_LostFocus_Happened,status_flag,Enable);
-                    //Èç¹ûµ¥»÷ÊÂ¼şÊ¹ÄÜ
-                    if (scp->AllEvent_Enable&&scp->Event_Click_Enable)
-                        scp->Click_Callback(scp);
-                    _RO_WRITE(scp->Event_Click_Happened,status_flag,Disable);
-                }
-                if (scp->Event_GetFocus_Happened)
-                {
-                    if (guictrl->Focus_Component!=NULL)
-                        guictrl->Focus_Component->Focus_Set(guictrl->Focus_Component,Disable);
-                    _RO_WRITE(scp->Focus,status_flag,Enable);
-                    _RO_WRITE(guictrl->Focus_Component,component*,cm);
-                    if (scp->AllEvent_Enable&&scp->Event_GetFocus_Enable)
-                        scp->GetFocus_Callback(scp);
-                    _RO_WRITE(scp->Event_GetFocus_Happened,status_flag,Disable);
-                }
-                if (scp->Event_LostFocus_Happened)
-                {
-                    _RO_WRITE(scp->Focus,status_flag,Disable);
-                    _RO_WRITE(guictrl->Focus_Component,component*,NULL);
-                    if (scp->AllEvent_Enable&&scp->Event_LostFocus_Enable)
-                        scp->LostFocus_Callback(scp);
-                    _RO_WRITE(scp->Event_LostFocus_Happened,status_flag,Disable);
-                }
-                if (scp->Update&&(!guictrl->Updated))
-                {
-                    scp->Repaint(scp);
-                    scp->Update=Disable;
-                    AnyCompUpdated=Enable;
-                }
-                else if (guictrl->Updated)
-                    scp->Update=Disable;
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    
-    //Èç¹ûÊÇ³õÊ¼»¯¹ı³Ì
-    if (guictrl->IsInit)
-    {
-        component* cm;
-        //»æÖÆ±³¾°
-        Graphic_Draw_Color(&guictrl->Screen->Canvas,cl->Color);
-        for (i=0;i<cl->Components.Nodes_Num;i++)
-        {
-            cm=LinkedList_Find(&cl->Components,i);
-            cm->Repaint(cm);
-        }
-        Graphic_Screen_Refresh();
-        _RO_WRITE(guictrl->IsInit,status_flag,Disable);
-    }
-    else if (guictrl->Updated)  //È«¾ÖË¢ĞÂ
-    {
-        component* cm;
-        //»æÖÆ±³¾°
-        Graphic_Draw_Color(&guictrl->Screen->Canvas,cl->Color);
-        //»æÖÆ¿Ø¼ş
-        for (i=0;i<cl->Components.Nodes_Num;i++)
-        {
-            cm=LinkedList_Find(&cl->Components,i);
-            cm->Repaint(cm);
-        }
-        Graphic_Screen_Refresh();
-        guictrl->Updated=Disable;
-    }
-    else
-    {
-        //Èç¹ûÓĞÈÎºÎ¿Ø¼ş¸üĞÂ
-        if (AnyCompUpdated)
-        {
-            //Èç¹ûÓĞ¹¤¾ßÏä¿Ø¼şÊÇÕ¹¿ª×´Ì¬ÔòÖØ»æ
-            if ((guictrl->Focus_Component!=NULL)&&(guictrl->Focus_Component->Type==TOOLBOX))
-                guictrl->Focus_Component->Component.ToolBox.Repaint(&guictrl->Focus_Component->Component.ToolBox);
-            Graphic_Screen_Refresh();
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void Method_Component_Repaint(component* cm)
-{
-    if (cm->Type==BUTTON)
-        cm->Component.Button.Repaint(&cm->Component.Button);
-    else if (cm->Type==LABEL)
-        cm->Component.Label.Repaint(&cm->Component.Label);
-    else if (cm->Type==TOOLBOX)
-        cm->Component.ToolBox.Repaint(&cm->Component.ToolBox);
-    else if (cm->Type==SCOPE)
-        cm->Component.Scope.Repaint(&cm->Component.Scope);
-}
-
-void Method_Component_Dispose(component* cm)
-{
-    if (cm->Type==BUTTON)
-        cm->Component.Button.Dispose(&cm->Component.Button);
-    else if (cm->Type==LABEL)
-        cm->Component.Label.Dispose(&cm->Component.Label);
-    else if (cm->Type==TOOLBOX)
-        cm->Component.ToolBox.Dispose(&cm->Component.ToolBox);
-    else if (cm->Type==SCOPE)
-        cm->Component.Scope.Dispose(&cm->Component.Scope);
-}
-
-void Method_Component_FocusSet(component* cm, status_flag state)
-{
-    if (cm->Type==BUTTON)
-        _RO_WRITE(cm->Component.Button.Focus,status_flag,state);
-    else if (cm->Type==TOOLBOX)
-        _RO_WRITE(cm->Component.ToolBox.Focus,status_flag,state);
-    else if (cm->Type==SCOPE)
-        _RO_WRITE(cm->Component.Scope.Focus,status_flag,state);
-}
-
-void Method_Component_ActiveSet(component* cm, status_flag state)
-{
-    if (cm->Type==BUTTON)
-        cm->Component.Button.Active_Set(&cm->Component.Button,state);
-    else if (cm->Type==LABEL)
-        cm->Component.Label.Active_Set(&cm->Component.Label,state);
-    else if (cm->Type==TOOLBOX)
-        cm->Component.ToolBox.Active_Set(&cm->Component.ToolBox,state);
-    else if (cm->Type==SCOPE)
-        cm->Component.Scope.Active_Set(&cm->Component.Scope,state);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void Method_Button_Event_Set(button* btn, button_event_type event, status_flag status)
-{
-    switch (event)
-    {
-        case BTN_PRESSDOWN:
-        {
-            _RO_WRITE(btn->Event_PressDown_Enable,status_flag,status);
-            btn->TouchArea->PressDown_Enable=status;
-            break;
-        }
-        case BTN_RELEASE:
-        {
-            _RO_WRITE(btn->Event_Release_Enable,status_flag,status);
-            btn->TouchArea->Release_Enable=status;
-            break;
-        }
-        case BTN_KEEPPRESS:
-        {
-            _RO_WRITE(btn->Event_KeepPress_Enable,status_flag,status);
-            btn->TouchArea->KeepPress_Enable=status;
-            break;
-        }
-        case BTN_CLICK:
-        {
-            _RO_WRITE(btn->Event_Click_Enable,status_flag,status);
-            break;
-        }
-        case BTN_GETFOCUS:
-        {
-            _RO_WRITE(btn->Event_GetFocus_Enable,status_flag,status);
-            break;
-        }
-        case BTN_LOSTFOCUS:
-        {
-            _RO_WRITE(btn->Event_LostFocus_Enable,status_flag,status);
-            break;
-        }
-        case BTN_REPAINT:
-        {
-            _RO_WRITE(btn->Event_Repaint_Enable,status_flag,status);
-            break;
-        }
-        default:
-            break;
-    }
-}
-
-void Method_Button_Active_Set(button* btn, status_flag status)
-{
-    _RO_WRITE(btn->Active,status_flag,status);
-    btn->TouchArea->All_Event_Enable=status;
-}
-
-void Method_Button_Change_Text(button* btn, char* fmtstr, ...)
-{
-    va_list vl;
-    
-    va_start(vl,fmtstr);
-    vsprintf(btn->Text,fmtstr,vl);
-    va_end(vl);
-    btn->Updated=Enable;
-}
-
-void Method_Button_Repaint(button* btn)
-{
-    if (btn->Display)
-    {
-        //Èç¹ûÏÔÊ¾ÓÃ»§±³¾°
-        if (btn->CustomBackground)
-            Graphic_Draw_BMP_All(&btn->Canvas,0,0,btn->Background);
-        else
-        {
-            Graphic_Draw_Rectangle(&btn->Canvas,0,0,&btn->Appearance);
-            Graphic_Draw_String(&btn->Canvas,
-                                btn->Appearance.Frame_Thickness,btn->Appearance.Frame_Thickness,
-                                btn->Canvas.Area.Width-2*btn->Appearance.Frame_Thickness,btn->Canvas.Area.Height-2*btn->Appearance.Frame_Thickness,
-                                btn->Vertical_Align,btn->Horizontal_Align,&btn->Font,btn->Text);
-        }
-        if (btn->Active&&btn->AllEvent_Enable&&btn->Event_Repaint_Enable)
-            btn->Repaint_Callback(btn);
-    }
-    else
-    {
-        component_layer* cl;
-        cl=LinkedList_Find(&btn->Controller->Layers,btn->Controller->Active_Layer);
-        Graphic_Draw_Color(&btn->Canvas,cl->Color);
-    }
-    Graphic_RefreshCanvas(&btn->Canvas);
-}
-
-void Method_Button_Dispose(button* btn)
-{
-    component* cm=GET_COMPONENT_ADDR(btn);
-    component_layer* cl=LinkedList_Find(&btn->Controller->Layers,btn->Layer);
-    
-    if (btn->Controller->Focus_Component==cm)
-        _RO_WRITE(btn->Controller->Focus_Component,component*,NULL);
-    //É¾³ı´¥ÃşÇøÓò
-    btn->Controller->TouchDevice->Delete_Area(btn->Controller->TouchDevice,btn->TouchArea);
-    //É¾³ı»­²¼
-    Graphic_Canvas_Delete(&btn->Canvas);
-    //É¾³ı¿Ø¼ş
-    LinkedList_Dispose2(&cl->Components,cm);
-}
-
-void _Button_Init(button* btn, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
-{    
-    btn->CustomBackground=Disable;
-    btn->Display=Enable;
-    btn->AllEvent_Enable=Disable;
-    btn->Updated=Disable;
-    _RO_WRITE(btn->Active,status_flag,Enable);
-    _RO_WRITE(btn->Focus,status_flag,Disable);
-    _RO_WRITE(btn->Event_PressDown_Enable,status_flag,Disable);
-    _RO_WRITE(btn->Event_Release_Enable,status_flag,Disable);
-    _RO_WRITE(btn->Event_KeepPress_Enable,status_flag,Disable);
-    _RO_WRITE(btn->Event_Click_Enable,status_flag,Disable);
-    _RO_WRITE(btn->Event_GetFocus_Enable,status_flag,Disable);
-    _RO_WRITE(btn->Event_LostFocus_Enable,status_flag,Disable);
-    _RO_WRITE(btn->Event_Repaint_Enable,status_flag,Disable);
-    
-    btn->Font.BackColor=WHITE;
-    btn->Font.CharColor=BLACK;
-    btn->Font.Mold=BasicChar_Courier_New;
-    
-    btn->Appearance.Background_Color=WHITE;
-    btn->Appearance.Display_Background=Enable;
-    btn->Appearance.Frame_Color=BLACK;
-    btn->Appearance.Frame_Thickness=5;
-    btn->Appearance.Height=height;
-    btn->Appearance.Width=width;
-    
-    btn->Vertical_Align=VerMid;
-    btn->Horizontal_Align=HorMid;
-    
-    strcpy(btn->Text,text);
-    
-    _RO_WRITE(btn->Layer,layer_handler,layer);
-    
-    //°ó¶¨·½·¨
-    btn->Event_Set=Method_Button_Event_Set;
-    btn->Active_Set=Method_Button_Active_Set;
-    btn->Change_Text=Method_Button_Change_Text;
-    btn->Dispose=Method_Button_Dispose;
-    btn->Repaint=Method_Button_Repaint;
-    
-    Graphic_CreateCanvas(&btn->Canvas,x,y,width,height,virt);
-    btn->TouchArea=td->Create_Area(td,x,y,width,height);
-    
-    //´¥ÃşÇøÓòÊÂ¼şÊ¹ÄÜ
-    btn->TouchArea->All_Event_Enable=Enable;
-    
-    //µã»÷ÊÂ¼şÊ¹ÄÜ
-    btn->TouchArea->Click_Enable=Enable;
-    
-    //ÅäÖÃ´¥Ãş»Øµ÷º¯Êı
-    btn->TouchArea->PressDown_CallBackFunc=Global_PressDown_Callback;
-    btn->TouchArea->Release_CallBackFunc=Global_Release_Callback;
-    btn->TouchArea->KeepPress_CallBackFunc=Global_KeepPress_Callback;
-    btn->TouchArea->Click_CallBackFunc=Global_Click_Callback;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void Method_Label_Event_Set(label* lbl, label_event_type event, status_flag status)
-{
-    switch (event)
-    {
-        case LBL_REPAINT:
-        {
-            _RO_WRITE(lbl->Event_Repaint_Enable,status_flag,status);
-            break;
-        }
-        default:
-            break;
-    }
-}
-
-void Method_Label_Active_Set(label* lbl, status_flag status)
-{
-    _RO_WRITE(lbl->Active,status_flag,status);
-}
-
-void Method_Label_Change_Text(label* lbl, char* fmtstr, ...)
-{
-    va_list vl;
-    
-    va_start(vl,fmtstr);
-    vsprintf(lbl->Text,fmtstr,vl);
-    va_end(vl);
-    lbl->Updated=Enable;
-}
-
-void Method_Label_Repaint(label* lbl)
-{
-    if (lbl->Display)
-    {
-        //Èç¹ûÏÔÊ¾ÓÃ»§±³¾°
-        if (lbl->CustomBackground)
-            Graphic_Draw_BMP_All(&lbl->Canvas,0,0,lbl->Background);
-        else
-        {
-            Graphic_Draw_Rectangle(&lbl->Canvas,0,0,&lbl->Appearance);
-            Graphic_Draw_String(&lbl->Canvas,
-                                lbl->Appearance.Frame_Thickness,lbl->Appearance.Frame_Thickness,
-                                lbl->Canvas.Area.Width-2*lbl->Appearance.Frame_Thickness,lbl->Canvas.Area.Height-2*lbl->Appearance.Frame_Thickness,
-                                lbl->Vertical_Align,lbl->Horizontal_Align,&lbl->Font,lbl->Text);
-        }
-        if (lbl->Active&&lbl->AllEvent_Enable&&lbl->Event_Repaint_Enable)
-            lbl->Repaint_Callback(lbl);
-    }
-    else
-    {
-        component_layer* cl;
-        cl=LinkedList_Find(&lbl->Controller->Layers,lbl->Controller->Active_Layer);
-        Graphic_Draw_Color(&lbl->Canvas,cl->Color);
-    }
-    Graphic_RefreshCanvas(&lbl->Canvas);
-}
-
-void Method_Label_Dispose(label* lbl)
-{
-    component* cm=GET_COMPONENT_ADDR(lbl);
-    component_layer* cl=LinkedList_Find(&lbl->Controller->Layers,lbl->Layer);
-    
-    //É¾³ı»­²¼
-    if (!lbl->Canvas.Virtual)
-        Graphic_Canvas_Delete(&lbl->Canvas);
-    //É¾³ı¿Ø¼ş
-    LinkedList_Dispose2(&cl->Components,cm);
-}
-
-void _Label_Init(label* lbl, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
-{
-    lbl->CustomBackground=Disable;
-    lbl->Display=Enable;
-    lbl->AllEvent_Enable=Disable;
-    lbl->Updated=Disable;
-    _RO_WRITE(lbl->Layer,layer_handler,layer);
-    _RO_WRITE(lbl->Active,status_flag,Enable);
-    _RO_WRITE(lbl->Event_Repaint_Enable,status_flag,Disable);
-    
-    lbl->Font.BackColor=WHITE;
-    lbl->Font.CharColor=BLACK;
-    lbl->Font.Mold=BasicChar_Courier_New;
-    
-    lbl->Appearance.Background_Color=WHITE;
-    lbl->Appearance.Display_Background=Enable;
-    lbl->Appearance.Frame_Color=BLACK;
-    lbl->Appearance.Frame_Thickness=5;
-    lbl->Appearance.Height=height;
-    lbl->Appearance.Width=width;
-    
-    lbl->Vertical_Align=VerMid;
-    lbl->Horizontal_Align=HorMid;
-    
-    strcpy(lbl->Text,text);    
-    
-    //°ó¶¨·½·¨
-    lbl->Event_Set=Method_Label_Event_Set;
-    lbl->Active_Set=Method_Label_Active_Set;
-    lbl->Change_Text=Method_Label_Change_Text;
-    lbl->Dispose=Method_Label_Dispose;
-    lbl->Repaint=Method_Label_Repaint;
-    
-    Graphic_CreateCanvas(&lbl->Canvas,x,y,width,height,virt);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void Method_Panel_Data_Update(panel* pnl)
-{
-    if (pnl->Always_Average)
-    {
-        uint16_t i;
-        
-        for (i=0;i<pnl->RowsNum;i++)
-        {
-            pnl->Vertical_Ratio[i]=1.0f/pnl->RowsNum;
-            pnl->Blocks_Height[i]=pnl->Area.Height*pnl->Vertical_Ratio[i];
-        }
-        for (i=0;i<pnl->LinesNum;i++)
-        {
-            pnl->Horizontal_Ratio[i]=1.0f/pnl->LinesNum;
-            pnl->Blocks_Width[i]=pnl->Area.Width*pnl->Horizontal_Ratio[i];
-        }
-    }
-    _Panel_Data_Calculate(pnl);
-}
-
-void Method_Panel_Dispose(panel* pnl)
-{
-    component* cm=GET_COMPONENT_ADDR(pnl);
-    component_layer* cl=LinkedList_Find(&pnl->Controller->Layers,pnl->Layer);
-    
-    //É¾³ı¿Ø¼ş
-    LinkedList_Dispose2(&cl->Components,cm);
-}
-
-void _Panel_Data_Calculate(panel* pnl)
-{
-    int i;
-    short save;
-    
-    //¼ÆËãÃ¿¸ñ¿í¶È£¨ÎŞ±ß½ç£©
-    pnl->Blocks_Width[pnl->LinesNum-1]=pnl->Area.Width;
-    for (i=0;i<pnl->LinesNum-1;i++)
-    {
-        if (pnl->UseRatio)
-            pnl->Blocks_Width[i]=ROUND((float)pnl->Area.Width/pnl->LinesNum);
-        pnl->Blocks_Width[pnl->LinesNum-1]-=pnl->Blocks_Width[i];
-    }
-    
-    //¼ÆËãÃ¿¸ñºá×ø±ê£¨ÓĞ±ß½ç£©
-    _RO_WRITE(pnl->Blocks_X[0],uint16_t,pnl->Boundary+pnl->Area.X);
-    for (i=1;i<pnl->LinesNum;i++)
-        _RO_WRITE(pnl->Blocks_X[i],uint16_t,pnl->Blocks_X[i-1]+pnl->Blocks_Width[i-1]+pnl->Area.X);
-    
-    //¼ÆËãÃ¿¸ñ¿í¶È±ÈÀı£¨ÎŞ±ß½ç£©
-    for (i=0;i<pnl->LinesNum;i++)
-        pnl->Horizontal_Ratio[i]=(float)pnl->Blocks_Width[i]/pnl->Area.Width;
-    
-    //ÖØĞÂ¼ÆËãÃ¿¸ñ¿í¶È£¨¿¼ÂÇ±ß½ç£©
-    for (i=0;i<pnl->LinesNum;i++)
-    {
-        save=pnl->Blocks_Width[i]-2*pnl->Boundary;
-        if (save<0) //Èç¹û¿í¶ÈÌ«Ğ¡ÔòÉèÎª0
-            save=0;
-        pnl->Blocks_Width[i]=save;
-    }
-    
-    //¼ÆËãÃ¿¸ñ¸ß¶È£¨ÎŞ±ß½ç£©
-    pnl->Blocks_Height[pnl->RowsNum-1]=pnl->Area.Height;
-    for (i=0;i<pnl->RowsNum-1;i++)
-    {
-        if (pnl->UseRatio)
-            pnl->Blocks_Height[i]=ROUND((float)pnl->Area.Width/pnl->RowsNum);
-        pnl->Blocks_Height[pnl->RowsNum-1]-=pnl->Blocks_Height[i];
-    }
-    
-    //¼ÆËãÃ¿¸ñ×İ×ø±ê£¨ÓĞ±ß½ç£©
-    _RO_WRITE(pnl->Blocks_Y[0],uint16_t,pnl->Boundary+pnl->Area.Y);
-    for (i=1;i<pnl->RowsNum;i++)
-        _RO_WRITE(pnl->Blocks_Y[i],uint16_t,pnl->Blocks_Y[i-1]+pnl->Blocks_Height[i-1]+pnl->Area.Y);
-    
-    //¼ÆËãÃ¿¸ñ¸ß¶È±ÈÀı£¨ÎŞ±ß½ç£©
-    for (i=0;i<pnl->RowsNum;i++)
-        pnl->Vertical_Ratio[i]=(float)pnl->Blocks_Height[i]/pnl->Area.Height;
-    
-    //ÖØĞÂ¼ÆËãÃ¿¸ñ¸ß¶È£¨¿¼ÂÇ±ß½ç£©
-    for (i=0;i<pnl->RowsNum;i++)
-    {
-        save=pnl->Blocks_Height[i]-2*pnl->Boundary;
-        if (save<0) //Èç¹û¿í¶ÈÌ«Ğ¡ÔòÉèÎª0
-            save=0;
-        pnl->Blocks_Height[i]=save;
-    }
-}
-
-void _Panel_Init(panel* pnl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t rownum, uint8_t linenum, layer_handler layer)
-{
-    int i;
-    
-    _RO_WRITE(pnl->Layer,layer_handler,layer);
-    
-    pnl->Area.X=x;
-    pnl->Area.Y=y;
-    pnl->Area.Width=width;
-    pnl->Area.Height=height;
-    
-    pnl->RowsNum=rownum;
-    pnl->LinesNum=linenum;
-    
-    pnl->Boundary=0;
-    
-    pnl->Data_Array=Malloc(GUI_HEAP,256);
-    
-    //·ÖÅä¸÷²ÎÊıµØÖ·
-    _RO_WRITE(pnl->Blocks_Width,uint16_t*,(uint16_t*)pnl->Data_Array);
-    _RO_WRITE(pnl->Blocks_Height,uint16_t*,(uint16_t*)(((uint32_t)pnl->Blocks_Width)+PANEL_MAX_LINE*2));
-    
-    _RO_WRITE(pnl->Horizontal_Ratio,float*,(float*)(((uint32_t)pnl->Blocks_Height)+PANEL_MAX_ROW*2));
-    _RO_WRITE(pnl->Vertical_Ratio,float*,(float*)(((uint32_t)pnl->Horizontal_Ratio)+PANEL_MAX_LINE*4));
-    
-    _RO_WRITE(pnl->Blocks_X,uint16_t*,(uint16_t*)(((uint32_t)pnl->Vertical_Ratio)+PANEL_MAX_ROW*4));
-    _RO_WRITE(pnl->Blocks_Y,uint16_t*,(uint16_t*)(((uint32_t)pnl->Blocks_X)+PANEL_MAX_LINE*2));
-    
-    pnl->Data_Update    =   Method_Panel_Data_Update;
-    pnl->Dispose        =   Method_Panel_Dispose;
-    
-    //Ä¬ÈÏÊ¹ÓÃ±ÈÀı²ÎÊı
-    pnl->UseRatio=Enable;
-    //Ä¬ÈÏÆ½¾ù
-    pnl->Always_Average=Enable;
-    //ÖØĞÂ¼ÆËã½á¹û
-    _Panel_Data_Calculate(pnl);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/********************************************************************************************************/
-/*                                              ToolBox                                                 */
-/********************************************************************************************************/
-void Method_ToolBox_Event_Set(toolbox* tbx, toolbox_event_type event, status_flag status)
-{
-    switch (event)
-    {
-        case TBX_PRESSDOWN:
-        {
-            _RO_WRITE(tbx->Event_PressDown_Enable,status_flag,status);
-            tbx->TouchArea->PressDown_Enable=status;
-            break;
-        }
-        case TBX_RELEASE:
-        {
-            _RO_WRITE(tbx->Event_Release_Enable,status_flag,status);
-            tbx->TouchArea->Release_Enable=status;
-            break;
-        }
-        case TBX_KEEPPRESS:
-        {
-            _RO_WRITE(tbx->Event_KeepPress_Enable,status_flag,status);
-            tbx->TouchArea->KeepPress_Enable=status;
-            break;
-        }
-        case TBX_CLICK:
-        {
-            _RO_WRITE(tbx->Event_Click_Enable,status_flag,status);
-            break;
-        }
-        case TBX_GETFOCUS:
-        {
-            _RO_WRITE(tbx->Event_GetFocus_Enable,status_flag,status);
-            break;
-        }
-        case TBX_LOSTFOCUS:
-        {
-            _RO_WRITE(tbx->Event_LostFocus_Enable,status_flag,status);
-            break;
-        }
-        case TBX_REPAINT:
-        {
-            _RO_WRITE(tbx->Event_Repaint_Enable,status_flag,status);
-            break;
-        }
-        default:
-            break;
-    }
-}
-
-void Method_ToolBox_Active_Set(toolbox* tbx, status_flag status)
-{
-    _RO_WRITE(tbx->Active,status_flag,status);
-    tbx->TouchArea->All_Event_Enable=status;
-}
-
-void Method_ToolBox_Change_Text(toolbox* tbx, char* fmtstr, ...)
-{
-    va_list vl;
-    
-    va_start(vl,fmtstr);
-    vsprintf(tbx->Text,fmtstr,vl);
-    va_end(vl);
-    tbx->Updated=Enable;
-}
-
-toolbox_button* Method_ToolBox_Add_Button(toolbox* tbx, char* text)
-{
-    int i;
-    component* cm;
-    toolbox_button* tbx_btn;
-    
-    //´´½¨°´Å¥
-    cm=LinkedList_Add(&tbx->Buttons,tbx->Buttons.Nodes_Num);
-    cm->Type=TOOLBOX_BUTTON;
-    tbx_btn=&cm->Component.ToolBox_Button;
-
-    //³õÊ¼»¯
-    _ToolBox_Button_Init(tbx_btn,tbx->Controller->TouchDevice,tbx->Button_Wdith,tbx->Button_Height,
-                            tbx->Canvas.Virtual,text);
-    //ÖØÅÅÁĞ
-    _ToolBox_Button_Repermutation(tbx);
-    //Óë´¥ÃşÇøÓò´´½¨ÁªÏµ
-    tbx_btn->TouchArea->Association=cm;
-    
-    return tbx_btn;
-}
-
-void Method_ToolBox_Delete_Button(toolbox* tbx, toolbox_button* tbx_btn)
-{
-    component* cm=GET_COMPONENT_ADDR(tbx_btn);
-    
-    //É¾³ı»­²¼
-    Graphic_Canvas_Delete(&tbx_btn->Canvas);
-    //É¾³ı´¥ÃşÇøÓò
-    tbx->Controller->TouchDevice->Delete_Area(tbx->Controller->TouchDevice,tbx_btn->TouchArea);
-    //´ÓÁ´±íÖĞÒÆ³ı
-    LinkedList_Dispose2(&tbx->Buttons,cm);
-}
-
-void Method_ToolBox_Repaint(toolbox* tbx)
-{
-    //Èç¹û»æÖÆÖ÷°´¼ü
-    if (tbx->Display)
-    {
-        if (tbx->CustomBackground)
-            Graphic_Draw_BMP_All(&tbx->Canvas,0,0,tbx->Background);
-        else
-        {
-            Graphic_Draw_Rectangle(&tbx->Canvas,0,0,&tbx->Appearance);
-            Graphic_Draw_String(&tbx->Canvas,0,0,tbx->Canvas.Area.Width,tbx->Canvas.Area.Height,VerMid,HorMid,&tbx->Font,tbx->Text);
-        }
-        if (tbx->Event_Repaint_Enable)
-            tbx->Repaint_Callback(tbx);
-    }
-    if (tbx->Buttons_Display&&tbx->Focus)
-    {
-        int i;
-        toolbox_button* tbx_btn;
-        //»æÖÆÃ¿¸ö×Ó°´¼ü
-        for (i=0;i<tbx->Buttons.Nodes_Num;i++)
-        {
-            tbx_btn=&((component*)LinkedList_Find(&tbx->Buttons,i))->Component.ToolBox_Button;
-            if (tbx_btn->CustomBackground)
-                Graphic_Draw_BMP_All(&tbx_btn->Canvas,0,0,tbx_btn->Background);
-            else
-            {
-                Graphic_Draw_Rectangle(&tbx_btn->Canvas,0,0,&tbx_btn->Appearance);
-                Graphic_Draw_String(&tbx_btn->Canvas,0,0,tbx_btn->Canvas.Area.Width,tbx_btn->Canvas.Area.Height,VerMid,HorMid,&tbx_btn->Font,tbx_btn->Text);
-            }
-        }
-    }
-}
-
-void Method_ToolBox_Dispose(toolbox* tbx)
-{
-    int i;
-    toolbox_button* tbx_btn;
-    
-    //É¾³ıËùÓĞ°´Å¥
-    for (i=0;i<tbx->Buttons.Nodes_Num;i++)
-    {
-        tbx_btn=&((component*)LinkedList_Find(&tbx->Buttons,i))->Component.ToolBox_Button;
-        tbx->Delete_Button(tbx,tbx_btn);
-    }
-    //É¾³ı»­²¼
-    Graphic_Canvas_Delete(&tbx->Canvas);
-    //É¾³ı´¥ÃşÇøÓò
-    tbx->Controller->TouchDevice->Delete_Area(tbx->Controller->TouchDevice,tbx->TouchArea);
-    //´ÓÁ´±íÖĞÒÆ³ı
-    component* cm=GET_COMPONENT_ADDR(tbx);
-    component_layer* cl=LinkedList_Find(&tbx->Controller->Layers,tbx->Layer);
-    LinkedList_Dispose2(&cl->Components,cm);
-}
-
-void _ToolBox_Init(toolbox* tbx, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
-{
-    //×´Ì¬ÅäÖÃ
-    tbx->CustomBackground=Disable;
-    tbx->Display=Enable;
-    tbx->Buttons_Display=Enable;
-    tbx->AllEvent_Enable=Disable;
-    tbx->Updated=Disable;
-    _RO_WRITE(tbx->Active,status_flag,Enable);
-    _RO_WRITE(tbx->Focus,status_flag,Disable);
-    
-    //ÊÂ¼şÊ¹ÄÜÎ»
-    _RO_WRITE(tbx->Event_PressDown_Enable,status_flag,Disable);
-    _RO_WRITE(tbx->Event_Release_Enable,status_flag,Disable);
-    _RO_WRITE(tbx->Event_KeepPress_Enable,status_flag,Disable);
-    _RO_WRITE(tbx->Event_Click_Enable,status_flag,Disable);
-    _RO_WRITE(tbx->Event_GetFocus_Enable,status_flag,Disable);
-    _RO_WRITE(tbx->Event_LostFocus_Enable,status_flag,Disable);
-    _RO_WRITE(tbx->Event_Repaint_Enable,status_flag,Disable);
-    
-    tbx->Font.BackColor=WHITE;
-    tbx->Font.CharColor=BLACK;
-    tbx->Font.Mold=BasicChar_Courier_New;
-    
-    tbx->Appearance.Background_Color=WHITE;
-    tbx->Appearance.Display_Background=Enable;
-    tbx->Appearance.Frame_Color=BLACK;
-    tbx->Appearance.Frame_Thickness=5;
-    tbx->Appearance.Height=height;
-    tbx->Appearance.Width=width;
-    
-    tbx->Vertical_Align=VerMid;
-    tbx->Horizontal_Align=HorMid;
-    
-    tbx->Button_Wdith=100;
-    tbx->Button_Height=50;
-    
-    strcpy(tbx->Text,text);
-    
-    _RO_WRITE(tbx->Layer,layer_handler,layer);
-    
-    //Á´±í³õÊ¼»¯
-    LinkedList_Prepare(&tbx->Buttons,sizeof(component));
-    //°ó¶¨·½·¨
-    tbx->Event_Set=Method_ToolBox_Event_Set;
-    tbx->Active_Set=Method_ToolBox_Active_Set;
-    tbx->Change_Text=Method_ToolBox_Change_Text;
-    tbx->Add_Button=Method_ToolBox_Add_Button;
-    tbx->Delete_Button=Method_ToolBox_Delete_Button;
-    tbx->Dispose=Method_ToolBox_Dispose;
-    tbx->Repaint=Method_ToolBox_Repaint;
-    //´´½¨»­²¼
-    Graphic_CreateCanvas(&tbx->Canvas,x,y,width,height,virt);
-    //´´½¨´¥ÃşÇøÓò
-    tbx->TouchArea=td->Create_Area(td,x,y,width,height);
-    //´¥ÃşÇøÓòÊÂ¼şÊ¹ÄÜ
-    tbx->TouchArea->All_Event_Enable=Enable;
-    //µã»÷ÊÂ¼şÊ¹ÄÜ
-    tbx->TouchArea->Click_Enable=Enable;
-    //ÅäÖÃ´¥Ãş»Øµ÷º¯Êı
-    tbx->TouchArea->PressDown_CallBackFunc=Global_PressDown_Callback;
-    tbx->TouchArea->Release_CallBackFunc=Global_Release_Callback;
-    tbx->TouchArea->KeepPress_CallBackFunc=Global_KeepPress_Callback;
-    tbx->TouchArea->Click_CallBackFunc=Global_Click_Callback;
-}
-
-void _ToolBox_Button_Init(toolbox_button* tbx_btn, touch_device* td, uint16_t width, uint16_t height, status_flag virt, char* text)
-{
-    //×´Ì¬ÅäÖÃ
-    tbx_btn->CustomBackground=Disable;
-    tbx_btn->AllEvent_Enable=Disable;
-    _RO_WRITE(tbx_btn->Active,status_flag,Enable);
-    //ÊÂ¼şÊ¹ÄÜÎ»
-    _RO_WRITE(tbx_btn->Event_Click_Enable,status_flag,Disable);
-    //×ÖÌåÅäÖÃ
-    tbx_btn->Font.BackColor=WHITE;
-    tbx_btn->Font.CharColor=BLACK;
-    tbx_btn->Font.Mold=BasicChar_Courier_New;
-    //Íâ¹ÛÅäÖÃ
-    tbx_btn->Appearance.Background_Color=WHITE;
-    tbx_btn->Appearance.Display_Background=Enable;
-    tbx_btn->Appearance.Frame_Color=BLACK;
-    tbx_btn->Appearance.Frame_Thickness=5;
-    tbx_btn->Appearance.Height=height;
-    tbx_btn->Appearance.Width=width;
-    
-    tbx_btn->Vertical_Align=VerMid;
-    tbx_btn->Horizontal_Align=HorMid;
-    
-    strcpy(tbx_btn->Text,text);
-        
-    //°ó¶¨·½·¨
-    tbx_btn->Event_Set=Method_ToolBox_Button_Event_Set;
-    tbx_btn->Active_Set=Method_ToolBox_Button_Active_Set;
-    tbx_btn->Change_Text=Method_ToolBox_Button_Change_Text;
-    
-    //´´½¨»­²¼
-    Graphic_CreateCanvas(&tbx_btn->Canvas,0,0,width,height,virt);
-    //´´½¨´¥ÃşÇøÓò
-    tbx_btn->TouchArea=td->Create_Area(td,0,0,width,height);
-    //´¥ÃşÇøÓòÊÂ¼şÊ¹ÄÜ
-    tbx_btn->TouchArea->All_Event_Enable=Enable;
-    //ÅäÖÃ´¥Ãş»Øµ÷º¯Êı
-    tbx_btn->TouchArea->Click_CallBackFunc=Global_Click_Callback;
-}
-
-void _ToolBox_Button_Repermutation(toolbox* tbx)
-{
-    int i;
-    uint16_t x,y;
-    component* cm;
-    toolbox_button* tbx_btn;
-
-    for (i=0;i<tbx->Buttons.Nodes_Num;i++)
-    {
-        cm=LinkedList_Find(&tbx->Buttons,i);
-        tbx_btn=&cm->Component.ToolBox_Button;
-        x=(tbx->Controller->Screen->Width-tbx_btn->Appearance.Width)/2;
-        y=(tbx->Controller->Screen->Height-tbx->Buttons.Nodes_Num*tbx_btn->Appearance.Height)/2;
-        y+=i*tbx_btn->Appearance.Height;
-        tbx_btn->Canvas.Area.X=x;
-        tbx_btn->Canvas.Area.Y=y;
-        tbx_btn->TouchArea->X=x;
-        tbx_btn->TouchArea->Y=y;
-    }
-}
-
-void Method_ToolBox_Button_Event_Set(toolbox_button* tbx_btn, toolbox_event_type event, status_flag status)
-{
-    if (event==TBX_CLICK)
-    {
-        tbx_btn->TouchArea->Click_Enable=status;
-        _RO_WRITE(tbx_btn->Event_Click_Enable,status_flag,status);
-    }
-}
-
-void Method_ToolBox_Button_Active_Set(toolbox_button* tbx_btn, status_flag status)
-{
-    _RO_WRITE(tbx_btn->Active,status_flag,status);
-    tbx_btn->TouchArea->All_Event_Enable=status;
-}
-
-void Method_ToolBox_Button_Change_Text(toolbox_button* tbx_btn, char* fmtstr, ...)
-{
-    va_list vl;
-    
-    va_start(vl,fmtstr);
-    vsprintf(tbx_btn->Text,fmtstr,vl);
-    va_end(vl);
-    if (tbx_btn->ToolBox->Focus)
-        tbx_btn->ToolBox->Updated=Enable;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void Method_Scope_Event_Set(scope* scp, scope_event_type event, status_flag status)
-{
-    switch (event)
-    {
-        case SCP_PRESSDOWN:
-        {
-            _RO_WRITE(scp->Event_PressDown_Enable,status_flag,status);
-            if (scp->Unfixed_Axis)
-                scp->TouchArea->PressDown_Enable=Enable;
-            else
-                scp->TouchArea->PressDown_Enable=status;
-            break;
-        }
-        case SCP_RELEASE:
-        {
-            _RO_WRITE(scp->Event_Release_Enable,status_flag,status);
-            if (scp->Unfixed_Axis)
-                scp->TouchArea->Release_Enable=Enable;
-            else
-                scp->TouchArea->Release_Enable=status;
-            break;
-        }
-        case SCP_KEEPPRESS:
-        {
-            _RO_WRITE(scp->Event_KeepPress_Enable,status_flag,status);
-            if (scp->Unfixed_Axis)
-                scp->TouchArea->KeepPress_Enable=Enable;
-            else
-                scp->TouchArea->KeepPress_Enable=status;
-            break;
-        }
-        case SCP_CLICK:
-        {
-            _RO_WRITE(scp->Event_Click_Enable,status_flag,status);
-            break;
-        }
-        case SCP_GETFOCUS:
-        {
-            _RO_WRITE(scp->Event_GetFocus_Enable,status_flag,status);
-            break;
-        }
-        case SCP_LOSTFOCUS:
-        {
-            _RO_WRITE(scp->Event_LostFocus_Enable,status_flag,status);
-            break;
-        }
-        case SCP_REPAINT:
-        {
-            _RO_WRITE(scp->Event_Repaint_Enable,status_flag,status);
-            break;
-        }
-        default:
-            break;
-    }
-}
-
-void Method_Scope_Active_Set(scope* scp, status_flag status)
-{
-    _RO_WRITE(scp->Active,status_flag,status);
-    scp->TouchArea->All_Event_Enable=status;
-}
-
-void Method_Scope_Unfixed_Axis_Set(scope* scp, status_flag state)
-{
-    _RO_WRITE(scp->Unfixed_Axis,status_flag,state);
-    scp->TouchArea->PressDown_Enable=state;
-    scp->TouchArea->KeepPress_Enable=state;
-    scp->TouchArea->Release_Enable=state;
-}
-
-void Method_Scope_Repaint(scope* scp)
-{
-    if (scp->Display)
-    {
-        if ((!scp->Stop)&&scp->Data_Updated)
-        {
-            int i;
-            for (i=0;i<scp->Curve.Length;i++)
-                scp->Data_Buffer[i]=scp->Curve.Data[i];
-            _RO_WRITE(scp->Data_Length,uint16_t,scp->Curve.Length);
-            scp->Data_Updated=Disable;
-        }
-        _Scope_CurveRange_Update(scp->Data_Buffer,scp->Data_Length,&scp->Axis,&scp->Curve,&scp->Curve_Range,&scp->Display_Area);
-        _Scope_Data_Prepare(scp->Data_Buffer,GUI_Buffer1,&scp->Axis,&scp->Curve_Range);
-        _Scope_Repaint(scp);
-        if (scp->Event_Repaint_Enable&&scp->AllEvent_Enable)
-            scp->Repaint_Callback(scp);
-        Graphic_RefreshCanvas(&scp->Canvas);
-    }
-}
-
-void Method_Scope_Dispose(scope* scp)
-{
-    //É¾³ı»­²¼
-    Graphic_Canvas_Delete(&scp->Canvas);
-    //É¾³ı´¥ÃşÇøÓò
-    scp->Controller->TouchDevice->Delete_Area(scp->Controller->TouchDevice,scp->TouchArea);
-    //´ÓÁ´±íÖĞÒÆ³ı
-    component* cm=GET_COMPONENT_ADDR(scp);
-    component_layer* cl=LinkedList_Find(&scp->Controller->Layers,scp->Layer);
-    LinkedList_Dispose2(&cl->Components,cm);
-}
-    
-void _Scope_Init(scope* scp, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, uint16_t max_dlen, status_flag vscale, layer_handler layer)
-{
-    scp->Display=Enable;
-    scp->AllEvent_Enable=Disable;
-    scp->Update=Disable;
-    scp->Cover=Enable;
-    scp->Data_Updated=Disable;
-    
-    _RO_WRITE(scp->Stop,status_flag,Disable);
-    _RO_WRITE(scp->Active,status_flag,Enable);
-    _RO_WRITE(scp->Focus,status_flag,Disable);
-    _RO_WRITE(scp->Event_PressDown_Enable,status_flag,Disable);
-    _RO_WRITE(scp->Event_Release_Enable,status_flag,Disable);
-    _RO_WRITE(scp->Event_KeepPress_Enable,status_flag,Disable);
-    _RO_WRITE(scp->Event_Click_Enable,status_flag,Disable);
-    _RO_WRITE(scp->Event_GetFocus_Enable,status_flag,Disable);
-    _RO_WRITE(scp->Event_LostFocus_Enable,status_flag,Disable);
-    _RO_WRITE(scp->Event_Repaint_Enable,status_flag,Disable);
-    
-    scp->Display_Area.Background_Color=WHITE;
-    scp->Display_Area.Display_Background=Enable;
-    scp->Display_Area.Frame_Color=BLACK;
-    scp->Display_Area.Frame_Thickness=5;
-    scp->Display_Area.Height=height;
-    scp->Display_Area.Width=width;
-    
-    _RO_WRITE(scp->Layer,layer_handler,layer);
-    
-    //´´½¨Êı¾İ»º´æÇø
-    scp->Data_Buffer=Malloc(GUI_HEAP,4*max_dlen);
-    
-    //°ó¶¨·½·¨
-    scp->Event_Set=Method_Scope_Event_Set;
-    scp->Active_Set=Method_Scope_Active_Set;
-    scp->Unfixed_Axis_Set=Method_Scope_Unfixed_Axis_Set;
-    scp->Dispose=Method_Scope_Dispose;
-    scp->Repaint=Method_Scope_Repaint;
-    
-    Graphic_CreateCanvas(&scp->Canvas,x,y,width,height,virt);
-    
-    scp->TouchArea=td->Create_Area(td,x,y,width,height);
-    
-    //´¥ÃşÇøÓòÊÂ¼şÊ¹ÄÜ
-    scp->TouchArea->All_Event_Enable=Enable;
-    
-    //µã»÷ÊÂ¼şÊ¹ÄÜ
-    scp->TouchArea->Click_Enable=Enable;
-    
-    //ÅäÖÃ´¥Ãş»Øµ÷º¯Êı
-    scp->TouchArea->PressDown_CallBackFunc=Global_PressDown_Callback;
-    scp->TouchArea->Release_CallBackFunc=Global_Release_Callback;
-    scp->TouchArea->KeepPress_CallBackFunc=Global_KeepPress_Callback;
-    scp->TouchArea->Click_CallBackFunc=Global_Click_Callback;
-    
-    scp->Display_Area.Width=width;
-	scp->Display_Area.Height=height;
-	scp->Display_Area.Frame_Thickness=5;
-	scp->Display_Area.Background_Color=WHITE;
-	scp->Display_Area.Frame_Color=BLACK;
-    scp->Display_Area.Display_Background=1;
-	scp->Style=CURVE;
-	
-	scp->Axis.Axis_Line.Color=BLACK;
-	scp->Axis.Axis_Line.Solid_Length=1;
-	scp->Axis.Axis_Line.Vacancy_Length=0;
-	scp->Axis.Axis_Line.Width=2;
-	scp->Axis.Axis_Display=1;
-	
-	scp->Axis.Net_Line.Color=BLACK;
-	scp->Axis.Net_Line.Width=2;
-	scp->Axis.Net_Line.Solid_Length=1;
-	scp->Axis.Net_Line.Vacancy_Length=0;
-	scp->Axis.Net_Display=1;
-	
-	scp->Axis.X_Net_Density=2;
-	scp->Axis.Y_Net_Density=2;
-	
-	scp->Axis.Is_XRange_Auto=1;
-	scp->Axis.Is_YRange_Auto=1;
-	scp->Axis.X_Max=10;
-	scp->Axis.X_Min=0;
-	scp->Axis.X_Tick_Num=10;
-	scp->Axis.Y_Max=10;
-	scp->Axis.Y_Min=0;
-	scp->Axis.Y_Tick_Num=10;
-	
-	scp->Curve.Curve_Line.Color=ALING_RED;
-	scp->Curve.Curve_Line.Vacancy_Length=0;
-	scp->Curve.Curve_Line.Width=2;
-	scp->Curve.Is_XRange_Auto=1;
-	scp->Curve.Is_YRange_Auto=1;
-	scp->Curve.X_Max=10;
-	scp->Curve.X_Min=0;
-	scp->Curve.Y_Max=10;
-	scp->Curve.Y_Min=0;
-	scp->Curve.Display=1;
-}
-
-void _Scope_CurveRange_Update(float* data, uint16_t dlen, axis* ax, curve* cur, curve_range* cur_range, rectangle* area)
-{
-    float k_axis,b_axis;
-	float k_curve,b_curve;
-	
-	//È·¶¨X·¶Î§
-	if (ax->Is_XRange_Auto)
-	{
-		if (cur->Is_XRange_Auto)
-		{
-			ax->X_Max=area->Width-2*area->Frame_Thickness;
-			ax->X_Min=0;
-			cur->X_Max=ax->X_Max;
-			cur->X_Min=ax->X_Min;
-		}
-		else
-		{
-			ax->X_Max=cur->X_Max;
-			ax->X_Min=cur->Y_Min;
-		}
-	}
-	else
-	{
-		if (cur->Is_XRange_Auto)
-		{
-			cur->X_Max=ax->X_Max;
-			cur->X_Min=ax->X_Min;
-		}
-	}
-	
-	//½«XÖá×ø±êÏßĞÔÓ³Éäµ½¾ØĞÎÄÚ×ø±ê
-	k_axis=MathHelper_Slope(ax->X_Min,area->Frame_Thickness,
-						ax->X_Max,area->Width-area->Frame_Thickness);
-	b_axis=MathHelper_Intercept(ax->X_Min,area->Frame_Thickness,
-						ax->X_Max,area->Width-area->Frame_Thickness);
-	//ÇúÏßXÖáµÄÖµÓëÔªËØĞòºÅÖ®¼äµÄÏßĞÔÓ³Éä
-	k_curve=MathHelper_Slope(cur->X_Min,0,cur->X_Max,dlen-1);
-	b_curve=MathHelper_Intercept(cur->X_Min,0,cur->X_Max,dlen-1);
-	
-	//¼ÆËãBegin_IndexºÍValid_X_Begin
-	if (ax->X_Min<=cur->X_Min)
-	{
-		cur_range->_Begin_Index=0;
-		if (ax->X_Max>cur->X_Min)
-			cur_range->_Valid_X_Begin=cur->X_Min*k_axis+b_axis;
-		else
-			cur_range->_Valid_X_Begin=area->Width-area->Frame_Thickness;
-	}
-	else
-	{
-		cur_range->_Valid_X_Begin=area->Frame_Thickness;
-		if (ax->X_Min<cur->X_Max)
-			cur_range->_Begin_Index=ax->X_Min*k_curve+b_curve;
-		else
-			cur_range->_Begin_Index=9;
-	}
-	
-	//¼ÆËãEnd_Index£¬ºÍValid_X_End
-	cur_range->_End_Index=ax->X_Max*k_curve+b_curve;
-	if (ax->X_Max>=cur->X_Max)
-	{
-		cur_range->_End_Index=dlen-1;
-		if (ax->X_Min<cur->X_Max)
-			cur_range->_Valid_X_End=cur->X_Max*k_axis+b_axis;
-		else
-			cur_range->_Valid_X_End=area->Frame_Thickness;
-	}
-	else
-	{
-		if (ax->X_Max>cur->X_Min)
-			cur_range->_End_Index=ax->X_Max*k_curve+b_curve;
-		else
-			cur_range->_End_Index=0;
-		cur_range->_Valid_X_End=area->Width-area->Frame_Thickness-1;
-	}
-    
-	//YÖáÎ»ÖÃ
-	if (b_axis>=area->Width-area->Frame_Thickness-ax->Axis_Line.Width/2)
-		ax->_Y_Position=area->Width-area->Frame_Thickness-ax->Axis_Line.Width/2;
-	else if (b_axis<=area->Frame_Thickness+ax->Axis_Line.Width/2)
-		ax->_Y_Position=area->Frame_Thickness+ax->Axis_Line.Width/2;
-	else
-		ax->_Y_Position=b_axis;
-	
-	cur_range->_Length=cur_range->_End_Index-cur_range->_Begin_Index+1;
-	if (ax->Is_YRange_Auto)
-	{
-		if (cur->Is_YRange_Auto)
-		{
-			//k_axis=MathHelper_FindMax_Float(&cur->Data[cur_range->_Begin_Index],cur_range->_Length,NULL);
-			//b_axis=MathHelper_FindMin_Float(&cur->Data[cur_range->_Begin_Index],cur_range->_Length,NULL);
-            k_axis=MathHelper_FindMax_Float(&data[cur_range->_Begin_Index],cur_range->_Length,NULL);
-			b_axis=MathHelper_FindMin_Float(&data[cur_range->_Begin_Index],cur_range->_Length,NULL);
-			ax->Y_Max=k_axis;
-			ax->Y_Min=b_axis;
-			cur->Y_Max=ax->Y_Max;
-			cur->Y_Min=ax->Y_Min;
-		}
-		else
-		{
-			ax->Y_Max=cur->Y_Max;
-			ax->Y_Min=cur->Y_Min;
-		}
-	}
-	else
-	{
-		if (cur->Is_YRange_Auto)
-		{
-			//k_axis=MathHelper_FindMax_Float(&cur->Data[cur_range->_Begin_Index],cur_range->_Length,NULL);
-			//b_axis=MathHelper_FindMin_Float(&cur->Data[cur_range->_Begin_Index],cur_range->_Length,NULL);
-            k_axis=MathHelper_FindMax_Float(&data[cur_range->_Begin_Index],cur_range->_Length,NULL);
-			b_axis=MathHelper_FindMin_Float(&data[cur_range->_Begin_Index],cur_range->_Length,NULL);
-			cur->Y_Max=k_axis;
-			cur->Y_Min=b_axis;
-		}
-	}
-	
-	//¼ÆËãValid_Y_End
-	k_axis=(area->Height-2*area->Frame_Thickness)/(ax->Y_Min-ax->Y_Max);
-	b_axis=area->Height-area->Frame_Thickness-1-k_axis*ax->Y_Min;
-	if (ax->Y_Min<=cur->Y_Min)
-	{
-		if (ax->Y_Max>=cur->Y_Min)
-			cur_range->_Valid_Y_End=cur->Y_Min*k_axis+b_axis;
-		else
-			cur_range->_Valid_Y_End=area->Frame_Thickness+1;
-	}
-	else
-		cur_range->_Valid_Y_End=area->Height-area->Frame_Thickness-1;
-	
-	//¼ÆËãValid_Y_Begin
-	if (ax->Y_Max>=cur->Y_Max)
-	{
-		if (ax->Y_Min<=cur->Y_Max)
-			cur_range->_Valid_Y_Begin=cur->Y_Max*k_axis+b_axis+1;
-		else
-			cur_range->_Valid_Y_Begin=area->Height-area->Frame_Thickness-1;
-	}
-	else
-		cur_range->_Valid_Y_Begin=area->Frame_Thickness;
-	
-	if (b_axis>=area->Height-area->Frame_Thickness-ax->Axis_Line.Width/2)
-		ax->_X_Position=area->Height-area->Frame_Thickness-ax->Axis_Line.Width/2;
-	else if (b_axis<=area->Frame_Thickness+ax->Axis_Line.Width/2)
-		ax->_X_Position=area->Frame_Thickness+ax->Axis_Line.Width/2;
-	else
-		ax->_X_Position=b_axis;
-}
-
-void _Scope_Data_Prepare(float* datin, float* datout, axis* ax, curve_range* cur_range)
-{
-    int i;
-    
-    for (i=0;i<cur_range->_Length;i++)
-		datout[i]=datin[i+cur_range->_Begin_Index]>ax->Y_Max?ax->Y_Max:
-				(datin[i+cur_range->_Begin_Index]<ax->Y_Min?ax->Y_Min:
-				datin[i+cur_range->_Begin_Index]);
-}
-
-void _Scope_Draw_Waveform(canvas* c, float* dat, line* l, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t axis_pos, uint16_t dlen, uint8_t style)
-{
-	u16 i;
-	float Max_or_Slope,Min_or_Inter;
-	float Step;
-	
-	if ((x>=c->Area.Width)||(y>=c->Area.Height))
-		return;
-
-	//½«datÖĞµÄÊı¾İÏßĞÔÓ³Éäµ½»­²¼·¶Î§ÄÚ
-	Max_or_Slope=dat[0];
-	Min_or_Inter=Max_or_Slope;
-	for (i=0;i<dlen;i++)
-	{
-		if (dat[i]>Max_or_Slope)
-			Max_or_Slope=dat[i];
-		else if (dat[i]<=Min_or_Inter)
-			Min_or_Inter=dat[i];
-	}
-	
-	if (Max_or_Slope-Min_or_Inter<0.02f)
-		Max_or_Slope=-1.0f;
-	else
-		Max_or_Slope=(float)(height-1)/(Min_or_Inter-Max_or_Slope);
-	Min_or_Inter=y+height-1-Max_or_Slope*Min_or_Inter;
-    
-	//Èç¹ûÊÇÇúÏß
-	if (style==CURVE)
-	{
-		//Êı¾İ³¤¶È´óÓÚµÈÓÚ»æÍ¼ÇøÓò¿í¶È£¬Öğµã»æÍ¼
-		if (dlen>=width)
-		{
-			u16 x_save1,x_save2;
-			float y_save1,y_save2;
-			
-			Step=(float)dlen/width;
-			x_save1=x;
-			y_save1=dat[0]*Max_or_Slope+Min_or_Inter;
-			
-			//ËµÃ÷ÊÇÁ¬ĞøµÄ
-			if (l->Vacancy_Length==0)
-			{
-				for (i=1;i<width;i++)
-				{
-					x_save2=i+x;
-					y_save2=dat[(u16)(i*Step)]*Max_or_Slope+Min_or_Inter;
-					Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);	
-					x_save1=x_save2;
-					y_save1=y_save2;
-				}
-			}
-			else//ËµÃ÷ÊÇĞéÏß
-			{
-				u8 j;
-				signed char save;
-
-				for (i=1;i+l->Solid_Length<width;i+=l->Solid_Length+l->Vacancy_Length)
-				{
-					x_save1=i+x;
-					y_save1=dat[(u16)(i*Step)]*Max_or_Slope+Min_or_Inter;
-					
-					//»æÖÆÊµÏß²¿·Ö
-					for (j=0;j<l->Solid_Length;j++)
-					{
-						x_save2=j+i+x;
-						y_save2=dat[(u16)((i+j)*Step)]*Max_or_Slope+Min_or_Inter;
-						Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);	
-						x_save1=x_save2;
-						y_save1=y_save2;
-					}
-				}
-
-				//×îºóÒ»²¿·ÖÊµÏß·Ö¿ª»æÖÆ
-				x_save1=x+i;
-				y_save1=((float*)dat)[(u16)(i*Step)]*Max_or_Slope+Min_or_Inter;
-				save=width-i;
-				for (j=1;j<save;j++)
-				{
-					x_save2=j+i+x;
-					y_save2=dat[(u16)((i+j)*Step)]*Max_or_Slope+Min_or_Inter;
-					Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);	
-					x_save1=x_save2;
-					y_save1=y_save2;
-				}
-
-			}
-		}
-		else	//Êı¾İ³¤¶ÈĞ¡ÓÚ»æÍ¼Çø¿í¶È£¬Á¬Ïß»æÍ¼
-		{
-			float x_save1,x_save2,y_save1,y_save2;
-			
-			//Èç¹ûÊÇĞéÏßÔòÒªÄÚ²å
-			if (l->Vacancy_Length!=0)
-				MathHelper_Linear_Interpolation(dat,dat,dlen,width);
-			else
-				Step=(float)width/(dlen-1);
-			x_save1=x;
-			y_save1=dat[0]*Max_or_Slope+Min_or_Inter;
-			
-			//Èç¹û²»ÊÇĞéÏß
-			if (l->Vacancy_Length==0)
-			{
-				for (i=1;i<dlen;i++)
-				{
-					x_save2=i*Step+x;
-					y_save2=dat[i]*Max_or_Slope+Min_or_Inter;
-					Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);
-					x_save1=x_save2;
-					y_save1=y_save2;
-				}
-			}
-			else//ËµÃ÷ÊÇĞéÏß
-			{
-				u8 j;
-				signed char save;
-				
-				for (i=1;i+l->Solid_Length<width;i+=l->Solid_Length+l->Vacancy_Length)
-				{
-					x_save1=x+i;
-					y_save1=((float*)dat)[i]*Max_or_Slope+Min_or_Inter;
-					for (j=0;j<l->Solid_Length;j++)
-					{
-						x_save2=i+j+x;
-						y_save2=((float*)dat)[i+j]*Max_or_Slope+Min_or_Inter;
-						Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);
-						x_save1=x_save2;
-						y_save1=y_save2;
-					}
-				}
-				
-				x_save1=x+i;
-				y_save1=((float*)dat)[i]*Max_or_Slope+Min_or_Inter;
-				save=width-i;
-				for (j=1;j<save;j++)
-				{
-					x_save2+=j+i+x;
-					y_save2=((float*)dat)[i+j]*Max_or_Slope+Min_or_Inter;
-					Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);
-					x_save1=x_save2;
-					y_save1=y_save2;
-				}
-			}
-		}
-	}
-	else if (style==SCATTER)//ÊÇÉ¢µãÍ¼
-	{
-		//Êı¾İ³¤¶È´óÓÚµÈÓÚ»æÍ¼ÇøÓò¿í¶È£¬°´Êı¾İÖğµã»æÍ¼
-		if (dlen>=width)
-		{
-			short y;
-			
-			Step=(float)dlen/width;
-			for (i=0;i<width;i++)
-			{
-				y=dat[(u16)(i*Step)]*Max_or_Slope+Min_or_Inter;
-				Graphic_Draw_Line(c,x+i,axis_pos,x+i,y,l);	
-				if (y+5>=c->Area.Height)
-					y=c->Area.Height-6;
-				else if (y-5<0)
-					y=5;
-				Graphic_Draw_Circle(c,x+i,y,5,l->Color,2);
-			}
-		}
-		else	//Êı¾İ³¤¶ÈĞ¡ÓÚ»æÍ¼Çø¿í¶È
-		{
-			short y;
-			u16 x;
-			
-			Step=(float)width/(dlen-1);
-			for (i=0;i<dlen;i++)
-			{
-				x=i*Step;
-				y=dat[i]*Max_or_Slope+Min_or_Inter;
-				Graphic_Draw_Line(c,x+x,axis_pos,x+x,y,l);
-				if (y+5>=c->Area.Height)
-					y=c->Area.Height-6;
-				else if (y-5<0)
-					y=5;
-				Graphic_Draw_Circle(c,x+x,y,5,l->Color,2);
-			}
-		}
-	}
-	else if (style==COLORED)//È¾É«Ä£Ê½
-	{
-		line save;
-		save.Vacancy_Length=0;
-		save.Color=l->Color;
-		save.Width=1;
-		
-		//Êı¾İ³¤¶È´óÓÚµÈÓÚ»æÍ¼ÇøÓò¿í¶È£¬°´Êı¾İÖğµã»æÍ¼
-		if (dlen>=width)
-		{
-			short y;
-
-			Step=(float)dlen/width;
-			for (i=0;i<width;i++)
-			{
-				y=dat[(u16)(i*Step)]*Max_or_Slope+Min_or_Inter;
-				Graphic_Draw_Line(c,x+i,axis_pos,x+i,y,&save);	
-			}
-		}
-		else	//Êı¾İ³¤¶ÈĞ¡ÓÚ»æÍ¼Çø¿í¶È£¬ĞèÒª½øĞĞ²åÖµ
-		{
-			u16 y;
-			
-			MathHelper_Linear_Interpolation(dat,dat,dlen,width);
-			for (i=0;i<width;i++)
-			{
-				y=((float*)dat)[i]*Max_or_Slope+Min_or_Inter;
-				Graphic_Draw_Line(c,x+i,axis_pos,x+i,y,&save);
-			}
-		}
-	}
-}
-
-void _Scope_Repaint(scope* scp)
-{
-    u16 Division_Length;
-	short i;
-    
-	if (scp->Cover)
-	{
-        Graphic_Draw_Rectangle(&scp->Canvas,0,0,&scp->Display_Area);
-        
-		//Èç¹ûÏÔÊ¾Íø¸ñ
-		if (scp->Axis.Net_Display)
-		{
-			Division_Length=(scp->Display_Area.Width-2*scp->Display_Area.Frame_Thickness)/scp->Axis.X_Tick_Num;
-			i=Division_Length*scp->Axis.X_Net_Density+scp->Axis._Y_Position;	//Ê×ÏÈÊÇXÕı°ëÖá
-			while (i<scp->Display_Area.Width)
-			{
-				Graphic_Draw_Line(&scp->Canvas,i,scp->Display_Area.Frame_Thickness,i,scp->Display_Area.Height,&scp->Axis.Net_Line);
-				i+=Division_Length*scp->Axis.X_Net_Density;
-			}
-			
-			i=scp->Axis._Y_Position-Division_Length*scp->Axis.X_Net_Density;	//È»ºóÊÇX¸º°ëÖá
-			while (i>=0)
-			{
-				Graphic_Draw_Line(&scp->Canvas,i,scp->Display_Area.Frame_Thickness,i,scp->Display_Area.Height,&scp->Axis.Net_Line);
-				i-=Division_Length*scp->Axis.X_Net_Density;
-			}
-			
-            
-			Division_Length=(scp->Display_Area.Height-2*scp->Display_Area.Frame_Thickness)/scp->Axis.Y_Tick_Num;
-			i=Division_Length*scp->Axis.Y_Net_Density+scp->Axis._X_Position;	//Y¸º°ëÖá
-			while (i<scp->Display_Area.Height)
-			{
-				Graphic_Draw_Line(&scp->Canvas,scp->Display_Area.Frame_Thickness,i,scp->Display_Area.Width-scp->Display_Area.Frame_Thickness,i,&scp->Axis.Net_Line);
-				i+=Division_Length*scp->Axis.Y_Net_Density;
-			}
-			
-			i=scp->Axis._X_Position-Division_Length*scp->Axis.Y_Net_Density;	//YÕı°ëÖá
-			while (i>=0)
-			{
-				Graphic_Draw_Line(&scp->Canvas,scp->Display_Area.Frame_Thickness,i,scp->Display_Area.Width-scp->Display_Area.Frame_Thickness,i,&scp->Axis.Net_Line);
-				i-=Division_Length*scp->Axis.Y_Net_Density;
-			}
-		}
-	}
-		
-	//ÏÔÊ¾²¨ĞÎ
-	if (scp->Curve.Display)
-	{
-        if (scp->Curve_Range._Valid_Y_End<scp->Curve_Range._Valid_Y_Begin)
-        {
-            uint16_t save=scp->Curve_Range._Valid_Y_End;
-            scp->Curve_Range._Valid_Y_End=scp->Curve_Range._Valid_Y_Begin;
-            scp->Curve_Range._Valid_Y_Begin=save;
-        }
-		_Scope_Draw_Waveform(&scp->Canvas,GUI_Buffer1,&scp->Curve.Curve_Line,
-							scp->Curve_Range._Valid_X_Begin,
-							scp->Curve_Range._Valid_Y_Begin,
-							scp->Curve_Range._Valid_X_End-scp->Curve_Range._Valid_X_Begin,
-							scp->Curve_Range._Valid_Y_End-scp->Curve_Range._Valid_Y_Begin,
-							scp->Axis._X_Position,
-							scp->Curve_Range._Length,
-							scp->Style);
-	}
-	
-	//Èç¹ûÏÔÊ¾×ø±êÖá
-	if (scp->Axis.Axis_Display)
-	{
-		//»æÖÆXÖá
-		Graphic_Draw_Rectangle2(&scp->Canvas,scp->Display_Area.Frame_Thickness,scp->Axis._X_Position-scp->Axis.Axis_Line.Width/2,
-									scp->Display_Area.Width-2*scp->Display_Area.Frame_Thickness,scp->Axis.Axis_Line.Width,0,65535,scp->Axis.Axis_Line.Color);
-        //»æÖÆYÖá
-		Graphic_Draw_Rectangle2(&scp->Canvas,scp->Axis._Y_Position-scp->Axis.Axis_Line.Width/2,scp->Display_Area.Frame_Thickness,
-									scp->Axis.Axis_Line.Width,scp->Display_Area.Height-2*scp->Display_Area.Frame_Thickness,0,65535,scp->Axis.Axis_Line.Color);
-        
-		//»æÖÆ¿Ì¶Èµã
-		Division_Length=(scp->Display_Area.Width-2*scp->Display_Area.Frame_Thickness)/scp->Axis.X_Tick_Num;
-		i=Division_Length+scp->Axis._Y_Position+scp->Display_Area.Frame_Thickness;	//Ê×ÏÈÊÇXÕı°ëÖá
-		signed char save;
-		if (scp->Axis._X_Position>=scp->Canvas.Area.Height/2)
-			save=-4-scp->Axis.Axis_Line.Width/2;
-		else
-			save=scp->Axis.Axis_Line.Width/2;
-		while (i<scp->Display_Area.Width)
-		{
-			Graphic_Draw_Rectangle2(&scp->Canvas,i,scp->Axis._X_Position+save,2,4,0,65535,scp->Axis.Axis_Line.Color);
-			i+=Division_Length;
-		}
-		
-		i=scp->Axis._Y_Position-Division_Length;	//È»ºóÊÇX¸º°ëÖá
-		while (i>=scp->Display_Area.Frame_Thickness)
-		{
-			Graphic_Draw_Rectangle2(&scp->Canvas,i,scp->Axis._X_Position+save,2,4,0,65535,scp->Axis.Axis_Line.Color);
-			i-=Division_Length;
-		}
-		
-		Division_Length=(scp->Display_Area.Height-2*scp->Display_Area.Frame_Thickness)/scp->Axis.Y_Tick_Num;
-		i=Division_Length+scp->Axis._X_Position;	//Y¸º°ëÖá
-		if (scp->Axis._Y_Position>=scp->Canvas.Area.Width/2)
-			save=-4-scp->Axis.Axis_Line.Width/2;
-		else
-			save=scp->Axis.Axis_Line.Width/2;
-		while (i<scp->Display_Area.Height-scp->Display_Area.Frame_Thickness)
-		{
-			Graphic_Draw_Rectangle2(&scp->Canvas,scp->Axis._Y_Position+save,i,4,2,0,65535,scp->Axis.Axis_Line.Color);
-			i+=Division_Length;
-		}
-		
-		i=scp->Axis._X_Position-Division_Length;	//YÕı°ëÖá
-		while (i>=0)
-		{
-			Graphic_Draw_Rectangle2(&scp->Canvas,scp->Axis._Y_Position+save,i,4,2,0,65535,scp->Axis.Axis_Line.Color);
-			i-=Division_Length;
-		}	
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void GUI_Init(gui_controller* guictrl, screen* sc, touch_device* td, uint16_t color)
-{
-    //½¨Á¢»º´æÇø
-    GUI_Buffer0=Malloc(GUI_BUFFER_HEAP,GUI_BUFFER_SIZE);
-	GUI_Buffer1=Malloc(GUI_BUFFER_HEAP,GUI_BUFFER_SIZE);
-    
-    //°ó¶¨·½·¨
-    guictrl->Add_Layer=Method_GUI_Controller_Add_Layer;
-    guictrl->Remove_Layer=Method_GUI_Controller_Remove_Layer;
-    guictrl->Create_Button=Method_GUI_Controller_Create_Button;
-    guictrl->Create_Label=Method_GUI_Controller_Create_Label;
-    guictrl->Create_Panel=Method_GUI_COntroller_Create_Panel;
-    guictrl->Create_ToolBox=Method_GUI_Controller_Create_ToolBox;
-    guictrl->Create_Scope=Method_GUI_Controller_Create_Scope;
-    guictrl->Process=Method_GUI_Controller_Process;
-    guictrl->ActiveLayer_Set=Method_GUI_Controller_ActiveLayer_Set;
-    
-    _RO_WRITE(guictrl->Active_Layer,layer_handler,0);
-    _RO_WRITE(guictrl->Focus_Component,component*,NULL);
-    _RO_WRITE(guictrl->TouchDevice,touch_device*,td);
-    guictrl->Updated=Disable;
-    //´´½¨È«¾Ö´¥ÃşÇøÓò
-    guictrl->Overall_TouchArea=td->Create_Area(td,0,0,sc->Width,sc->Height);
-    guictrl->Overall_TouchArea->All_Event_Enable=Disable;
-    guictrl->Overall_TouchArea->Click_Enable=Enable;
-    guictrl->Overall_TouchArea->Click_CallBackFunc=Overall_Click_Callback;
-    //Óë´¥ÃşÉè±¸´´½¨¹ØÁª
-    td->Association=guictrl;
-    //ÓëÆÁÄ»½¨Á¢ÁªÏµ
-    guictrl->Screen=sc;
-    //Í¼²ãÁ´±í³õÊ¼»¯
-    LinkedList_Prepare(&guictrl->Layers,sizeof(component_layer));
-    //´´½¨»ù´¡²ã
-    component_layer* cl=LinkedList_Add(&guictrl->Layers,0);
-    //»ù´¡²ã³õÊ¼»¯
-    cl->Active=Enable;
-    cl->Color=color;
-    LinkedList_Prepare(&cl->Components,sizeof(components_union));
-    //±ê¼ÇÎª³õÊ¼»¯¹ı³Ì
-    _RO_WRITE(guictrl->IsInit,status_flag,Enable);
-}
-
-
-
-
-
-
-
-
-
-
-
-void Global_PressDown_Callback(touch_device* td, touch_area* ta)
-{
-    gui_controller* gui=td->Association;
-    component* cm=ta->Association;
-    
-    if (cm->Type==BUTTON)
-    {
-        button* btn=&cm->Component.Button;
-        if (btn->Active)    //Èç¹û¿Ø¼ş±»¼¤»î
-            _RO_WRITE(btn->Event_PressDown_Happened,status_flag,Enable);
-    }
-    else if (cm->Type==TOOLBOX)
-    {
-        toolbox* tbx=&cm->Component.ToolBox;
-        if (tbx->Active)
-            _RO_WRITE(tbx->Event_PressDown_Happened,status_flag,Enable);
-    }
-    else if (cm->Type==SCOPE)
-    {
-        scope* scp=&cm->Component.Scope;
-        if (scp->Active)
-            _RO_WRITE(scp->Event_PressDown_Happened,status_flag,Enable);
-    }
-}
-
-void Global_Release_Callback(touch_device* td, touch_area* ta)
-{
-    gui_controller* gui=td->Association;
-    component* cm=ta->Association;
-    
-    if (cm->Type==BUTTON)
-    {
-        button* btn=&cm->Component.Button;
-        if (btn->Active)    //Èç¹û¿Ø¼ş±»¼¤»î
-            _RO_WRITE(btn->Event_Release_Happened,status_flag,Enable);
-    }
-    else if (cm->Type==TOOLBOX)
-    {
-        toolbox* tbx=&cm->Component.ToolBox;
-        if (tbx->Active)    //Èç¹û¿Ø¼ş±»¼¤»î
-            _RO_WRITE(tbx->Event_Release_Happened,status_flag,Enable);
-    }
-    else if (cm->Type==SCOPE)
-    {
-        scope* scp=&cm->Component.Scope;
-        if (scp->Active)    //Èç¹û¿Ø¼ş±»¼¤»î
-            _RO_WRITE(scp->Event_Release_Happened,status_flag,Enable);
-    }
-}
-
-void Global_KeepPress_Callback(touch_device* td, touch_area* ta)
-{
-    gui_controller* gui=td->Association;
-    component* cm=ta->Association;
-    
-    if (cm->Type==BUTTON)
-    {
-        button* btn=&cm->Component.Button;        
-        if (btn->Active)    //Èç¹û¿Ø¼ş±»¼¤»î
-            _RO_WRITE(btn->Event_KeepPress_Happened,status_flag,Enable);
-    }
-    else if (cm->Type==TOOLBOX)
-    {
-        toolbox* tbx=&cm->Component.ToolBox;
-        if (tbx->Active)
-            _RO_WRITE(tbx->Event_KeepPress_Happened,status_flag,Enable);
-    }
-    else if (cm->Type==SCOPE)
-    {
-        scope* scp=&cm->Component.Scope;
-        if (scp->Active)    //Èç¹û¿Ø¼ş±»¼¤»î
-            _RO_WRITE(scp->Event_KeepPress_Happened,status_flag,Enable);
-    }
-}
-
-void Global_Click_Callback(touch_device* td, touch_area* ta)
-{
-    gui_controller* gui=td->Association;
-    component* cm=ta->Association;
-    
-    if (cm->Type==BUTTON)
-    {
-        button* btn=&cm->Component.Button;
-        if (btn->Active)    //Èç¹û¿Ø¼ş±»¼¤»î
-            _RO_WRITE(btn->Event_Click_Happened,status_flag,Enable);
-    }
-    else if (cm->Type==TOOLBOX)
-    {
-        toolbox* tbx=&cm->Component.ToolBox;
-        if (tbx->Active)
-            _RO_WRITE(tbx->Event_Click_Happened,status_flag,Enable);
-    }
-    else if (cm->Type==TOOLBOX_BUTTON)
-    {
-        toolbox_button* tbx_btn=&cm->Component.ToolBox_Button;
-        if (tbx_btn->Active)
-            _RO_WRITE(tbx_btn->Event_Click_Happened,status_flag,Enable);
-    }
-    else if (cm->Type==SCOPE)
-    {
-        scope* scp=&cm->Component.Scope;
-        if (scp->Active)    //Èç¹û¿Ø¼ş±»¼¤»î
-            _RO_WRITE(scp->Event_Click_Happened,status_flag,Enable);
-    }
-}
-
-void Overall_Click_Callback(touch_device* td, touch_area* ta)
-{
-    gui_controller* guictrl=td->Association;
-    toolbox* tbx=&guictrl->Focus_Component->Component.ToolBox;
-    
-    //Èç¹û¹¤¾ßÏäÖĞ°´¼üÊıÁ¿´óÓÚ0
-    if (tbx->Buttons.Nodes_Num>0)
-    {
-        toolbox_button* tbx_btn=&((component*)LinkedList_Find(&tbx->Buttons,0))->Component.ToolBox_Button;
-        //ÅĞ¶ÏÊÇ·ñÔÚ°´¼üÇøÓòÄÚ
-        if ((ta->PointX<tbx_btn->Canvas.Area.X+tbx_btn->Canvas.Area.Width)&&(ta->PointX>tbx_btn->Canvas.Area.X))
-        {
-            if (!((ta->PointY<tbx_btn->Canvas.Area.Y+tbx_btn->Canvas.Area.Height*tbx->Buttons.Nodes_Num)&&(ta->PointY>tbx_btn->Canvas.Area.Y)))
-                _RO_WRITE(tbx->Event_LostFocus_Happened,status_flag,Enable);
-        }
-        else
-            _RO_WRITE(tbx->Event_LostFocus_Happened,status_flag,Enable);
-    }
-    else
-        _RO_WRITE(tbx->Event_LostFocus_Happened,status_flag,Enable);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void GUI_Panel_Info_Print(USART_TypeDef* usart, panel* pnl)
-{
-    int i;
-    
-    USART_Printf(usart,"\nRow Number: %d\n",pnl->RowsNum);
-    USART_Printf(usart,"Line Number: %d\n",pnl->LinesNum);
-    
-    USART_Printf(usart,"Block Width: ");
-    for (i=0;i<pnl->LinesNum;i++)
-        USART_Printf(usart,"%d  ",pnl->Blocks_Width[i]);
-    
-    USART_Printf(usart,"\nBlock Height: ");
-    for (i=0;i<pnl->RowsNum;i++)
-        USART_Printf(usart,"%d  ",pnl->Blocks_Height[i]);
-    
-    USART_Printf(usart,"\nX: ");
-    for (i=0;i<pnl->LinesNum;i++)
-        USART_Printf(usart,"%d  ",pnl->Blocks_X[i]);
-    
-    USART_Printf(usart,"\nY: ");
-    for (i=0;i<pnl->RowsNum;i++)
-        USART_Printf(usart,"%d  ",pnl->Blocks_Y[i]);
-    USART_Printf(usart,"\n");
-}
-
-void GUI_Info_Print(USART_TypeDef* usart, gui_controller* guictrl)
-{
-    int i,j;
-    component_layer* cl;
-    component* cm;
-    
-    USART_Printf(usart,"\n\nGUI_Controller info:\n");
-    USART_Printf(usart,"Active layer:%d\n",guictrl->Active_Layer);
-    USART_Printf(usart,"Layer number:%d\n",guictrl->Layers.Nodes_Num);
-    for (i=0;i<guictrl->Layers.Nodes_Num;i++)
-    {
-        USART_Printf(usart,"Layer%d:\n",i);
-        cl=LinkedList_Find(&guictrl->Layers,i);
-        USART_Printf(usart,"    Is Active:%d | Components number:%d | Color:%#x\n",cl->Active,cl->Components.Nodes_Num,cl->Color);
-        for (j=0;j<cl->Components.Nodes_Num;j++)
-        {
-            USART_Printf(usart,"\n    Component#%d: Type:",j);
-            cm=LinkedList_Find(&cl->Components,j);
-            if (cm->Type==BUTTON)
-                USART_Printf(usart,"Button(%#x)\n",cm);
-            else if (cm->Type==PANEL)
-                USART_Printf(usart,"Panel(%#x)\n",cm);
-            else if (cm->Type==LABEL)
-                USART_Printf(usart,"Label(%#x)\n",cm);
-            else if (cm->Type==TOOLBOX)
-                USART_Printf(usart,"Toolbox(%#x)\n",cm);
-            else if (cm->Type==SCOPE)
-                USART_Printf(usart,"Scope(%#x)\n",cm);
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*ScopeÉèÖÃ£¬Ö÷ÒªÊÇÉèÖÃCurve_RangeÖĞµÄ¸÷¸ö²ÎÊıÒÔ¼°XºÍYÖá×ø±ê*/
-void _GUI_ScopeSet(scope* Scope);
-
-/*ÏÔÊ¾²¨ĞÎÇúÏß*/
-void _GUI_DisplayWaveform(canvas* Canvas, float* Data, line* Line, u16 X, u16 Y, u16 Wide, u16 Height, u16 Axis_Position, u16 Data_Length, u8 Style);
+//#define COLOR_UNFOCUS	0xb596
+//#define COLOR_FRAME		0x4a69
+//#define COLOR_FOCUS		0xc618
+//#define COLOR_TEXTBOX	0xa534
+//#define COLOR_TEXTFRAME	BLACK
+
+////GUIç¼“å­˜0
+//void* GUI_Buffer0;
+////GUIç¼“å­˜1
+//void* GUI_Buffer1;
+
+
+
+//#define ROUND(x)                ((int32_t)(x+0.5f))
+//#define GET_COMPONENT_ADDR(x)   ((component*)(((uint32_t)(x))-4))
+
+///*GUI Controller*/
+//layer_handler   Method_GUI_Controller_Add_Layer            (gui_controller* guictrl, uint16_t color);
+//void            Method_GUI_Controller_Remove_Layer         (gui_controller* guictrl, layer_handler layer);
+//void            Method_GUI_Controller_ActiveLayer_Set      (gui_controller* guictrl, layer_handler layer);
+//button*         Method_GUI_Controller_Create_Button        (gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
+//label*          Method_GUI_Controller_Create_Label         (gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
+//panel*          Method_GUI_COntroller_Create_Panel         (gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t rownum, uint8_t linenum, layer_handler layer);
+//toolbox*        Method_GUI_Controller_Create_ToolBox       (gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
+//scope*          Method_GUI_Controller_Create_Scope         (gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, uint16_t max_dlen, status_flag vscale, layer_handler layer); 
+//void            Method_GUI_Controller_Process              (gui_controller* guictrl);
+
+
+///*Component*/
+//void            Method_Component_Repaint    (component* cm);
+//void            Method_Component_Dispose    (component* cm);
+//void            Method_Component_FocusSet   (component* cm, status_flag state);
+//void            Method_Component_ActiveSet  (component* cm, status_flag state);
+
+//void            _Layer_Init                 (component_layer* cl, uint16_t color);
+
+//void            Global_PressDown_Callback   (touch_device* td, touch_area* ta);
+//void            Global_Release_Callback     (touch_device* td, touch_area* ta);
+//void            Global_KeepPress_Callback   (touch_device* td, touch_area* ta);
+//void            Global_Click_Callback       (touch_device* td, touch_area* ta);
+//void            Overall_Click_Callback      (touch_device* td, touch_area* ta);
+//    
+
+///********************************************************************************************************/
+///*                                              Button                                                  */
+///********************************************************************************************************/
+
+//void            Method_Button_Event_Set     (button* btn, button_event_type event, status_flag status);
+//void            Method_Button_Active_Set    (button* btn, status_flag status);
+//void            Method_Button_Change_Text   (button* btn, char* fmtstr, ...);
+//void            Method_Button_Repaint       (button* btn);
+//void            Method_Button_Dispose       (button* btn);
+
+//void            _Button_Init                (button* btn, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
+
+
+///********************************************************************************************************/
+///*                                              Label                                                   */
+///********************************************************************************************************/
+
+//void            Method_Label_Event_Set     (label* lbl, label_event_type event, status_flag status);
+//void            Method_Label_Active_Set    (label* lbl, status_flag status);
+//void            Method_Label_Change_Text   (label* lbl, char* fmtstr, ...);
+//void            Method_Label_Repaint       (label* lbl);
+//void            Method_Label_Dispose       (label* lbl);
+
+//void            _Label_Init                (label* lbl, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
+
+
+///********************************************************************************************************/
+///*                                              Panel                                                   */
+///********************************************************************************************************/
+//void            Method_Panel_Data_Update               (panel* pnl);
+//void            Method_Panel_Dispose                   (panel* pnl);
+
+//void            _Panel_Init                            (panel* pnl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t rownum, uint8_t linenum, layer_handler layer);
+//void            _Panel_Data_Calculate                  (panel* pnl);
+
+
+///********************************************************************************************************/
+///*                                              ToolBox                                                 */
+///********************************************************************************************************/
+//void            Method_ToolBox_Event_Set                (toolbox* tbx, toolbox_event_type event, status_flag status);
+//void            Method_ToolBox_Active_Set               (toolbox* tbx, status_flag status);
+//void            Method_ToolBox_Change_Text              (toolbox* tbx, char* fmtstr, ...);
+//toolbox_button* Method_ToolBox_Add_Button               (toolbox* tbx, char* text);
+//void            Method_ToolBox_Delete_Button            (toolbox* tbx, toolbox_button* tbx_btn);
+//void            Method_ToolBox_Repaint                  (toolbox* tbx);
+//void            Method_ToolBox_Dispose                  (toolbox* tbx);
+
+//void            _ToolBox_Init                           (toolbox* tbx, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer);
+//void            _ToolBox_Button_Init                    (toolbox_button* tbx_btn, touch_device* td, uint16_t width, uint16_t height, status_flag virt, char* text);
+//void            _ToolBox_Button_Repermutation           (toolbox* tbx);
+
+//void            Method_ToolBox_Button_Event_Set           (toolbox_button* tbx_btn, toolbox_event_type event, status_flag status);    
+//void            Method_ToolBox_Button_Active_Set          (toolbox_button* tbx_btn, status_flag status);
+//void            Method_ToolBox_Button_Change_Text         (toolbox_button* tbx_btn, char* fmtstr, ...);
+
+
+///********************************************************************************************************/
+///*                                              Scope                                                   */
+///********************************************************************************************************/
+//void            Method_Scope_Event_Set                (scope* scp, scope_event_type event, status_flag status);
+//void            Method_Scope_Active_Set               (scope* scp, status_flag status);
+//void            Method_Scope_Unfixed_Axis_Set         (scope* scp, status_flag state);
+//void            Method_Scope_Repaint                  (scope* scp);
+//void            Method_Scope_Dispose                  (scope* scp);
+//    
+//void            _Scope_Init                           (scope* scp, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, uint16_t max_dlen, status_flag vscale, layer_handler layer);
+//void            _Scope_CurveRange_Update              (float* data, uint16_t dlen,axis* ax, curve* cur, curve_range* cur_range, rectangle* area);
+//void            _Scope_Data_Prepare                   (float* datin, float* datout, axis* ax, curve_range* cur_range);
+//void            _Scope_Draw_Waveform                  (canvas* c, float* dat, line* l, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t axis_pos, uint16_t dlen, uint8_t style);
+//void            _Scope_Repaint                        (scope* scp);
+//    
+//    
+//void _Layer_Init(component_layer* cl, uint16_t color)
+//{
+//    cl->Active=Disable;
+//    cl->Color=color;
+//    LinkedList_Prepare(&cl->Components,sizeof(components_union));
+//}
+
+//layer_handler Method_GUI_Controller_Add_Layer(struct gui_controller_class* guictrl, uint16_t color)
+//{
+//    component_layer* cl;
+
+//    cl=LinkedList_Add(&guictrl->Layers,guictrl->Layers.Nodes_Num);
+//    _Layer_Init(cl,color);
+//    return guictrl->Layers.Nodes_Num-1;
+//}
+
+//void Method_GUI_Controller_Remove_Layer(struct gui_controller_class* guictrl, layer_handler layer)
+//{
+//    int i;
+//    component_layer* cl;
+//    component* cm;
+//    
+//    //æ‰¾åˆ°å±‚
+//    cl=LinkedList_Find(&guictrl->Layers,layer);
+//    for (i=0;i<cl->Components.Nodes_Num;i++)    //ç§»é™¤å±‚å†…æ¯ä¸ªæ§ä»¶
+//    {
+//        cm=LinkedList_Find(&cl->Components,i);
+//        cm->Dispose(cm);
+//    }
+//    LinkedList_Dispose(&guictrl->Layers,layer);  //ç§»é™¤å±‚
+//}
+
+//void Method_GUI_Controller_ActiveLayer_Set(gui_controller* guictrl, layer_handler layer)
+//{
+//    uint16_t i;
+//    component_layer* cl;
+//    component* cm;
+//    
+//    //æ‰¾åˆ°å½“å‰æ´»è·ƒå±‚
+//    cl=LinkedList_Find(&guictrl->Layers,guictrl->Active_Layer);
+//    for (i=0;i<cl->Components.Nodes_Num;i++)
+//    {
+//        cm=LinkedList_Find(&cl->Components,i);
+//        cm->Active_Set(cm,Disable);
+//    }
+//    
+//    //æ‰¾åˆ°å±‚
+//    cl=LinkedList_Find(&guictrl->Layers,layer);
+//    for (i=0;i<cl->Components.Nodes_Num;i++)
+//    {
+//        cm=LinkedList_Find(&cl->Components,i);
+//        cm->Active_Set(cm,Enable);
+//    }
+//    //æ›´æ”¹æ´»è·ƒå±‚
+//    _RO_WRITE(guictrl->Active_Layer,layer_handler,layer);
+//    //æ›´æ–°æ ‡è®°
+//    guictrl->Updated=Enable;
+//}
+
+//button* Method_GUI_Controller_Create_Button(struct gui_controller_class* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
+//{
+//    component_layer* cl;
+//    component* cm;
+//    
+//    //è·å–å±‚
+//    cl=LinkedList_Find(&guictrl->Layers,layer);
+//    //æ–°å»ºæ§ä»¶
+//    cm=LinkedList_Add(&cl->Components,cl->Components.Nodes_Num);
+//    
+//    //ç»‘å®šæ–¹æ³•
+//    cm->Repaint=Method_Component_Repaint;
+//    cm->Active_Set=Method_Component_ActiveSet;
+//    cm->Focus_Set=Method_Component_FocusSet;
+//    cm->Dispose=Method_Component_Dispose;
+//    
+//    
+//    //è½¬æ¢ä¸ºbutton
+//    cm->Type=BUTTON;
+//    //buttonå‚æ•°åˆå§‹åŒ–
+//    _Button_Init(&cm->Component.Button,guictrl->TouchDevice,x,y,width,height,virt,text,layer);
+//    //ä¸è§¦æ‘¸åŒºåŸŸåˆ›å»ºå…³è”
+//    cm->Component.Button.TouchArea->Association=cm;
+//    //ä¸æ§åˆ¶å™¨å…³è”
+//    cm->Component.Button.Controller=guictrl;
+//    
+//    return &cm->Component.Button;
+//}
+
+//label* Method_GUI_Controller_Create_Label(gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
+//{
+//    component_layer* cl;
+//    component* cm;
+//    
+//    //è·å–å±‚
+//    cl=LinkedList_Find(&guictrl->Layers,layer);
+//    //æ–°å»ºæ§ä»¶
+//    cm=LinkedList_Add(&cl->Components,cl->Components.Nodes_Num);
+//    
+//    //ç»‘å®šæ–¹æ³•
+//    cm->Repaint=Method_Component_Repaint;
+//    cm->Active_Set=Method_Component_ActiveSet;
+//    cm->Focus_Set=Method_Component_FocusSet;
+//    cm->Dispose=Method_Component_Dispose;
+//    
+//    //è½¬æ¢ä¸ºlabel
+//    cm->Type=LABEL;
+//    //labelå‚æ•°åˆå§‹åŒ–
+//    _Label_Init(&cm->Component.Label,guictrl->TouchDevice,x,y,width,height,virt,text,layer);
+//    //ä¸æ§åˆ¶å™¨å…³è”
+//    cm->Component.Label.Controller=guictrl;
+//    
+//    return &cm->Component.Label;
+//}
+
+//panel* Method_GUI_COntroller_Create_Panel(gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t rownum, uint8_t linenum, layer_handler layer)
+//{
+//    component_layer* cl;
+//    component* cm;
+//    
+//    //è·å–å±‚
+//    cl=LinkedList_Find(&guictrl->Layers,layer);
+//    //æ–°å»ºæ§ä»¶
+//    cm=LinkedList_Add(&cl->Components,cl->Components.Nodes_Num);
+//    
+//    //ç»‘å®šæ–¹æ³•
+//    cm->Repaint=Method_Component_Repaint;
+//    cm->Active_Set=Method_Component_ActiveSet;
+//    cm->Focus_Set=Method_Component_FocusSet;
+//    cm->Dispose=Method_Component_Dispose;
+//    
+//    //è½¬æ¢ä¸ºpanel
+//    cm->Type=PANEL;
+//    //panelå‚æ•°åˆå§‹åŒ–
+//    _Panel_Init(&cm->Component.Panel,x,y,width,height,rownum,linenum,layer);
+//    //ä¸æ§åˆ¶å™¨å…³è”
+//    cm->Component.Panel.Controller=guictrl;
+//    
+//    return &cm->Component.Panel;
+//}
+
+//toolbox* Method_GUI_Controller_Create_ToolBox(gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
+//{
+//    component_layer* cl;
+//    component* cm;
+//    
+//    //è·å–å±‚
+//    cl=LinkedList_Find(&guictrl->Layers,layer);
+//    //æ–°å»ºæ§ä»¶
+//    cm=LinkedList_Add(&cl->Components,cl->Components.Nodes_Num);
+//    
+//    //ç»‘å®šæ–¹æ³•
+//    cm->Repaint=Method_Component_Repaint;
+//    cm->Active_Set=Method_Component_ActiveSet;
+//    cm->Focus_Set=Method_Component_FocusSet;
+//    cm->Dispose=Method_Component_Dispose;
+//    
+//    //è½¬æ¢ä¸ºtoolbox
+//    cm->Type=TOOLBOX;
+//    //toolboxå‚æ•°åˆå§‹åŒ–
+//    _ToolBox_Init(&cm->Component.ToolBox,guictrl->TouchDevice,x,y,width,height,virt,text,layer);
+//    //ä¸è§¦æ‘¸åŒºåŸŸåˆ›å»ºå…³è”
+//    cm->Component.ToolBox.TouchArea->Association=cm;
+//    //ä¸æ§åˆ¶å™¨å…³è”
+//    cm->Component.ToolBox.Controller=guictrl;
+//    
+//    return &cm->Component.ToolBox;
+//}
+
+//scope* Method_GUI_Controller_Create_Scope(gui_controller* guictrl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, uint16_t max_dlen, status_flag vscale, layer_handler layer)
+//{
+//    component_layer* cl;
+//    component* cm;
+//    
+//    //è·å–å±‚
+//    cl=LinkedList_Find(&guictrl->Layers,layer);
+//    //æ–°å»ºæ§ä»¶
+//    cm=LinkedList_Add(&cl->Components,cl->Components.Nodes_Num);
+//    
+//    //ç»‘å®šæ–¹æ³•
+//    cm->Repaint=Method_Component_Repaint;
+//    cm->Active_Set=Method_Component_ActiveSet;
+//    cm->Focus_Set=Method_Component_FocusSet;
+//    cm->Dispose=Method_Component_Dispose;
+//    
+//    //è½¬æ¢ä¸ºscope
+//    cm->Type=SCOPE;
+//    //buttonå‚æ•°åˆå§‹åŒ–
+//    _Scope_Init(&cm->Component.Scope,guictrl->TouchDevice,x,y,width,height,virt,max_dlen,Disable,layer);
+//    //ä¸è§¦æ‘¸åŒºåŸŸåˆ›å»ºå…³è”
+//    cm->Component.Scope.TouchArea->Association=cm;
+//    //ä¸æ§åˆ¶å™¨å…³è”
+//    cm->Component.Scope.Controller=guictrl;
+//    
+//    return &cm->Component.Scope;
+//}
+
+
+
+
+
+
+
+
+
+
+
+//void Method_GUI_Controller_Process(gui_controller* guictrl)
+//{
+//    int i,j;
+//    status_flag AnyCompUpdated=Disable;
+//    status_flag ToolboxFocus=Disable;   //å·¥å…·ç®±è·å¾—ç„¦ç‚¹
+//    component* cm;
+//    component_layer* cl;
+//    
+//    //è§¦æ‘¸ä¿¡æ¯æ›´æ–°
+//    guictrl->TouchDevice->Process(guictrl->TouchDevice);
+//    cl=LinkedList_Find(&guictrl->Layers,guictrl->Active_Layer);
+//    for (i=0;i<cl->Components.Nodes_Num;i++)
+//    {
+//        cm=LinkedList_Find(&cl->Components,i);
+//        switch (cm->Type)
+//        {
+//            //æŒ‰é”®ï¼ˆButtonï¼‰äº‹ä»¶æ›´æ–°
+//            case BUTTON:
+//            {
+//                button* btn=&cm->Component.Button;
+//                if (btn->Event_PressDown_Happened)
+//                {
+//                    if (btn->AllEvent_Enable&&btn->Event_PressDown_Enable)
+//                        btn->PressDown_Callback(btn);
+//                    _RO_WRITE(btn->Event_PressDown_Happened,status_flag,Disable);
+//                }
+//                if (btn->Event_Release_Happened)
+//                {
+//                    if (btn->AllEvent_Enable&&btn->Event_Release_Enable)
+//                        btn->Release_Callback(btn);
+//                    _RO_WRITE(btn->Event_Release_Happened,status_flag,Disable);
+//                }
+//                if (btn->Event_KeepPress_Happened)
+//                {
+//                    if (btn->AllEvent_Enable&&btn->Event_KeepPress_Enable)
+//                        btn->KeepPress_Callback(&cm->Component);
+//                    _RO_WRITE(btn->Event_KeepPress_Happened,status_flag,Disable);
+//                }
+//                if (btn->Event_Click_Happened)
+//                {
+//                    if (!btn->Focus)    //è·å¾—ç„¦ç‚¹
+//                        _RO_WRITE(btn->Event_GetFocus_Happened,status_flag,Enable);
+//                    else    //å¤±å»ç„¦ç‚¹
+//                        _RO_WRITE(btn->Event_LostFocus_Happened,status_flag,Enable);
+//                    //å¦‚æœå•å‡»äº‹ä»¶ä½¿èƒ½
+//                    if (btn->AllEvent_Enable&&btn->Event_Click_Enable)
+//                        btn->Click_Callback(btn);
+//                    _RO_WRITE(btn->Event_Click_Happened,status_flag,Disable);
+//                }
+//                if (btn->Event_GetFocus_Happened)
+//                {
+//                    if (guictrl->Focus_Component!=NULL)
+//                        guictrl->Focus_Component->Focus_Set(guictrl->Focus_Component,Disable);
+//                    _RO_WRITE(btn->Focus,status_flag,Enable);
+//                    _RO_WRITE(guictrl->Focus_Component,component*,cm);
+//                    if (btn->AllEvent_Enable&&btn->Event_GetFocus_Enable)
+//                        btn->GetFocus_Callback(btn);
+//                    _RO_WRITE(btn->Event_GetFocus_Happened,status_flag,Disable);
+//                }
+//                if (btn->Event_LostFocus_Happened)
+//                {
+//                    _RO_WRITE(btn->Focus,status_flag,Disable);
+//                    _RO_WRITE(guictrl->Focus_Component,component*,NULL);
+//                    if (btn->AllEvent_Enable&&btn->Event_LostFocus_Enable)
+//                        btn->LostFocus_Callback(btn);
+//                    _RO_WRITE(btn->Event_LostFocus_Happened,status_flag,Disable);
+//                }
+//                if (btn->Updated&&(!guictrl->Updated))
+//                {
+//                    btn->Repaint(btn);
+//                    btn->Updated=Disable;
+//                    AnyCompUpdated=Enable;
+//                }
+//                else if (guictrl->Updated)
+//                    btn->Updated=Disable;
+//                break;
+//            }
+//            //æ ‡ç­¾ï¼ˆLabelï¼‰äº‹ä»¶æ›´æ–°
+//            case LABEL:
+//            {
+//                label* lbl=&cm->Component.Label;
+//                if (lbl->Updated&&(!guictrl->Updated))
+//                {
+//                    lbl->Repaint(lbl);
+//                    lbl->Updated=Disable;
+//                    AnyCompUpdated=Enable;
+//                }
+//                else if (guictrl->Updated)
+//                    lbl->Updated=Disable;
+//                break;
+//            }
+//            //å·¥å…·ç®±ï¼ˆToolBoxï¼‰äº‹ä»¶æ›´æ–°
+//            case TOOLBOX:
+//            {
+//                toolbox* tbx=&cm->Component.ToolBox;
+//                toolbox_button* tbx_btn;
+//                for (j=0;j<tbx->Buttons.Nodes_Num;j++)
+//                {
+//                    tbx_btn=&((component*)LinkedList_Find(&tbx->Buttons,j))->Component.ToolBox_Button;
+//                    if (tbx_btn->Event_Click_Happened)
+//                    {
+//                        if (tbx_btn->AllEvent_Enable&&tbx_btn->Event_Click_Enable)
+//                            tbx_btn->Click_Callback(tbx_btn);
+//                        _RO_WRITE(tbx_btn->Event_Click_Happened,status_flag,Disable);
+//                    }
+//                }
+//                
+//                if (tbx->Event_PressDown_Happened)
+//                {
+//                    if (tbx->AllEvent_Enable&&tbx->Event_PressDown_Enable)
+//                        tbx->PressDown_Callback(tbx);
+//                    _RO_WRITE(tbx->Event_PressDown_Happened,status_flag,Disable);
+//                }
+//                if (tbx->Event_Release_Happened)
+//                {
+//                    if (tbx->AllEvent_Enable&&tbx->Event_Release_Enable)
+//                        tbx->Release_Callback(tbx);
+//                    _RO_WRITE(tbx->Event_Release_Happened,status_flag,Disable);
+//                }
+//                if (tbx->Event_KeepPress_Happened)
+//                {
+//                    if (tbx->AllEvent_Enable&&tbx->Event_KeepPress_Enable)
+//                        tbx->KeepPress_Callback(&cm->Component);
+//                    _RO_WRITE(tbx->Event_KeepPress_Happened,status_flag,Disable);
+//                }
+//                if (tbx->Event_Click_Happened)
+//                {
+//                    if (!tbx->Focus)    //è·å¾—ç„¦ç‚¹
+//                        _RO_WRITE(tbx->Event_GetFocus_Happened,status_flag,Enable);
+//                    //å¦‚æœå•å‡»äº‹ä»¶ä½¿èƒ½
+//                    if (tbx->AllEvent_Enable&&tbx->Event_Click_Enable)
+//                        tbx->Click_Callback(tbx);
+//                    _RO_WRITE(tbx->Event_Click_Happened,status_flag,Disable);
+//                }
+//                if (tbx->Event_GetFocus_Happened)
+//                {
+//                    
+//                    if (guictrl->Focus_Component!=NULL)
+//                        guictrl->Focus_Component->Focus_Set(guictrl->Focus_Component,Disable);
+//                    _RO_WRITE(tbx->Focus,status_flag,Enable);
+//                    _RO_WRITE(guictrl->Focus_Component,component*,cm);
+//                    //å·¥å…·ç®±è¢«æ‰“å¼€ï¼Œå…¨å±€åˆ·æ–°
+//                    guictrl->Updated=Enable;
+//                    //å…¨å±€è§¦æ‘¸åŒºåŸŸäº‹ä»¶ä½¿èƒ½
+//                    guictrl->Overall_TouchArea->All_Event_Enable=Enable;
+//                    if (tbx->AllEvent_Enable&&tbx->Event_GetFocus_Enable)
+//                        tbx->GetFocus_Callback(tbx);
+//                    _RO_WRITE(tbx->Event_GetFocus_Happened,status_flag,Disable);
+//                    
+//                    //æ‰€æœ‰æ§ä»¶è§¦æ‘¸äº‹ä»¶å¤±èƒ½
+//                    component* cm;
+//                    for (j=0;j<cl->Components.Nodes_Num;j++)
+//                    {
+//                        cm=LinkedList_Find(&cl->Components,j);
+//                        cm->Active_Set(cm,Disable);
+//                    }
+//                    //æ‰€æœ‰æŒ‰é”®è§¦æ‘¸äº‹ä»¶ä½¿èƒ½
+//                    for (j=0;j<tbx->Buttons.Nodes_Num;j++)
+//                    {
+//                        cm=LinkedList_Find(&tbx->Buttons,j);
+//                        cm->Component.ToolBox_Button.TouchArea->All_Event_Enable=Enable;
+//                    }
+//                }
+//                if (tbx->Event_LostFocus_Happened)
+//                {
+//                    _RO_WRITE(guictrl->Focus_Component,component*,NULL);
+//                    _RO_WRITE(tbx->Focus,status_flag,Disable);
+//                    //å·¥å…·ç®±è¢«å…³é—­ï¼Œå…¨å±€åˆ·æ–°
+//                    guictrl->Updated=Enable;
+//                    //å…¨å±€è§¦æ‘¸åŒºåŸŸäº‹ä»¶å¤±èƒ½
+//                    guictrl->Overall_TouchArea->All_Event_Enable=Disable;
+//                    if (tbx->AllEvent_Enable&&tbx->Event_LostFocus_Enable)
+//                        tbx->LostFocus_Callback(tbx);
+//                    _RO_WRITE(tbx->Event_LostFocus_Happened,status_flag,Disable);
+//                    
+//                    //æ‰€æœ‰æ§ä»¶è§¦æ‘¸äº‹ä»¶ä½¿èƒ½
+//                    component* cm;
+//                    for (j=0;j<cl->Components.Nodes_Num;j++)
+//                    {
+//                        cm=LinkedList_Find(&cl->Components,j);
+//                        cm->Active_Set(cm,Enable);
+//                    }
+//                    //æ‰€æœ‰æŒ‰é”®è§¦æ‘¸äº‹ä»¶å¤±èƒ½
+//                    for (j=0;j<tbx->Buttons.Nodes_Num;j++)
+//                    {
+//                        cm=LinkedList_Find(&tbx->Buttons,j);
+//                        cm->Component.ToolBox_Button.TouchArea->All_Event_Enable=Disable;
+//                    }
+//                }
+//                if (tbx->Updated&&(!guictrl->Updated))
+//                {
+//                    tbx->Repaint(tbx);
+//                    tbx->Updated=Disable;
+//                    AnyCompUpdated=Enable;
+//                }
+//                else if (guictrl->Updated)
+//                    tbx->Updated=Disable;
+//                break;
+//            }
+//            case SCOPE:
+//            {
+//                scope* scp=&cm->Component.Scope;
+//                if (scp->Event_PressDown_Happened)
+//                {
+//                    //å¦‚æœæ˜¯å¯å˜åæ ‡è½´
+//                    if (scp->Unfixed_Axis)
+//                    {
+//                        _RO_WRITE(scp->SaveX,uint16_t,scp->TouchArea->PointX);
+//                        _RO_WRITE(scp->SaveY,uint16_t,scp->TouchArea->PointY);
+//                        _RO_WRITE(scp->Operating,status_flag,Enable);    //æ­£åœ¨æ“ä½œ
+//                        if ((scp->SaveX<scp->Axis._Y_Position+10)&&(scp->SaveX>scp->Axis._Y_Position-10))   //å¯¹Yè½´æ“ä½œ
+//                        {
+//                            _RO_WRITE(scp->InYAxisRange,status_flag,Enable);
+//                            _RO_WRITE(scp->InXAxisRange,status_flag,Disable);
+//                        }
+//                        else if ((scp->SaveY<scp->Axis._X_Position+10)&&(scp->SaveY>scp->Axis._X_Position-10))  //å¯¹Xè½´æ“ä½œ
+//                        {
+//                            _RO_WRITE(scp->InXAxisRange,status_flag,Enable);
+//                            _RO_WRITE(scp->InYAxisRange,status_flag,Disable);
+//                        }
+//                    }
+//                    
+//                    if (scp->AllEvent_Enable&&scp->Event_PressDown_Enable)
+//                        scp->PressDown_Callback(scp);
+//                    _RO_WRITE(scp->Event_PressDown_Happened,status_flag,Disable);
+//                }
+//                if (scp->Event_Release_Happened)
+//                {
+//                    //å¦‚æœæ˜¯å¯å˜åæ ‡è½´
+//                    if (scp->Unfixed_Axis)
+//                    {
+//                        _RO_WRITE(scp->Operating,status_flag,Disable);
+//                        _RO_WRITE(scp->InXAxisRange,status_flag,Disable);
+//                        _RO_WRITE(scp->InYAxisRange,status_flag,Disable);
+//                    }
+//                    
+//                    if (scp->AllEvent_Enable&&scp->Event_Release_Enable)
+//                        scp->Release_Callback(scp);
+//                    _RO_WRITE(scp->Event_Release_Happened,status_flag,Disable);
+//                }
+//                if (scp->Event_KeepPress_Happened)
+//                {
+//                    //å¦‚æœæ˜¯å¯å˜åæ ‡è½´
+//                    if (scp->Unfixed_Axis)
+//                    {
+//                        //æ­£åœ¨æ“ä½œ
+//                        if (scp->Operating)
+//                        {
+//                            short deltax,deltay;
+//                            
+//                            deltax=scp->TouchArea->PointX-scp->SaveX;
+//                            deltay=scp->TouchArea->PointY-scp->SaveY;
+//                            if (scp->InXAxisRange)  //å¯¹Xè½´æ“ä½œ
+//                            {
+//                                deltax*=-1;
+//                                scp->Axis.X_Max*=1+(float)deltax/scp->Canvas.Area.Width;
+//                                scp->Axis.X_Min*=1+(float)deltax/scp->Canvas.Area.Width;
+//                            }
+//                            else if (scp->InYAxisRange) //å¯¹Yè½´æ“ä½œ
+//                            {
+//                                deltay*=-1;
+//                                scp->Axis.Y_Max*=1+(float)deltay/scp->Canvas.Area.Height;
+//                                scp->Axis.Y_Min*=1+(float)deltay/scp->Canvas.Area.Height;
+//                            }
+//                            else
+//                            {
+//                                deltax*=-1;
+//                                scp->Axis.X_Max+=(float)deltax*(scp->Axis.X_Max-scp->Axis.X_Min)/scp->Canvas.Area.Width;
+//                                scp->Axis.X_Min+=(float)deltax*(scp->Axis.X_Max-scp->Axis.X_Min)/scp->Canvas.Area.Width;
+//                                scp->Axis.Y_Max+=(float)deltay*(scp->Axis.Y_Max-scp->Axis.Y_Min)/scp->Canvas.Area.Height;
+//                                scp->Axis.Y_Min+=(float)deltay*(scp->Axis.Y_Max-scp->Axis.Y_Min)/scp->Canvas.Area.Height;
+//                            }
+//                            
+//                            _RO_WRITE(scp->SaveX,uint16_t,scp->TouchArea->PointX);
+//                            _RO_WRITE(scp->SaveY,uint16_t,scp->TouchArea->PointY);
+//                        }
+//                    }
+//                    
+//                    if (scp->AllEvent_Enable&&scp->Event_KeepPress_Enable)
+//                        scp->KeepPress_Callback(&cm->Component);
+//                    _RO_WRITE(scp->Event_KeepPress_Happened,status_flag,Disable);
+//                }
+//                if (scp->Event_Click_Happened)
+//                {
+//                    if (scp->Unfixed_Axis)
+//                    {
+//                        if (scp->Stop)
+//                            _RO_WRITE(scp->Stop,status_flag,Disable);
+//                        else
+//                            _RO_WRITE(scp->Stop,status_flag,Enable);
+//                        scp->Update=Enable;
+//                    }
+//                    if (!scp->Focus)    //è·å¾—ç„¦ç‚¹
+//                        _RO_WRITE(scp->Event_GetFocus_Happened,status_flag,Enable);
+//                    else    //å¤±å»ç„¦ç‚¹
+//                        _RO_WRITE(scp->Event_LostFocus_Happened,status_flag,Enable);
+//                    //å¦‚æœå•å‡»äº‹ä»¶ä½¿èƒ½
+//                    if (scp->AllEvent_Enable&&scp->Event_Click_Enable)
+//                        scp->Click_Callback(scp);
+//                    _RO_WRITE(scp->Event_Click_Happened,status_flag,Disable);
+//                }
+//                if (scp->Event_GetFocus_Happened)
+//                {
+//                    if (guictrl->Focus_Component!=NULL)
+//                        guictrl->Focus_Component->Focus_Set(guictrl->Focus_Component,Disable);
+//                    _RO_WRITE(scp->Focus,status_flag,Enable);
+//                    _RO_WRITE(guictrl->Focus_Component,component*,cm);
+//                    if (scp->AllEvent_Enable&&scp->Event_GetFocus_Enable)
+//                        scp->GetFocus_Callback(scp);
+//                    _RO_WRITE(scp->Event_GetFocus_Happened,status_flag,Disable);
+//                }
+//                if (scp->Event_LostFocus_Happened)
+//                {
+//                    _RO_WRITE(scp->Focus,status_flag,Disable);
+//                    _RO_WRITE(guictrl->Focus_Component,component*,NULL);
+//                    if (scp->AllEvent_Enable&&scp->Event_LostFocus_Enable)
+//                        scp->LostFocus_Callback(scp);
+//                    _RO_WRITE(scp->Event_LostFocus_Happened,status_flag,Disable);
+//                }
+//                if (scp->Update&&(!guictrl->Updated))
+//                {
+//                    scp->Repaint(scp);
+//                    scp->Update=Disable;
+//                    AnyCompUpdated=Enable;
+//                }
+//                else if (guictrl->Updated)
+//                    scp->Update=Disable;
+//                break;
+//            }
+//            default:
+//                break;
+//        }
+//    }
+//    
+//    //å¦‚æœæ˜¯åˆå§‹åŒ–è¿‡ç¨‹
+//    if (guictrl->IsInit)
+//    {
+//        component* cm;
+//        //ç»˜åˆ¶èƒŒæ™¯
+//        Graphic_Draw_Color(&guictrl->Screen->Canvas,cl->Color);
+//        for (i=0;i<cl->Components.Nodes_Num;i++)
+//        {
+//            cm=LinkedList_Find(&cl->Components,i);
+//            cm->Repaint(cm);
+//        }
+//        Graphic_Screen_Refresh();
+//        _RO_WRITE(guictrl->IsInit,status_flag,Disable);
+//    }
+//    else if (guictrl->Updated)  //å…¨å±€åˆ·æ–°
+//    {
+//        component* cm;
+//        //ç»˜åˆ¶èƒŒæ™¯
+//        Graphic_Draw_Color(&guictrl->Screen->Canvas,cl->Color);
+//        //ç»˜åˆ¶æ§ä»¶
+//        for (i=0;i<cl->Components.Nodes_Num;i++)
+//        {
+//            cm=LinkedList_Find(&cl->Components,i);
+//            cm->Repaint(cm);
+//        }
+//        Graphic_Screen_Refresh();
+//        guictrl->Updated=Disable;
+//    }
+//    else
+//    {
+//        //å¦‚æœæœ‰ä»»ä½•æ§ä»¶æ›´æ–°
+//        if (AnyCompUpdated)
+//        {
+//            //å¦‚æœæœ‰å·¥å…·ç®±æ§ä»¶æ˜¯å±•å¼€çŠ¶æ€åˆ™é‡ç»˜
+//            if ((guictrl->Focus_Component!=NULL)&&(guictrl->Focus_Component->Type==TOOLBOX))
+//                guictrl->Focus_Component->Component.ToolBox.Repaint(&guictrl->Focus_Component->Component.ToolBox);
+//            Graphic_Screen_Refresh();
+//        }
+//    }
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void Method_Component_Repaint(component* cm)
+//{
+//    if (cm->Type==BUTTON)
+//        cm->Component.Button.Repaint(&cm->Component.Button);
+//    else if (cm->Type==LABEL)
+//        cm->Component.Label.Repaint(&cm->Component.Label);
+//    else if (cm->Type==TOOLBOX)
+//        cm->Component.ToolBox.Repaint(&cm->Component.ToolBox);
+//    else if (cm->Type==SCOPE)
+//        cm->Component.Scope.Repaint(&cm->Component.Scope);
+//}
+
+//void Method_Component_Dispose(component* cm)
+//{
+//    if (cm->Type==BUTTON)
+//        cm->Component.Button.Dispose(&cm->Component.Button);
+//    else if (cm->Type==LABEL)
+//        cm->Component.Label.Dispose(&cm->Component.Label);
+//    else if (cm->Type==TOOLBOX)
+//        cm->Component.ToolBox.Dispose(&cm->Component.ToolBox);
+//    else if (cm->Type==SCOPE)
+//        cm->Component.Scope.Dispose(&cm->Component.Scope);
+//}
+
+//void Method_Component_FocusSet(component* cm, status_flag state)
+//{
+//    if (cm->Type==BUTTON)
+//        _RO_WRITE(cm->Component.Button.Focus,status_flag,state);
+//    else if (cm->Type==TOOLBOX)
+//        _RO_WRITE(cm->Component.ToolBox.Focus,status_flag,state);
+//    else if (cm->Type==SCOPE)
+//        _RO_WRITE(cm->Component.Scope.Focus,status_flag,state);
+//}
+
+//void Method_Component_ActiveSet(component* cm, status_flag state)
+//{
+//    if (cm->Type==BUTTON)
+//        cm->Component.Button.Active_Set(&cm->Component.Button,state);
+//    else if (cm->Type==LABEL)
+//        cm->Component.Label.Active_Set(&cm->Component.Label,state);
+//    else if (cm->Type==TOOLBOX)
+//        cm->Component.ToolBox.Active_Set(&cm->Component.ToolBox,state);
+//    else if (cm->Type==SCOPE)
+//        cm->Component.Scope.Active_Set(&cm->Component.Scope,state);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void Method_Button_Event_Set(button* btn, button_event_type event, status_flag status)
+//{
+//    switch (event)
+//    {
+//        case BTN_PRESSDOWN:
+//        {
+//            _RO_WRITE(btn->Event_PressDown_Enable,status_flag,status);
+//            btn->TouchArea->PressDown_Enable=status;
+//            break;
+//        }
+//        case BTN_RELEASE:
+//        {
+//            _RO_WRITE(btn->Event_Release_Enable,status_flag,status);
+//            btn->TouchArea->Release_Enable=status;
+//            break;
+//        }
+//        case BTN_KEEPPRESS:
+//        {
+//            _RO_WRITE(btn->Event_KeepPress_Enable,status_flag,status);
+//            btn->TouchArea->KeepPress_Enable=status;
+//            break;
+//        }
+//        case BTN_CLICK:
+//        {
+//            _RO_WRITE(btn->Event_Click_Enable,status_flag,status);
+//            break;
+//        }
+//        case BTN_GETFOCUS:
+//        {
+//            _RO_WRITE(btn->Event_GetFocus_Enable,status_flag,status);
+//            break;
+//        }
+//        case BTN_LOSTFOCUS:
+//        {
+//            _RO_WRITE(btn->Event_LostFocus_Enable,status_flag,status);
+//            break;
+//        }
+//        case BTN_REPAINT:
+//        {
+//            _RO_WRITE(btn->Event_Repaint_Enable,status_flag,status);
+//            break;
+//        }
+//        default:
+//            break;
+//    }
+//}
+
+//void Method_Button_Active_Set(button* btn, status_flag status)
+//{
+//    _RO_WRITE(btn->Active,status_flag,status);
+//    btn->TouchArea->All_Event_Enable=status;
+//}
+
+//void Method_Button_Change_Text(button* btn, char* fmtstr, ...)
+//{
+//    va_list vl;
+//    
+//    va_start(vl,fmtstr);
+//    vsprintf(btn->Text,fmtstr,vl);
+//    va_end(vl);
+//    btn->Updated=Enable;
+//}
+
+//void Method_Button_Repaint(button* btn)
+//{
+//    if (btn->Display)
+//    {
+//        //å¦‚æœæ˜¾ç¤ºç”¨æˆ·èƒŒæ™¯
+//        if (btn->CustomBackground)
+//            Graphic_Draw_BMP_All(&btn->Canvas,0,0,btn->Background);
+//        else
+//        {
+//            Graphic_Draw_Rectangle(&btn->Canvas,0,0,&btn->Appearance);
+//            Graphic_Draw_String(&btn->Canvas,
+//                                btn->Appearance.Frame_Thickness,btn->Appearance.Frame_Thickness,
+//                                btn->Canvas.Area.Width-2*btn->Appearance.Frame_Thickness,btn->Canvas.Area.Height-2*btn->Appearance.Frame_Thickness,
+//                                btn->Vertical_Align,btn->Horizontal_Align,&btn->Font,btn->Text);
+//        }
+//        if (btn->Active&&btn->AllEvent_Enable&&btn->Event_Repaint_Enable)
+//            btn->Repaint_Callback(btn);
+//    }
+//    else
+//    {
+//        component_layer* cl;
+//        cl=LinkedList_Find(&btn->Controller->Layers,btn->Controller->Active_Layer);
+//        Graphic_Draw_Color(&btn->Canvas,cl->Color);
+//    }
+//    Graphic_RefreshCanvas(&btn->Canvas);
+//}
+
+//void Method_Button_Dispose(button* btn)
+//{
+//    component* cm=GET_COMPONENT_ADDR(btn);
+//    component_layer* cl=LinkedList_Find(&btn->Controller->Layers,btn->Layer);
+//    
+//    if (btn->Controller->Focus_Component==cm)
+//        _RO_WRITE(btn->Controller->Focus_Component,component*,NULL);
+//    //åˆ é™¤è§¦æ‘¸åŒºåŸŸ
+//    btn->Controller->TouchDevice->Delete_Area(btn->Controller->TouchDevice,btn->TouchArea);
+//    //åˆ é™¤ç”»å¸ƒ
+//    Graphic_Canvas_Delete(&btn->Canvas);
+//    //åˆ é™¤æ§ä»¶
+//    LinkedList_Dispose2(&cl->Components,cm);
+//}
+
+//void _Button_Init(button* btn, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
+//{    
+//    btn->CustomBackground=Disable;
+//    btn->Display=Enable;
+//    btn->AllEvent_Enable=Disable;
+//    btn->Updated=Disable;
+//    _RO_WRITE(btn->Active,status_flag,Enable);
+//    _RO_WRITE(btn->Focus,status_flag,Disable);
+//    _RO_WRITE(btn->Event_PressDown_Enable,status_flag,Disable);
+//    _RO_WRITE(btn->Event_Release_Enable,status_flag,Disable);
+//    _RO_WRITE(btn->Event_KeepPress_Enable,status_flag,Disable);
+//    _RO_WRITE(btn->Event_Click_Enable,status_flag,Disable);
+//    _RO_WRITE(btn->Event_GetFocus_Enable,status_flag,Disable);
+//    _RO_WRITE(btn->Event_LostFocus_Enable,status_flag,Disable);
+//    _RO_WRITE(btn->Event_Repaint_Enable,status_flag,Disable);
+//    
+//    btn->Font.BackColor=WHITE;
+//    btn->Font.CharColor=BLACK;
+//    btn->Font.Mold=BasicChar_Courier_New;
+//    
+//    btn->Appearance.Background_Color=WHITE;
+//    btn->Appearance.Display_Background=Enable;
+//    btn->Appearance.Frame_Color=BLACK;
+//    btn->Appearance.Frame_Thickness=5;
+//    btn->Appearance.Height=height;
+//    btn->Appearance.Width=width;
+//    
+//    btn->Vertical_Align=VerMid;
+//    btn->Horizontal_Align=HorMid;
+//    
+//    strcpy(btn->Text,text);
+//    
+//    _RO_WRITE(btn->Layer,layer_handler,layer);
+//    
+//    //ç»‘å®šæ–¹æ³•
+//    btn->Event_Set=Method_Button_Event_Set;
+//    btn->Active_Set=Method_Button_Active_Set;
+//    btn->Change_Text=Method_Button_Change_Text;
+//    btn->Dispose=Method_Button_Dispose;
+//    btn->Repaint=Method_Button_Repaint;
+//    
+//    Graphic_CreateCanvas(&btn->Canvas,x,y,width,height,virt);
+//    btn->TouchArea=td->Create_Area(td,x,y,width,height);
+//    
+//    //è§¦æ‘¸åŒºåŸŸäº‹ä»¶ä½¿èƒ½
+//    btn->TouchArea->All_Event_Enable=Enable;
+//    
+//    //ç‚¹å‡»äº‹ä»¶ä½¿èƒ½
+//    btn->TouchArea->Click_Enable=Enable;
+//    
+//    //é…ç½®è§¦æ‘¸å›è°ƒå‡½æ•°
+//    btn->TouchArea->PressDown_CallBackFunc=Global_PressDown_Callback;
+//    btn->TouchArea->Release_CallBackFunc=Global_Release_Callback;
+//    btn->TouchArea->KeepPress_CallBackFunc=Global_KeepPress_Callback;
+//    btn->TouchArea->Click_CallBackFunc=Global_Click_Callback;
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void Method_Label_Event_Set(label* lbl, label_event_type event, status_flag status)
+//{
+//    switch (event)
+//    {
+//        case LBL_REPAINT:
+//        {
+//            _RO_WRITE(lbl->Event_Repaint_Enable,status_flag,status);
+//            break;
+//        }
+//        default:
+//            break;
+//    }
+//}
+
+//void Method_Label_Active_Set(label* lbl, status_flag status)
+//{
+//    _RO_WRITE(lbl->Active,status_flag,status);
+//}
+
+//void Method_Label_Change_Text(label* lbl, char* fmtstr, ...)
+//{
+//    va_list vl;
+//    
+//    va_start(vl,fmtstr);
+//    vsprintf(lbl->Text,fmtstr,vl);
+//    va_end(vl);
+//    lbl->Updated=Enable;
+//}
+
+//void Method_Label_Repaint(label* lbl)
+//{
+//    if (lbl->Display)
+//    {
+//        //å¦‚æœæ˜¾ç¤ºç”¨æˆ·èƒŒæ™¯
+//        if (lbl->CustomBackground)
+//            Graphic_Draw_BMP_All(&lbl->Canvas,0,0,lbl->Background);
+//        else
+//        {
+//            Graphic_Draw_Rectangle(&lbl->Canvas,0,0,&lbl->Appearance);
+//            Graphic_Draw_String(&lbl->Canvas,
+//                                lbl->Appearance.Frame_Thickness,lbl->Appearance.Frame_Thickness,
+//                                lbl->Canvas.Area.Width-2*lbl->Appearance.Frame_Thickness,lbl->Canvas.Area.Height-2*lbl->Appearance.Frame_Thickness,
+//                                lbl->Vertical_Align,lbl->Horizontal_Align,&lbl->Font,lbl->Text);
+//        }
+//        if (lbl->Active&&lbl->AllEvent_Enable&&lbl->Event_Repaint_Enable)
+//            lbl->Repaint_Callback(lbl);
+//    }
+//    else
+//    {
+//        component_layer* cl;
+//        cl=LinkedList_Find(&lbl->Controller->Layers,lbl->Controller->Active_Layer);
+//        Graphic_Draw_Color(&lbl->Canvas,cl->Color);
+//    }
+//    Graphic_RefreshCanvas(&lbl->Canvas);
+//}
+
+//void Method_Label_Dispose(label* lbl)
+//{
+//    component* cm=GET_COMPONENT_ADDR(lbl);
+//    component_layer* cl=LinkedList_Find(&lbl->Controller->Layers,lbl->Layer);
+//    
+//    //åˆ é™¤ç”»å¸ƒ
+//    //if (!lbl->Canvas.Virtual)
+//    //    Graphic_Canvas_Delete(&lbl->Canvas);
+//    //åˆ é™¤æ§ä»¶
+//    LinkedList_Dispose2(&cl->Components,cm);
+//}
+
+//void _Label_Init(label* lbl, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
+//{
+//    lbl->CustomBackground=Disable;
+//    lbl->Display=Enable;
+//    lbl->AllEvent_Enable=Disable;
+//    lbl->Updated=Disable;
+//    _RO_WRITE(lbl->Layer,layer_handler,layer);
+//    _RO_WRITE(lbl->Active,status_flag,Enable);
+//    _RO_WRITE(lbl->Event_Repaint_Enable,status_flag,Disable);
+//    
+//    lbl->Font.BackColor=WHITE;
+//    lbl->Font.CharColor=BLACK;
+//    lbl->Font.Mold=BasicChar_Courier_New;
+//    
+//    lbl->Appearance.Background_Color=WHITE;
+//    lbl->Appearance.Display_Background=Enable;
+//    lbl->Appearance.Frame_Color=BLACK;
+//    lbl->Appearance.Frame_Thickness=5;
+//    lbl->Appearance.Height=height;
+//    lbl->Appearance.Width=width;
+//    
+//    lbl->Vertical_Align=VerMid;
+//    lbl->Horizontal_Align=HorMid;
+//    
+//    strcpy(lbl->Text,text);    
+//    
+//    //ç»‘å®šæ–¹æ³•
+//    lbl->Event_Set=Method_Label_Event_Set;
+//    lbl->Active_Set=Method_Label_Active_Set;
+//    lbl->Change_Text=Method_Label_Change_Text;
+//    lbl->Dispose=Method_Label_Dispose;
+//    lbl->Repaint=Method_Label_Repaint;
+//    
+//    //Graphic_CreateCanvas(&lbl->Canvas,x,y,width,height,virt);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void Method_Panel_Data_Update(panel* pnl)
+//{
+//    if (pnl->Always_Average)
+//    {
+//        uint16_t i;
+//        
+//        for (i=0;i<pnl->RowsNum;i++)
+//        {
+//            pnl->Vertical_Ratio[i]=1.0f/pnl->RowsNum;
+//            pnl->Blocks_Height[i]=pnl->Area.Height*pnl->Vertical_Ratio[i];
+//        }
+//        for (i=0;i<pnl->LinesNum;i++)
+//        {
+//            pnl->Horizontal_Ratio[i]=1.0f/pnl->LinesNum;
+//            pnl->Blocks_Width[i]=pnl->Area.Width*pnl->Horizontal_Ratio[i];
+//        }
+//    }
+//    _Panel_Data_Calculate(pnl);
+//}
+
+//void Method_Panel_Dispose(panel* pnl)
+//{
+//    component* cm=GET_COMPONENT_ADDR(pnl);
+//    component_layer* cl=LinkedList_Find(&pnl->Controller->Layers,pnl->Layer);
+//    
+//    //åˆ é™¤æ§ä»¶
+//    LinkedList_Dispose2(&cl->Components,cm);
+//}
+
+//void _Panel_Data_Calculate(panel* pnl)
+//{
+//    int i;
+//    short save;
+//    
+//    //è®¡ç®—æ¯æ ¼å®½åº¦ï¼ˆæ— è¾¹ç•Œï¼‰
+//    pnl->Blocks_Width[pnl->LinesNum-1]=pnl->Area.Width;
+//    for (i=0;i<pnl->LinesNum-1;i++)
+//    {
+//        if (pnl->UseRatio)
+//            pnl->Blocks_Width[i]=ROUND((float)pnl->Area.Width/pnl->LinesNum);
+//        pnl->Blocks_Width[pnl->LinesNum-1]-=pnl->Blocks_Width[i];
+//    }
+//    
+//    //è®¡ç®—æ¯æ ¼æ¨ªåæ ‡ï¼ˆæœ‰è¾¹ç•Œï¼‰
+//    _RO_WRITE(pnl->Blocks_X[0],uint16_t,pnl->Boundary+pnl->Area.X);
+//    for (i=1;i<pnl->LinesNum;i++)
+//        _RO_WRITE(pnl->Blocks_X[i],uint16_t,pnl->Blocks_X[i-1]+pnl->Blocks_Width[i-1]+pnl->Area.X);
+//    
+//    //è®¡ç®—æ¯æ ¼å®½åº¦æ¯”ä¾‹ï¼ˆæ— è¾¹ç•Œï¼‰
+//    for (i=0;i<pnl->LinesNum;i++)
+//        pnl->Horizontal_Ratio[i]=(float)pnl->Blocks_Width[i]/pnl->Area.Width;
+//    
+//    //é‡æ–°è®¡ç®—æ¯æ ¼å®½åº¦ï¼ˆè€ƒè™‘è¾¹ç•Œï¼‰
+//    for (i=0;i<pnl->LinesNum;i++)
+//    {
+//        save=pnl->Blocks_Width[i]-2*pnl->Boundary;
+//        if (save<0) //å¦‚æœå®½åº¦å¤ªå°åˆ™è®¾ä¸º0
+//            save=0;
+//        pnl->Blocks_Width[i]=save;
+//    }
+//    
+//    //è®¡ç®—æ¯æ ¼é«˜åº¦ï¼ˆæ— è¾¹ç•Œï¼‰
+//    pnl->Blocks_Height[pnl->RowsNum-1]=pnl->Area.Height;
+//    for (i=0;i<pnl->RowsNum-1;i++)
+//    {
+//        if (pnl->UseRatio)
+//            pnl->Blocks_Height[i]=ROUND((float)pnl->Area.Width/pnl->RowsNum);
+//        pnl->Blocks_Height[pnl->RowsNum-1]-=pnl->Blocks_Height[i];
+//    }
+//    
+//    //è®¡ç®—æ¯æ ¼çºµåæ ‡ï¼ˆæœ‰è¾¹ç•Œï¼‰
+//    _RO_WRITE(pnl->Blocks_Y[0],uint16_t,pnl->Boundary+pnl->Area.Y);
+//    for (i=1;i<pnl->RowsNum;i++)
+//        _RO_WRITE(pnl->Blocks_Y[i],uint16_t,pnl->Blocks_Y[i-1]+pnl->Blocks_Height[i-1]+pnl->Area.Y);
+//    
+//    //è®¡ç®—æ¯æ ¼é«˜åº¦æ¯”ä¾‹ï¼ˆæ— è¾¹ç•Œï¼‰
+//    for (i=0;i<pnl->RowsNum;i++)
+//        pnl->Vertical_Ratio[i]=(float)pnl->Blocks_Height[i]/pnl->Area.Height;
+//    
+//    //é‡æ–°è®¡ç®—æ¯æ ¼é«˜åº¦ï¼ˆè€ƒè™‘è¾¹ç•Œï¼‰
+//    for (i=0;i<pnl->RowsNum;i++)
+//    {
+//        save=pnl->Blocks_Height[i]-2*pnl->Boundary;
+//        if (save<0) //å¦‚æœå®½åº¦å¤ªå°åˆ™è®¾ä¸º0
+//            save=0;
+//        pnl->Blocks_Height[i]=save;
+//    }
+//}
+
+//void _Panel_Init(panel* pnl, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t rownum, uint8_t linenum, layer_handler layer)
+//{
+//    int i;
+//    
+//    _RO_WRITE(pnl->Layer,layer_handler,layer);
+//    
+//    pnl->Area.X=x;
+//    pnl->Area.Y=y;
+//    pnl->Area.Width=width;
+//    pnl->Area.Height=height;
+//    
+//    pnl->RowsNum=rownum;
+//    pnl->LinesNum=linenum;
+//    
+//    pnl->Boundary=0;
+//    
+//    pnl->Data_Array=Malloc(GUI_HEAP,256);
+//    
+//    //åˆ†é…å„å‚æ•°åœ°å€
+//    _RO_WRITE(pnl->Blocks_Width,uint16_t*,(uint16_t*)pnl->Data_Array);
+//    _RO_WRITE(pnl->Blocks_Height,uint16_t*,(uint16_t*)(((uint32_t)pnl->Blocks_Width)+PANEL_MAX_LINE*2));
+//    
+//    _RO_WRITE(pnl->Horizontal_Ratio,float*,(float*)(((uint32_t)pnl->Blocks_Height)+PANEL_MAX_ROW*2));
+//    _RO_WRITE(pnl->Vertical_Ratio,float*,(float*)(((uint32_t)pnl->Horizontal_Ratio)+PANEL_MAX_LINE*4));
+//    
+//    _RO_WRITE(pnl->Blocks_X,uint16_t*,(uint16_t*)(((uint32_t)pnl->Vertical_Ratio)+PANEL_MAX_ROW*4));
+//    _RO_WRITE(pnl->Blocks_Y,uint16_t*,(uint16_t*)(((uint32_t)pnl->Blocks_X)+PANEL_MAX_LINE*2));
+//    
+//    pnl->Data_Update    =   Method_Panel_Data_Update;
+//    pnl->Dispose        =   Method_Panel_Dispose;
+//    
+//    //é»˜è®¤ä½¿ç”¨æ¯”ä¾‹å‚æ•°
+//    pnl->UseRatio=Enable;
+//    //é»˜è®¤å¹³å‡
+//    pnl->Always_Average=Enable;
+//    //é‡æ–°è®¡ç®—ç»“æœ
+//    _Panel_Data_Calculate(pnl);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///********************************************************************************************************/
+///*                                              ToolBox                                                 */
+///********************************************************************************************************/
+//void Method_ToolBox_Event_Set(toolbox* tbx, toolbox_event_type event, status_flag status)
+//{
+//    switch (event)
+//    {
+//        case TBX_PRESSDOWN:
+//        {
+//            _RO_WRITE(tbx->Event_PressDown_Enable,status_flag,status);
+//            tbx->TouchArea->PressDown_Enable=status;
+//            break;
+//        }
+//        case TBX_RELEASE:
+//        {
+//            _RO_WRITE(tbx->Event_Release_Enable,status_flag,status);
+//            tbx->TouchArea->Release_Enable=status;
+//            break;
+//        }
+//        case TBX_KEEPPRESS:
+//        {
+//            _RO_WRITE(tbx->Event_KeepPress_Enable,status_flag,status);
+//            tbx->TouchArea->KeepPress_Enable=status;
+//            break;
+//        }
+//        case TBX_CLICK:
+//        {
+//            _RO_WRITE(tbx->Event_Click_Enable,status_flag,status);
+//            break;
+//        }
+//        case TBX_GETFOCUS:
+//        {
+//            _RO_WRITE(tbx->Event_GetFocus_Enable,status_flag,status);
+//            break;
+//        }
+//        case TBX_LOSTFOCUS:
+//        {
+//            _RO_WRITE(tbx->Event_LostFocus_Enable,status_flag,status);
+//            break;
+//        }
+//        case TBX_REPAINT:
+//        {
+//            _RO_WRITE(tbx->Event_Repaint_Enable,status_flag,status);
+//            break;
+//        }
+//        default:
+//            break;
+//    }
+//}
+
+//void Method_ToolBox_Active_Set(toolbox* tbx, status_flag status)
+//{
+//    _RO_WRITE(tbx->Active,status_flag,status);
+//    tbx->TouchArea->All_Event_Enable=status;
+//}
+
+//void Method_ToolBox_Change_Text(toolbox* tbx, char* fmtstr, ...)
+//{
+//    va_list vl;
+//    
+//    va_start(vl,fmtstr);
+//    vsprintf(tbx->Text,fmtstr,vl);
+//    va_end(vl);
+//    tbx->Updated=Enable;
+//}
+
+//toolbox_button* Method_ToolBox_Add_Button(toolbox* tbx, char* text)
+//{
+//    int i;
+//    component* cm;
+//    toolbox_button* tbx_btn;
+//    
+//    //åˆ›å»ºæŒ‰é’®
+//    cm=LinkedList_Add(&tbx->Buttons,tbx->Buttons.Nodes_Num);
+//    cm->Type=TOOLBOX_BUTTON;
+//    tbx_btn=&cm->Component.ToolBox_Button;
+
+//    //åˆå§‹åŒ–
+//    _ToolBox_Button_Init(tbx_btn,tbx->Controller->TouchDevice,tbx->Button_Wdith,tbx->Button_Height,
+//                            tbx->Canvas.Virtual,text);
+//    //é‡æ’åˆ—
+//    _ToolBox_Button_Repermutation(tbx);
+//    //ä¸è§¦æ‘¸åŒºåŸŸåˆ›å»ºè”ç³»
+//    tbx_btn->TouchArea->Association=cm;
+//    
+//    return tbx_btn;
+//}
+
+//void Method_ToolBox_Delete_Button(toolbox* tbx, toolbox_button* tbx_btn)
+//{
+//    component* cm=GET_COMPONENT_ADDR(tbx_btn);
+//    
+//    //åˆ é™¤ç”»å¸ƒ
+//    //Graphic_Canvas_Delete(&tbx_btn->Canvas);
+//    //åˆ é™¤è§¦æ‘¸åŒºåŸŸ
+//    tbx->Controller->TouchDevice->Delete_Area(tbx->Controller->TouchDevice,tbx_btn->TouchArea);
+//    //ä»é“¾è¡¨ä¸­ç§»é™¤
+//    LinkedList_Dispose2(&tbx->Buttons,cm);
+//}
+
+//void Method_ToolBox_Repaint(toolbox* tbx)
+//{
+//    //å¦‚æœç»˜åˆ¶ä¸»æŒ‰é”®
+//    if (tbx->Display)
+//    {
+//        if (tbx->CustomBackground)
+//            Graphic_Draw_BMP_All(&tbx->Canvas,0,0,tbx->Background);
+//        else
+//        {
+//            Graphic_Draw_Rectangle(&tbx->Canvas,0,0,&tbx->Appearance);
+//            Graphic_Draw_String(&tbx->Canvas,0,0,tbx->Canvas.Area.Width,tbx->Canvas.Area.Height,VerMid,HorMid,&tbx->Font,tbx->Text);
+//        }
+//        if (tbx->Event_Repaint_Enable)
+//            tbx->Repaint_Callback(tbx);
+//    }
+//    if (tbx->Buttons_Display&&tbx->Focus)
+//    {
+//        int i;
+//        toolbox_button* tbx_btn;
+//        //ç»˜åˆ¶æ¯ä¸ªå­æŒ‰é”®
+//        for (i=0;i<tbx->Buttons.Nodes_Num;i++)
+//        {
+//            tbx_btn=&((component*)LinkedList_Find(&tbx->Buttons,i))->Component.ToolBox_Button;
+//            if (tbx_btn->CustomBackground)
+//                Graphic_Draw_BMP_All(&tbx_btn->Canvas,0,0,tbx_btn->Background);
+//            else
+//            {
+//                Graphic_Draw_Rectangle(&tbx_btn->Canvas,0,0,&tbx_btn->Appearance);
+//                Graphic_Draw_String(&tbx_btn->Canvas,0,0,tbx_btn->Canvas.Area.Width,tbx_btn->Canvas.Area.Height,VerMid,HorMid,&tbx_btn->Font,tbx_btn->Text);
+//            }
+//        }
+//    }
+//}
+
+//void Method_ToolBox_Dispose(toolbox* tbx)
+//{
+//    int i;
+//    toolbox_button* tbx_btn;
+//    
+//    //åˆ é™¤æ‰€æœ‰æŒ‰é’®
+//    for (i=0;i<tbx->Buttons.Nodes_Num;i++)
+//    {
+//        tbx_btn=&((component*)LinkedList_Find(&tbx->Buttons,i))->Component.ToolBox_Button;
+//        tbx->Delete_Button(tbx,tbx_btn);
+//    }
+//    //åˆ é™¤ç”»å¸ƒ
+//    //Graphic_Canvas_Delete(&tbx->Canvas);
+//    //åˆ é™¤è§¦æ‘¸åŒºåŸŸ
+//    tbx->Controller->TouchDevice->Delete_Area(tbx->Controller->TouchDevice,tbx->TouchArea);
+//    //ä»é“¾è¡¨ä¸­ç§»é™¤
+//    component* cm=GET_COMPONENT_ADDR(tbx);
+//    component_layer* cl=LinkedList_Find(&tbx->Controller->Layers,tbx->Layer);
+//    LinkedList_Dispose2(&cl->Components,cm);
+//}
+
+//void _ToolBox_Init(toolbox* tbx, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, char* text, layer_handler layer)
+//{
+//    //çŠ¶æ€é…ç½®
+//    tbx->CustomBackground=Disable;
+//    tbx->Display=Enable;
+//    tbx->Buttons_Display=Enable;
+//    tbx->AllEvent_Enable=Disable;
+//    tbx->Updated=Disable;
+//    _RO_WRITE(tbx->Active,status_flag,Enable);
+//    _RO_WRITE(tbx->Focus,status_flag,Disable);
+//    
+//    //äº‹ä»¶ä½¿èƒ½ä½
+//    _RO_WRITE(tbx->Event_PressDown_Enable,status_flag,Disable);
+//    _RO_WRITE(tbx->Event_Release_Enable,status_flag,Disable);
+//    _RO_WRITE(tbx->Event_KeepPress_Enable,status_flag,Disable);
+//    _RO_WRITE(tbx->Event_Click_Enable,status_flag,Disable);
+//    _RO_WRITE(tbx->Event_GetFocus_Enable,status_flag,Disable);
+//    _RO_WRITE(tbx->Event_LostFocus_Enable,status_flag,Disable);
+//    _RO_WRITE(tbx->Event_Repaint_Enable,status_flag,Disable);
+//    
+//    tbx->Font.BackColor=WHITE;
+//    tbx->Font.CharColor=BLACK;
+//    tbx->Font.Mold=BasicChar_Courier_New;
+//    
+//    tbx->Appearance.Background_Color=WHITE;
+//    tbx->Appearance.Display_Background=Enable;
+//    tbx->Appearance.Frame_Color=BLACK;
+//    tbx->Appearance.Frame_Thickness=5;
+//    tbx->Appearance.Height=height;
+//    tbx->Appearance.Width=width;
+//    
+//    tbx->Vertical_Align=VerMid;
+//    tbx->Horizontal_Align=HorMid;
+//    
+//    tbx->Button_Wdith=100;
+//    tbx->Button_Height=50;
+//    
+//    strcpy(tbx->Text,text);
+//    
+//    _RO_WRITE(tbx->Layer,layer_handler,layer);
+//    
+//    //é“¾è¡¨åˆå§‹åŒ–
+//    LinkedList_Prepare(&tbx->Buttons,sizeof(component));
+//    //ç»‘å®šæ–¹æ³•
+//    tbx->Event_Set=Method_ToolBox_Event_Set;
+//    tbx->Active_Set=Method_ToolBox_Active_Set;
+//    tbx->Change_Text=Method_ToolBox_Change_Text;
+//    tbx->Add_Button=Method_ToolBox_Add_Button;
+//    tbx->Delete_Button=Method_ToolBox_Delete_Button;
+//    tbx->Dispose=Method_ToolBox_Dispose;
+//    tbx->Repaint=Method_ToolBox_Repaint;
+//    //åˆ›å»ºç”»å¸ƒ
+//    //Graphic_CreateCanvas(&tbx->Canvas,x,y,width,height,virt);
+//    //åˆ›å»ºè§¦æ‘¸åŒºåŸŸ
+//    tbx->TouchArea=td->Create_Area(td,x,y,width,height);
+//    //è§¦æ‘¸åŒºåŸŸäº‹ä»¶ä½¿èƒ½
+//    tbx->TouchArea->All_Event_Enable=Enable;
+//    //ç‚¹å‡»äº‹ä»¶ä½¿èƒ½
+//    tbx->TouchArea->Click_Enable=Enable;
+//    //é…ç½®è§¦æ‘¸å›è°ƒå‡½æ•°
+//    tbx->TouchArea->PressDown_CallBackFunc=Global_PressDown_Callback;
+//    tbx->TouchArea->Release_CallBackFunc=Global_Release_Callback;
+//    tbx->TouchArea->KeepPress_CallBackFunc=Global_KeepPress_Callback;
+//    tbx->TouchArea->Click_CallBackFunc=Global_Click_Callback;
+//}
+
+//void _ToolBox_Button_Init(toolbox_button* tbx_btn, touch_device* td, uint16_t width, uint16_t height, status_flag virt, char* text)
+//{
+//    //çŠ¶æ€é…ç½®
+//    tbx_btn->CustomBackground=Disable;
+//    tbx_btn->AllEvent_Enable=Disable;
+//    _RO_WRITE(tbx_btn->Active,status_flag,Enable);
+//    //äº‹ä»¶ä½¿èƒ½ä½
+//    _RO_WRITE(tbx_btn->Event_Click_Enable,status_flag,Disable);
+//    //å­—ä½“é…ç½®
+//    tbx_btn->Font.BackColor=WHITE;
+//    tbx_btn->Font.CharColor=BLACK;
+//    tbx_btn->Font.Mold=BasicChar_Courier_New;
+//    //å¤–è§‚é…ç½®
+//    tbx_btn->Appearance.Background_Color=WHITE;
+//    tbx_btn->Appearance.Display_Background=Enable;
+//    tbx_btn->Appearance.Frame_Color=BLACK;
+//    tbx_btn->Appearance.Frame_Thickness=5;
+//    tbx_btn->Appearance.Height=height;
+//    tbx_btn->Appearance.Width=width;
+//    
+//    tbx_btn->Vertical_Align=VerMid;
+//    tbx_btn->Horizontal_Align=HorMid;
+//    
+//    strcpy(tbx_btn->Text,text);
+//        
+//    //ç»‘å®šæ–¹æ³•
+//    tbx_btn->Event_Set=Method_ToolBox_Button_Event_Set;
+//    tbx_btn->Active_Set=Method_ToolBox_Button_Active_Set;
+//    tbx_btn->Change_Text=Method_ToolBox_Button_Change_Text;
+//    
+//    //åˆ›å»ºç”»å¸ƒ
+//    //Graphic_CreateCanvas(&tbx_btn->Canvas,0,0,width,height,virt);
+//    //åˆ›å»ºè§¦æ‘¸åŒºåŸŸ
+//    tbx_btn->TouchArea=td->Create_Area(td,0,0,width,height);
+//    //è§¦æ‘¸åŒºåŸŸäº‹ä»¶ä½¿èƒ½
+//    tbx_btn->TouchArea->All_Event_Enable=Enable;
+//    //é…ç½®è§¦æ‘¸å›è°ƒå‡½æ•°
+//    tbx_btn->TouchArea->Click_CallBackFunc=Global_Click_Callback;
+//}
+
+//void _ToolBox_Button_Repermutation(toolbox* tbx)
+//{
+//    int i;
+//    uint16_t x,y;
+//    component* cm;
+//    toolbox_button* tbx_btn;
+
+//    for (i=0;i<tbx->Buttons.Nodes_Num;i++)
+//    {
+//        cm=LinkedList_Find(&tbx->Buttons,i);
+//        tbx_btn=&cm->Component.ToolBox_Button;
+//        x=(tbx->Controller->Screen->Width-tbx_btn->Appearance.Width)/2;
+//        y=(tbx->Controller->Screen->Height-tbx->Buttons.Nodes_Num*tbx_btn->Appearance.Height)/2;
+//        y+=i*tbx_btn->Appearance.Height;
+//        tbx_btn->Canvas.Area.X=x;
+//        tbx_btn->Canvas.Area.Y=y;
+//        tbx_btn->TouchArea->X=x;
+//        tbx_btn->TouchArea->Y=y;
+//    }
+//}
+
+//void Method_ToolBox_Button_Event_Set(toolbox_button* tbx_btn, toolbox_event_type event, status_flag status)
+//{
+//    if (event==TBX_CLICK)
+//    {
+//        tbx_btn->TouchArea->Click_Enable=status;
+//        _RO_WRITE(tbx_btn->Event_Click_Enable,status_flag,status);
+//    }
+//}
+
+//void Method_ToolBox_Button_Active_Set(toolbox_button* tbx_btn, status_flag status)
+//{
+//    _RO_WRITE(tbx_btn->Active,status_flag,status);
+//    tbx_btn->TouchArea->All_Event_Enable=status;
+//}
+
+//void Method_ToolBox_Button_Change_Text(toolbox_button* tbx_btn, char* fmtstr, ...)
+//{
+//    va_list vl;
+//    
+//    va_start(vl,fmtstr);
+//    vsprintf(tbx_btn->Text,fmtstr,vl);
+//    va_end(vl);
+//    if (tbx_btn->ToolBox->Focus)
+//        tbx_btn->ToolBox->Updated=Enable;
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void Method_Scope_Event_Set(scope* scp, scope_event_type event, status_flag status)
+//{
+//    switch (event)
+//    {
+//        case SCP_PRESSDOWN:
+//        {
+//            _RO_WRITE(scp->Event_PressDown_Enable,status_flag,status);
+//            if (scp->Unfixed_Axis)
+//                scp->TouchArea->PressDown_Enable=Enable;
+//            else
+//                scp->TouchArea->PressDown_Enable=status;
+//            break;
+//        }
+//        case SCP_RELEASE:
+//        {
+//            _RO_WRITE(scp->Event_Release_Enable,status_flag,status);
+//            if (scp->Unfixed_Axis)
+//                scp->TouchArea->Release_Enable=Enable;
+//            else
+//                scp->TouchArea->Release_Enable=status;
+//            break;
+//        }
+//        case SCP_KEEPPRESS:
+//        {
+//            _RO_WRITE(scp->Event_KeepPress_Enable,status_flag,status);
+//            if (scp->Unfixed_Axis)
+//                scp->TouchArea->KeepPress_Enable=Enable;
+//            else
+//                scp->TouchArea->KeepPress_Enable=status;
+//            break;
+//        }
+//        case SCP_CLICK:
+//        {
+//            _RO_WRITE(scp->Event_Click_Enable,status_flag,status);
+//            break;
+//        }
+//        case SCP_GETFOCUS:
+//        {
+//            _RO_WRITE(scp->Event_GetFocus_Enable,status_flag,status);
+//            break;
+//        }
+//        case SCP_LOSTFOCUS:
+//        {
+//            _RO_WRITE(scp->Event_LostFocus_Enable,status_flag,status);
+//            break;
+//        }
+//        case SCP_REPAINT:
+//        {
+//            _RO_WRITE(scp->Event_Repaint_Enable,status_flag,status);
+//            break;
+//        }
+//        default:
+//            break;
+//    }
+//}
+
+//void Method_Scope_Active_Set(scope* scp, status_flag status)
+//{
+//    _RO_WRITE(scp->Active,status_flag,status);
+//    scp->TouchArea->All_Event_Enable=status;
+//}
+
+//void Method_Scope_Unfixed_Axis_Set(scope* scp, status_flag state)
+//{
+//    _RO_WRITE(scp->Unfixed_Axis,status_flag,state);
+//    scp->TouchArea->PressDown_Enable=state;
+//    scp->TouchArea->KeepPress_Enable=state;
+//    scp->TouchArea->Release_Enable=state;
+//}
+
+//void Method_Scope_Repaint(scope* scp)
+//{
+//    if (scp->Display)
+//    {
+//        if ((!scp->Stop)&&scp->Data_Updated)
+//        {
+//            int i;
+//            for (i=0;i<scp->Curve.Length;i++)
+//                scp->Data_Buffer[i]=scp->Curve.Data[i];
+//            _RO_WRITE(scp->Data_Length,uint16_t,scp->Curve.Length);
+//            scp->Data_Updated=Disable;
+//        }
+//        _Scope_CurveRange_Update(scp->Data_Buffer,scp->Data_Length,&scp->Axis,&scp->Curve,&scp->Curve_Range,&scp->Display_Area);
+//        _Scope_Data_Prepare(scp->Data_Buffer,GUI_Buffer1,&scp->Axis,&scp->Curve_Range);
+//        _Scope_Repaint(scp);
+//        if (scp->Event_Repaint_Enable&&scp->AllEvent_Enable)
+//            scp->Repaint_Callback(scp);
+//        //Graphic_RefreshCanvas(&scp->Canvas);
+//    }
+//}
+
+//void Method_Scope_Dispose(scope* scp)
+//{
+//    //åˆ é™¤ç”»å¸ƒ
+//    //Graphic_Canvas_Delete(&scp->Canvas);
+//    //åˆ é™¤è§¦æ‘¸åŒºåŸŸ
+//    scp->Controller->TouchDevice->Delete_Area(scp->Controller->TouchDevice,scp->TouchArea);
+//    //ä»é“¾è¡¨ä¸­ç§»é™¤
+//    component* cm=GET_COMPONENT_ADDR(scp);
+//    component_layer* cl=LinkedList_Find(&scp->Controller->Layers,scp->Layer);
+//    LinkedList_Dispose2(&cl->Components,cm);
+//}
+//    
+//void _Scope_Init(scope* scp, touch_device* td, uint16_t x, uint16_t y, uint16_t width, uint16_t height, status_flag virt, uint16_t max_dlen, status_flag vscale, layer_handler layer)
+//{
+//    scp->Display=Enable;
+//    scp->AllEvent_Enable=Disable;
+//    scp->Update=Disable;
+//    scp->Cover=Enable;
+//    scp->Data_Updated=Disable;
+//    
+//    _RO_WRITE(scp->Stop,status_flag,Disable);
+//    _RO_WRITE(scp->Active,status_flag,Enable);
+//    _RO_WRITE(scp->Focus,status_flag,Disable);
+//    _RO_WRITE(scp->Event_PressDown_Enable,status_flag,Disable);
+//    _RO_WRITE(scp->Event_Release_Enable,status_flag,Disable);
+//    _RO_WRITE(scp->Event_KeepPress_Enable,status_flag,Disable);
+//    _RO_WRITE(scp->Event_Click_Enable,status_flag,Disable);
+//    _RO_WRITE(scp->Event_GetFocus_Enable,status_flag,Disable);
+//    _RO_WRITE(scp->Event_LostFocus_Enable,status_flag,Disable);
+//    _RO_WRITE(scp->Event_Repaint_Enable,status_flag,Disable);
+//    
+//    scp->Display_Area.Background_Color=WHITE;
+//    scp->Display_Area.Display_Background=Enable;
+//    scp->Display_Area.Frame_Color=BLACK;
+//    scp->Display_Area.Frame_Thickness=5;
+//    scp->Display_Area.Height=height;
+//    scp->Display_Area.Width=width;
+//    
+//    _RO_WRITE(scp->Layer,layer_handler,layer);
+//    
+//    //åˆ›å»ºæ•°æ®ç¼“å­˜åŒº
+//    scp->Data_Buffer=Malloc(GUI_HEAP,4*max_dlen);
+//    
+//    //ç»‘å®šæ–¹æ³•
+//    scp->Event_Set=Method_Scope_Event_Set;
+//    scp->Active_Set=Method_Scope_Active_Set;
+//    scp->Unfixed_Axis_Set=Method_Scope_Unfixed_Axis_Set;
+//    scp->Dispose=Method_Scope_Dispose;
+//    scp->Repaint=Method_Scope_Repaint;
+//    
+//    //Graphic_CreateCanvas(&scp->Canvas,x,y,width,height,virt);
+//    
+//    scp->TouchArea=td->Create_Area(td,x,y,width,height);
+//    
+//    //è§¦æ‘¸åŒºåŸŸäº‹ä»¶ä½¿èƒ½
+//    scp->TouchArea->All_Event_Enable=Enable;
+//    
+//    //ç‚¹å‡»äº‹ä»¶ä½¿èƒ½
+//    scp->TouchArea->Click_Enable=Enable;
+//    
+//    //é…ç½®è§¦æ‘¸å›è°ƒå‡½æ•°
+//    scp->TouchArea->PressDown_CallBackFunc=Global_PressDown_Callback;
+//    scp->TouchArea->Release_CallBackFunc=Global_Release_Callback;
+//    scp->TouchArea->KeepPress_CallBackFunc=Global_KeepPress_Callback;
+//    scp->TouchArea->Click_CallBackFunc=Global_Click_Callback;
+//    
+//    scp->Display_Area.Width=width;
+//	scp->Display_Area.Height=height;
+//	scp->Display_Area.Frame_Thickness=5;
+//	scp->Display_Area.Background_Color=WHITE;
+//	scp->Display_Area.Frame_Color=BLACK;
+//    scp->Display_Area.Display_Background=1;
+//	scp->Style=CURVE;
+//	
+//	scp->Axis.Axis_Line.Color=BLACK;
+//	scp->Axis.Axis_Line.Solid_Length=1;
+//	scp->Axis.Axis_Line.Vacancy_Length=0;
+//	scp->Axis.Axis_Line.Width=2;
+//	scp->Axis.Axis_Display=1;
+//	
+//	scp->Axis.Net_Line.Color=BLACK;
+//	scp->Axis.Net_Line.Width=2;
+//	scp->Axis.Net_Line.Solid_Length=1;
+//	scp->Axis.Net_Line.Vacancy_Length=0;
+//	scp->Axis.Net_Display=1;
+//	
+//	scp->Axis.X_Net_Density=2;
+//	scp->Axis.Y_Net_Density=2;
+//	
+//	scp->Axis.Is_XRange_Auto=1;
+//	scp->Axis.Is_YRange_Auto=1;
+//	scp->Axis.X_Max=10;
+//	scp->Axis.X_Min=0;
+//	scp->Axis.X_Tick_Num=10;
+//	scp->Axis.Y_Max=10;
+//	scp->Axis.Y_Min=0;
+//	scp->Axis.Y_Tick_Num=10;
+//	
+//	scp->Curve.Curve_Line.Color=ALING_RED;
+//	scp->Curve.Curve_Line.Vacancy_Length=0;
+//	scp->Curve.Curve_Line.Width=2;
+//	scp->Curve.Is_XRange_Auto=1;
+//	scp->Curve.Is_YRange_Auto=1;
+//	scp->Curve.X_Max=10;
+//	scp->Curve.X_Min=0;
+//	scp->Curve.Y_Max=10;
+//	scp->Curve.Y_Min=0;
+//	scp->Curve.Display=1;
+//}
+
+//void _Scope_CurveRange_Update(float* data, uint16_t dlen, axis* ax, curve* cur, curve_range* cur_range, rectangle* area)
+//{
+//    float k_axis,b_axis;
+//	float k_curve,b_curve;
+//	
+//	//ç¡®å®šXèŒƒå›´
+//	if (ax->Is_XRange_Auto)
+//	{
+//		if (cur->Is_XRange_Auto)
+//		{
+//			ax->X_Max=area->Width-2*area->Frame_Thickness;
+//			ax->X_Min=0;
+//			cur->X_Max=ax->X_Max;
+//			cur->X_Min=ax->X_Min;
+//		}
+//		else
+//		{
+//			ax->X_Max=cur->X_Max;
+//			ax->X_Min=cur->Y_Min;
+//		}
+//	}
+//	else
+//	{
+//		if (cur->Is_XRange_Auto)
+//		{
+//			cur->X_Max=ax->X_Max;
+//			cur->X_Min=ax->X_Min;
+//		}
+//	}
+//	
+//	//å°†Xè½´åæ ‡çº¿æ€§æ˜ å°„åˆ°çŸ©å½¢å†…åæ ‡
+//	k_axis=MathHelper_Slope(ax->X_Min,area->Frame_Thickness,
+//						ax->X_Max,area->Width-area->Frame_Thickness);
+//	b_axis=MathHelper_Intercept(ax->X_Min,area->Frame_Thickness,
+//						ax->X_Max,area->Width-area->Frame_Thickness);
+//	//æ›²çº¿Xè½´çš„å€¼ä¸å…ƒç´ åºå·ä¹‹é—´çš„çº¿æ€§æ˜ å°„
+//	k_curve=MathHelper_Slope(cur->X_Min,0,cur->X_Max,dlen-1);
+//	b_curve=MathHelper_Intercept(cur->X_Min,0,cur->X_Max,dlen-1);
+//	
+//	//è®¡ç®—Begin_Indexå’ŒValid_X_Begin
+//	if (ax->X_Min<=cur->X_Min)
+//	{
+//		cur_range->_Begin_Index=0;
+//		if (ax->X_Max>cur->X_Min)
+//			cur_range->_Valid_X_Begin=cur->X_Min*k_axis+b_axis;
+//		else
+//			cur_range->_Valid_X_Begin=area->Width-area->Frame_Thickness;
+//	}
+//	else
+//	{
+//		cur_range->_Valid_X_Begin=area->Frame_Thickness;
+//		if (ax->X_Min<cur->X_Max)
+//			cur_range->_Begin_Index=ax->X_Min*k_curve+b_curve;
+//		else
+//			cur_range->_Begin_Index=9;
+//	}
+//	
+//	//è®¡ç®—End_Indexï¼Œå’ŒValid_X_End
+//	cur_range->_End_Index=ax->X_Max*k_curve+b_curve;
+//	if (ax->X_Max>=cur->X_Max)
+//	{
+//		cur_range->_End_Index=dlen-1;
+//		if (ax->X_Min<cur->X_Max)
+//			cur_range->_Valid_X_End=cur->X_Max*k_axis+b_axis;
+//		else
+//			cur_range->_Valid_X_End=area->Frame_Thickness;
+//	}
+//	else
+//	{
+//		if (ax->X_Max>cur->X_Min)
+//			cur_range->_End_Index=ax->X_Max*k_curve+b_curve;
+//		else
+//			cur_range->_End_Index=0;
+//		cur_range->_Valid_X_End=area->Width-area->Frame_Thickness-1;
+//	}
+//    
+//	//Yè½´ä½ç½®
+//	if (b_axis>=area->Width-area->Frame_Thickness-ax->Axis_Line.Width/2)
+//		ax->_Y_Position=area->Width-area->Frame_Thickness-ax->Axis_Line.Width/2;
+//	else if (b_axis<=area->Frame_Thickness+ax->Axis_Line.Width/2)
+//		ax->_Y_Position=area->Frame_Thickness+ax->Axis_Line.Width/2;
+//	else
+//		ax->_Y_Position=b_axis;
+//	
+//	cur_range->_Length=cur_range->_End_Index-cur_range->_Begin_Index+1;
+//	if (ax->Is_YRange_Auto)
+//	{
+//		if (cur->Is_YRange_Auto)
+//		{
+//			//k_axis=MathHelper_FindMax_Float(&cur->Data[cur_range->_Begin_Index],cur_range->_Length,NULL);
+//			//b_axis=MathHelper_FindMin_Float(&cur->Data[cur_range->_Begin_Index],cur_range->_Length,NULL);
+//            k_axis=MathHelper_FindMax_Float(&data[cur_range->_Begin_Index],cur_range->_Length,NULL);
+//			b_axis=MathHelper_FindMin_Float(&data[cur_range->_Begin_Index],cur_range->_Length,NULL);
+//			ax->Y_Max=k_axis;
+//			ax->Y_Min=b_axis;
+//			cur->Y_Max=ax->Y_Max;
+//			cur->Y_Min=ax->Y_Min;
+//		}
+//		else
+//		{
+//			ax->Y_Max=cur->Y_Max;
+//			ax->Y_Min=cur->Y_Min;
+//		}
+//	}
+//	else
+//	{
+//		if (cur->Is_YRange_Auto)
+//		{
+//			//k_axis=MathHelper_FindMax_Float(&cur->Data[cur_range->_Begin_Index],cur_range->_Length,NULL);
+//			//b_axis=MathHelper_FindMin_Float(&cur->Data[cur_range->_Begin_Index],cur_range->_Length,NULL);
+//            k_axis=MathHelper_FindMax_Float(&data[cur_range->_Begin_Index],cur_range->_Length,NULL);
+//			b_axis=MathHelper_FindMin_Float(&data[cur_range->_Begin_Index],cur_range->_Length,NULL);
+//			cur->Y_Max=k_axis;
+//			cur->Y_Min=b_axis;
+//		}
+//	}
+//	
+//	//è®¡ç®—Valid_Y_End
+//	k_axis=(area->Height-2*area->Frame_Thickness)/(ax->Y_Min-ax->Y_Max);
+//	b_axis=area->Height-area->Frame_Thickness-1-k_axis*ax->Y_Min;
+//	if (ax->Y_Min<=cur->Y_Min)
+//	{
+//		if (ax->Y_Max>=cur->Y_Min)
+//			cur_range->_Valid_Y_End=cur->Y_Min*k_axis+b_axis;
+//		else
+//			cur_range->_Valid_Y_End=area->Frame_Thickness+1;
+//	}
+//	else
+//		cur_range->_Valid_Y_End=area->Height-area->Frame_Thickness-1;
+//	
+//	//è®¡ç®—Valid_Y_Begin
+//	if (ax->Y_Max>=cur->Y_Max)
+//	{
+//		if (ax->Y_Min<=cur->Y_Max)
+//			cur_range->_Valid_Y_Begin=cur->Y_Max*k_axis+b_axis+1;
+//		else
+//			cur_range->_Valid_Y_Begin=area->Height-area->Frame_Thickness-1;
+//	}
+//	else
+//		cur_range->_Valid_Y_Begin=area->Frame_Thickness;
+//	
+//	if (b_axis>=area->Height-area->Frame_Thickness-ax->Axis_Line.Width/2)
+//		ax->_X_Position=area->Height-area->Frame_Thickness-ax->Axis_Line.Width/2;
+//	else if (b_axis<=area->Frame_Thickness+ax->Axis_Line.Width/2)
+//		ax->_X_Position=area->Frame_Thickness+ax->Axis_Line.Width/2;
+//	else
+//		ax->_X_Position=b_axis;
+//}
+
+//void _Scope_Data_Prepare(float* datin, float* datout, axis* ax, curve_range* cur_range)
+//{
+//    int i;
+//    
+//    for (i=0;i<cur_range->_Length;i++)
+//		datout[i]=datin[i+cur_range->_Begin_Index]>ax->Y_Max?ax->Y_Max:
+//				(datin[i+cur_range->_Begin_Index]<ax->Y_Min?ax->Y_Min:
+//				datin[i+cur_range->_Begin_Index]);
+//}
+
+//void _Scope_Draw_Waveform(canvas* c, float* dat, line* l, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t axis_pos, uint16_t dlen, uint8_t style)
+//{
+//	u16 i;
+//	float Max_or_Slope,Min_or_Inter;
+//	float Step;
+//	
+//	if ((x>=c->Area.Width)||(y>=c->Area.Height))
+//		return;
+
+//	//å°†datä¸­çš„æ•°æ®çº¿æ€§æ˜ å°„åˆ°ç”»å¸ƒèŒƒå›´å†…
+//	Max_or_Slope=dat[0];
+//	Min_or_Inter=Max_or_Slope;
+//	for (i=0;i<dlen;i++)
+//	{
+//		if (dat[i]>Max_or_Slope)
+//			Max_or_Slope=dat[i];
+//		else if (dat[i]<=Min_or_Inter)
+//			Min_or_Inter=dat[i];
+//	}
+//	
+//	if (Max_or_Slope-Min_or_Inter<0.02f)
+//		Max_or_Slope=-1.0f;
+//	else
+//		Max_or_Slope=(float)(height-1)/(Min_or_Inter-Max_or_Slope);
+//	Min_or_Inter=y+height-1-Max_or_Slope*Min_or_Inter;
+//    
+//	//å¦‚æœæ˜¯æ›²çº¿
+//	if (style==CURVE)
+//	{
+//		//æ•°æ®é•¿åº¦å¤§äºç­‰äºç»˜å›¾åŒºåŸŸå®½åº¦ï¼Œé€ç‚¹ç»˜å›¾
+//		if (dlen>=width)
+//		{
+//			u16 x_save1,x_save2;
+//			float y_save1,y_save2;
+//			
+//			Step=(float)dlen/width;
+//			x_save1=x;
+//			y_save1=dat[0]*Max_or_Slope+Min_or_Inter;
+//			
+//			//è¯´æ˜æ˜¯è¿ç»­çš„
+//			if (l->Vacancy_Length==0)
+//			{
+//				for (i=1;i<width;i++)
+//				{
+//					x_save2=i+x;
+//					y_save2=dat[(u16)(i*Step)]*Max_or_Slope+Min_or_Inter;
+//					Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);	
+//					x_save1=x_save2;
+//					y_save1=y_save2;
+//				}
+//			}
+//			else//è¯´æ˜æ˜¯è™šçº¿
+//			{
+//				u8 j;
+//				signed char save;
+
+//				for (i=1;i+l->Solid_Length<width;i+=l->Solid_Length+l->Vacancy_Length)
+//				{
+//					x_save1=i+x;
+//					y_save1=dat[(u16)(i*Step)]*Max_or_Slope+Min_or_Inter;
+//					
+//					//ç»˜åˆ¶å®çº¿éƒ¨åˆ†
+//					for (j=0;j<l->Solid_Length;j++)
+//					{
+//						x_save2=j+i+x;
+//						y_save2=dat[(u16)((i+j)*Step)]*Max_or_Slope+Min_or_Inter;
+//						Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);	
+//						x_save1=x_save2;
+//						y_save1=y_save2;
+//					}
+//				}
+
+//				//æœ€åä¸€éƒ¨åˆ†å®çº¿åˆ†å¼€ç»˜åˆ¶
+//				x_save1=x+i;
+//				y_save1=((float*)dat)[(u16)(i*Step)]*Max_or_Slope+Min_or_Inter;
+//				save=width-i;
+//				for (j=1;j<save;j++)
+//				{
+//					x_save2=j+i+x;
+//					y_save2=dat[(u16)((i+j)*Step)]*Max_or_Slope+Min_or_Inter;
+//					Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);	
+//					x_save1=x_save2;
+//					y_save1=y_save2;
+//				}
+
+//			}
+//		}
+//		else	//æ•°æ®é•¿åº¦å°äºç»˜å›¾åŒºå®½åº¦ï¼Œè¿çº¿ç»˜å›¾
+//		{
+//			float x_save1,x_save2,y_save1,y_save2;
+//			
+//			//å¦‚æœæ˜¯è™šçº¿åˆ™è¦å†…æ’
+//			if (l->Vacancy_Length!=0)
+//				MathHelper_Linear_Interpolation(dat,dat,dlen,width);
+//			else
+//				Step=(float)width/(dlen-1);
+//			x_save1=x;
+//			y_save1=dat[0]*Max_or_Slope+Min_or_Inter;
+//			
+//			//å¦‚æœä¸æ˜¯è™šçº¿
+//			if (l->Vacancy_Length==0)
+//			{
+//				for (i=1;i<dlen;i++)
+//				{
+//					x_save2=i*Step+x;
+//					y_save2=dat[i]*Max_or_Slope+Min_or_Inter;
+//					Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);
+//					x_save1=x_save2;
+//					y_save1=y_save2;
+//				}
+//			}
+//			else//è¯´æ˜æ˜¯è™šçº¿
+//			{
+//				u8 j;
+//				signed char save;
+//				
+//				for (i=1;i+l->Solid_Length<width;i+=l->Solid_Length+l->Vacancy_Length)
+//				{
+//					x_save1=x+i;
+//					y_save1=((float*)dat)[i]*Max_or_Slope+Min_or_Inter;
+//					for (j=0;j<l->Solid_Length;j++)
+//					{
+//						x_save2=i+j+x;
+//						y_save2=((float*)dat)[i+j]*Max_or_Slope+Min_or_Inter;
+//						Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);
+//						x_save1=x_save2;
+//						y_save1=y_save2;
+//					}
+//				}
+//				
+//				x_save1=x+i;
+//				y_save1=((float*)dat)[i]*Max_or_Slope+Min_or_Inter;
+//				save=width-i;
+//				for (j=1;j<save;j++)
+//				{
+//					x_save2+=j+i+x;
+//					y_save2=((float*)dat)[i+j]*Max_or_Slope+Min_or_Inter;
+//					Graphic_Draw_Line(c,x_save1,y_save1,x_save2,y_save2,l);
+//					x_save1=x_save2;
+//					y_save1=y_save2;
+//				}
+//			}
+//		}
+//	}
+//	else if (style==SCATTER)//æ˜¯æ•£ç‚¹å›¾
+//	{
+//		//æ•°æ®é•¿åº¦å¤§äºç­‰äºç»˜å›¾åŒºåŸŸå®½åº¦ï¼ŒæŒ‰æ•°æ®é€ç‚¹ç»˜å›¾
+//		if (dlen>=width)
+//		{
+//			short y;
+//			
+//			Step=(float)dlen/width;
+//			for (i=0;i<width;i++)
+//			{
+//				y=dat[(u16)(i*Step)]*Max_or_Slope+Min_or_Inter;
+//				Graphic_Draw_Line(c,x+i,axis_pos,x+i,y,l);	
+//				if (y+5>=c->Area.Height)
+//					y=c->Area.Height-6;
+//				else if (y-5<0)
+//					y=5;
+//				Graphic_Draw_Circle(c,x+i,y,5,l->Color,2);
+//			}
+//		}
+//		else	//æ•°æ®é•¿åº¦å°äºç»˜å›¾åŒºå®½åº¦
+//		{
+//			short y;
+//			u16 x;
+//			
+//			Step=(float)width/(dlen-1);
+//			for (i=0;i<dlen;i++)
+//			{
+//				x=i*Step;
+//				y=dat[i]*Max_or_Slope+Min_or_Inter;
+//				Graphic_Draw_Line(c,x+x,axis_pos,x+x,y,l);
+//				if (y+5>=c->Area.Height)
+//					y=c->Area.Height-6;
+//				else if (y-5<0)
+//					y=5;
+//				Graphic_Draw_Circle(c,x+x,y,5,l->Color,2);
+//			}
+//		}
+//	}
+//	else if (style==COLORED)//æŸ“è‰²æ¨¡å¼
+//	{
+//		line save;
+//		save.Vacancy_Length=0;
+//		save.Color=l->Color;
+//		save.Width=1;
+//		
+//		//æ•°æ®é•¿åº¦å¤§äºç­‰äºç»˜å›¾åŒºåŸŸå®½åº¦ï¼ŒæŒ‰æ•°æ®é€ç‚¹ç»˜å›¾
+//		if (dlen>=width)
+//		{
+//			short y;
+
+//			Step=(float)dlen/width;
+//			for (i=0;i<width;i++)
+//			{
+//				y=dat[(u16)(i*Step)]*Max_or_Slope+Min_or_Inter;
+//				Graphic_Draw_Line(c,x+i,axis_pos,x+i,y,&save);	
+//			}
+//		}
+//		else	//æ•°æ®é•¿åº¦å°äºç»˜å›¾åŒºå®½åº¦ï¼Œéœ€è¦è¿›è¡Œæ’å€¼
+//		{
+//			u16 y;
+//			
+//			MathHelper_Linear_Interpolation(dat,dat,dlen,width);
+//			for (i=0;i<width;i++)
+//			{
+//				y=((float*)dat)[i]*Max_or_Slope+Min_or_Inter;
+//				Graphic_Draw_Line(c,x+i,axis_pos,x+i,y,&save);
+//			}
+//		}
+//	}
+//}
+
+//void _Scope_Repaint(scope* scp)
+//{
+//    u16 Division_Length;
+//	short i;
+//    
+//	if (scp->Cover)
+//	{
+//        Graphic_Draw_Rectangle(&scp->Canvas,0,0,&scp->Display_Area);
+//        
+//		//å¦‚æœæ˜¾ç¤ºç½‘æ ¼
+//		if (scp->Axis.Net_Display)
+//		{
+//			Division_Length=(scp->Display_Area.Width-2*scp->Display_Area.Frame_Thickness)/scp->Axis.X_Tick_Num;
+//			i=Division_Length*scp->Axis.X_Net_Density+scp->Axis._Y_Position;	//é¦–å…ˆæ˜¯Xæ­£åŠè½´
+//			while (i<scp->Display_Area.Width)
+//			{
+//				Graphic_Draw_Line(&scp->Canvas,i,scp->Display_Area.Frame_Thickness,i,scp->Display_Area.Height,&scp->Axis.Net_Line);
+//				i+=Division_Length*scp->Axis.X_Net_Density;
+//			}
+//			
+//			i=scp->Axis._Y_Position-Division_Length*scp->Axis.X_Net_Density;	//ç„¶åæ˜¯Xè´ŸåŠè½´
+//			while (i>=0)
+//			{
+//				Graphic_Draw_Line(&scp->Canvas,i,scp->Display_Area.Frame_Thickness,i,scp->Display_Area.Height,&scp->Axis.Net_Line);
+//				i-=Division_Length*scp->Axis.X_Net_Density;
+//			}
+//			
+//            
+//			Division_Length=(scp->Display_Area.Height-2*scp->Display_Area.Frame_Thickness)/scp->Axis.Y_Tick_Num;
+//			i=Division_Length*scp->Axis.Y_Net_Density+scp->Axis._X_Position;	//Yè´ŸåŠè½´
+//			while (i<scp->Display_Area.Height)
+//			{
+//				Graphic_Draw_Line(&scp->Canvas,scp->Display_Area.Frame_Thickness,i,scp->Display_Area.Width-scp->Display_Area.Frame_Thickness,i,&scp->Axis.Net_Line);
+//				i+=Division_Length*scp->Axis.Y_Net_Density;
+//			}
+//			
+//			i=scp->Axis._X_Position-Division_Length*scp->Axis.Y_Net_Density;	//Yæ­£åŠè½´
+//			while (i>=0)
+//			{
+//				Graphic_Draw_Line(&scp->Canvas,scp->Display_Area.Frame_Thickness,i,scp->Display_Area.Width-scp->Display_Area.Frame_Thickness,i,&scp->Axis.Net_Line);
+//				i-=Division_Length*scp->Axis.Y_Net_Density;
+//			}
+//		}
+//	}
+//		
+//	//æ˜¾ç¤ºæ³¢å½¢
+//	if (scp->Curve.Display)
+//	{
+//        if (scp->Curve_Range._Valid_Y_End<scp->Curve_Range._Valid_Y_Begin)
+//        {
+//            uint16_t save=scp->Curve_Range._Valid_Y_End;
+//            scp->Curve_Range._Valid_Y_End=scp->Curve_Range._Valid_Y_Begin;
+//            scp->Curve_Range._Valid_Y_Begin=save;
+//        }
+//		_Scope_Draw_Waveform(&scp->Canvas,GUI_Buffer1,&scp->Curve.Curve_Line,
+//							scp->Curve_Range._Valid_X_Begin,
+//							scp->Curve_Range._Valid_Y_Begin,
+//							scp->Curve_Range._Valid_X_End-scp->Curve_Range._Valid_X_Begin,
+//							scp->Curve_Range._Valid_Y_End-scp->Curve_Range._Valid_Y_Begin,
+//							scp->Axis._X_Position,
+//							scp->Curve_Range._Length,
+//							scp->Style);
+//	}
+//	
+//	//å¦‚æœæ˜¾ç¤ºåæ ‡è½´
+//	if (scp->Axis.Axis_Display)
+//	{
+//		//ç»˜åˆ¶Xè½´
+//		Graphic_Draw_Rectangle2(&scp->Canvas,scp->Display_Area.Frame_Thickness,scp->Axis._X_Position-scp->Axis.Axis_Line.Width/2,
+//									scp->Display_Area.Width-2*scp->Display_Area.Frame_Thickness,scp->Axis.Axis_Line.Width,0,65535,scp->Axis.Axis_Line.Color);
+//        //ç»˜åˆ¶Yè½´
+//		Graphic_Draw_Rectangle2(&scp->Canvas,scp->Axis._Y_Position-scp->Axis.Axis_Line.Width/2,scp->Display_Area.Frame_Thickness,
+//									scp->Axis.Axis_Line.Width,scp->Display_Area.Height-2*scp->Display_Area.Frame_Thickness,0,65535,scp->Axis.Axis_Line.Color);
+//        
+//		//ç»˜åˆ¶åˆ»åº¦ç‚¹
+//		Division_Length=(scp->Display_Area.Width-2*scp->Display_Area.Frame_Thickness)/scp->Axis.X_Tick_Num;
+//		i=Division_Length+scp->Axis._Y_Position+scp->Display_Area.Frame_Thickness;	//é¦–å…ˆæ˜¯Xæ­£åŠè½´
+//		signed char save;
+//		if (scp->Axis._X_Position>=scp->Canvas.Area.Height/2)
+//			save=-4-scp->Axis.Axis_Line.Width/2;
+//		else
+//			save=scp->Axis.Axis_Line.Width/2;
+//		while (i<scp->Display_Area.Width)
+//		{
+//			Graphic_Draw_Rectangle2(&scp->Canvas,i,scp->Axis._X_Position+save,2,4,0,65535,scp->Axis.Axis_Line.Color);
+//			i+=Division_Length;
+//		}
+//		
+//		i=scp->Axis._Y_Position-Division_Length;	//ç„¶åæ˜¯Xè´ŸåŠè½´
+//		while (i>=scp->Display_Area.Frame_Thickness)
+//		{
+//			Graphic_Draw_Rectangle2(&scp->Canvas,i,scp->Axis._X_Position+save,2,4,0,65535,scp->Axis.Axis_Line.Color);
+//			i-=Division_Length;
+//		}
+//		
+//		Division_Length=(scp->Display_Area.Height-2*scp->Display_Area.Frame_Thickness)/scp->Axis.Y_Tick_Num;
+//		i=Division_Length+scp->Axis._X_Position;	//Yè´ŸåŠè½´
+//		if (scp->Axis._Y_Position>=scp->Canvas.Area.Width/2)
+//			save=-4-scp->Axis.Axis_Line.Width/2;
+//		else
+//			save=scp->Axis.Axis_Line.Width/2;
+//		while (i<scp->Display_Area.Height-scp->Display_Area.Frame_Thickness)
+//		{
+//			Graphic_Draw_Rectangle2(&scp->Canvas,scp->Axis._Y_Position+save,i,4,2,0,65535,scp->Axis.Axis_Line.Color);
+//			i+=Division_Length;
+//		}
+//		
+//		i=scp->Axis._X_Position-Division_Length;	//Yæ­£åŠè½´
+//		while (i>=0)
+//		{
+//			Graphic_Draw_Rectangle2(&scp->Canvas,scp->Axis._Y_Position+save,i,4,2,0,65535,scp->Axis.Axis_Line.Color);
+//			i-=Division_Length;
+//		}	
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void GUI_Init(gui_controller* guictrl, screen* sc, touch_device* td, uint16_t color)
+//{
+//    //å»ºç«‹ç¼“å­˜åŒº
+//    GUI_Buffer0=Malloc(GUI_BUFFER_HEAP,GUI_BUFFER_SIZE);
+//	GUI_Buffer1=Malloc(GUI_BUFFER_HEAP,GUI_BUFFER_SIZE);
+//    
+//    //ç»‘å®šæ–¹æ³•
+//    guictrl->Add_Layer=Method_GUI_Controller_Add_Layer;
+//    guictrl->Remove_Layer=Method_GUI_Controller_Remove_Layer;
+//    guictrl->Create_Button=Method_GUI_Controller_Create_Button;
+//    guictrl->Create_Label=Method_GUI_Controller_Create_Label;
+//    guictrl->Create_Panel=Method_GUI_COntroller_Create_Panel;
+//    guictrl->Create_ToolBox=Method_GUI_Controller_Create_ToolBox;
+//    guictrl->Create_Scope=Method_GUI_Controller_Create_Scope;
+//    guictrl->Process=Method_GUI_Controller_Process;
+//    guictrl->ActiveLayer_Set=Method_GUI_Controller_ActiveLayer_Set;
+//    
+//    _RO_WRITE(guictrl->Active_Layer,layer_handler,0);
+//    _RO_WRITE(guictrl->Focus_Component,component*,NULL);
+//    _RO_WRITE(guictrl->TouchDevice,touch_device*,td);
+//    guictrl->Updated=Disable;
+//    //åˆ›å»ºå…¨å±€è§¦æ‘¸åŒºåŸŸ
+//    guictrl->Overall_TouchArea=td->Create_Area(td,0,0,sc->Width,sc->Height);
+//    guictrl->Overall_TouchArea->All_Event_Enable=Disable;
+//    guictrl->Overall_TouchArea->Click_Enable=Enable;
+//    guictrl->Overall_TouchArea->Click_CallBackFunc=Overall_Click_Callback;
+//    //ä¸è§¦æ‘¸è®¾å¤‡åˆ›å»ºå…³è”
+//    td->Association=guictrl;
+//    //ä¸å±å¹•å»ºç«‹è”ç³»
+//    guictrl->Screen=sc;
+//    //å›¾å±‚é“¾è¡¨åˆå§‹åŒ–
+//    LinkedList_Prepare(&guictrl->Layers,sizeof(component_layer));
+//    //åˆ›å»ºåŸºç¡€å±‚
+//    component_layer* cl=LinkedList_Add(&guictrl->Layers,0);
+//    //åŸºç¡€å±‚åˆå§‹åŒ–
+//    cl->Active=Enable;
+//    cl->Color=color;
+//    LinkedList_Prepare(&cl->Components,sizeof(components_union));
+//    //æ ‡è®°ä¸ºåˆå§‹åŒ–è¿‡ç¨‹
+//    _RO_WRITE(guictrl->IsInit,status_flag,Enable);
+//}
+
+
+
+
+
+
+
+
+
+
+
+//void Global_PressDown_Callback(touch_device* td, touch_area* ta)
+//{
+//    gui_controller* gui=td->Association;
+//    component* cm=ta->Association;
+//    
+//    if (cm->Type==BUTTON)
+//    {
+//        button* btn=&cm->Component.Button;
+//        if (btn->Active)    //å¦‚æœæ§ä»¶è¢«æ¿€æ´»
+//            _RO_WRITE(btn->Event_PressDown_Happened,status_flag,Enable);
+//    }
+//    else if (cm->Type==TOOLBOX)
+//    {
+//        toolbox* tbx=&cm->Component.ToolBox;
+//        if (tbx->Active)
+//            _RO_WRITE(tbx->Event_PressDown_Happened,status_flag,Enable);
+//    }
+//    else if (cm->Type==SCOPE)
+//    {
+//        scope* scp=&cm->Component.Scope;
+//        if (scp->Active)
+//            _RO_WRITE(scp->Event_PressDown_Happened,status_flag,Enable);
+//    }
+//}
+
+//void Global_Release_Callback(touch_device* td, touch_area* ta)
+//{
+//    gui_controller* gui=td->Association;
+//    component* cm=ta->Association;
+//    
+//    if (cm->Type==BUTTON)
+//    {
+//        button* btn=&cm->Component.Button;
+//        if (btn->Active)    //å¦‚æœæ§ä»¶è¢«æ¿€æ´»
+//            _RO_WRITE(btn->Event_Release_Happened,status_flag,Enable);
+//    }
+//    else if (cm->Type==TOOLBOX)
+//    {
+//        toolbox* tbx=&cm->Component.ToolBox;
+//        if (tbx->Active)    //å¦‚æœæ§ä»¶è¢«æ¿€æ´»
+//            _RO_WRITE(tbx->Event_Release_Happened,status_flag,Enable);
+//    }
+//    else if (cm->Type==SCOPE)
+//    {
+//        scope* scp=&cm->Component.Scope;
+//        if (scp->Active)    //å¦‚æœæ§ä»¶è¢«æ¿€æ´»
+//            _RO_WRITE(scp->Event_Release_Happened,status_flag,Enable);
+//    }
+//}
+
+//void Global_KeepPress_Callback(touch_device* td, touch_area* ta)
+//{
+//    gui_controller* gui=td->Association;
+//    component* cm=ta->Association;
+//    
+//    if (cm->Type==BUTTON)
+//    {
+//        button* btn=&cm->Component.Button;        
+//        if (btn->Active)    //å¦‚æœæ§ä»¶è¢«æ¿€æ´»
+//            _RO_WRITE(btn->Event_KeepPress_Happened,status_flag,Enable);
+//    }
+//    else if (cm->Type==TOOLBOX)
+//    {
+//        toolbox* tbx=&cm->Component.ToolBox;
+//        if (tbx->Active)
+//            _RO_WRITE(tbx->Event_KeepPress_Happened,status_flag,Enable);
+//    }
+//    else if (cm->Type==SCOPE)
+//    {
+//        scope* scp=&cm->Component.Scope;
+//        if (scp->Active)    //å¦‚æœæ§ä»¶è¢«æ¿€æ´»
+//            _RO_WRITE(scp->Event_KeepPress_Happened,status_flag,Enable);
+//    }
+//}
+
+//void Global_Click_Callback(touch_device* td, touch_area* ta)
+//{
+//    gui_controller* gui=td->Association;
+//    component* cm=ta->Association;
+//    
+//    if (cm->Type==BUTTON)
+//    {
+//        button* btn=&cm->Component.Button;
+//        if (btn->Active)    //å¦‚æœæ§ä»¶è¢«æ¿€æ´»
+//            _RO_WRITE(btn->Event_Click_Happened,status_flag,Enable);
+//    }
+//    else if (cm->Type==TOOLBOX)
+//    {
+//        toolbox* tbx=&cm->Component.ToolBox;
+//        if (tbx->Active)
+//            _RO_WRITE(tbx->Event_Click_Happened,status_flag,Enable);
+//    }
+//    else if (cm->Type==TOOLBOX_BUTTON)
+//    {
+//        toolbox_button* tbx_btn=&cm->Component.ToolBox_Button;
+//        if (tbx_btn->Active)
+//            _RO_WRITE(tbx_btn->Event_Click_Happened,status_flag,Enable);
+//    }
+//    else if (cm->Type==SCOPE)
+//    {
+//        scope* scp=&cm->Component.Scope;
+//        if (scp->Active)    //å¦‚æœæ§ä»¶è¢«æ¿€æ´»
+//            _RO_WRITE(scp->Event_Click_Happened,status_flag,Enable);
+//    }
+//}
+
+//void Overall_Click_Callback(touch_device* td, touch_area* ta)
+//{
+//    gui_controller* guictrl=td->Association;
+//    toolbox* tbx=&guictrl->Focus_Component->Component.ToolBox;
+//    
+//    //å¦‚æœå·¥å…·ç®±ä¸­æŒ‰é”®æ•°é‡å¤§äº0
+//    if (tbx->Buttons.Nodes_Num>0)
+//    {
+//        toolbox_button* tbx_btn=&((component*)LinkedList_Find(&tbx->Buttons,0))->Component.ToolBox_Button;
+//        //åˆ¤æ–­æ˜¯å¦åœ¨æŒ‰é”®åŒºåŸŸå†…
+//        if ((ta->PointX<tbx_btn->Canvas.Area.X+tbx_btn->Canvas.Area.Width)&&(ta->PointX>tbx_btn->Canvas.Area.X))
+//        {
+//            if (!((ta->PointY<tbx_btn->Canvas.Area.Y+tbx_btn->Canvas.Area.Height*tbx->Buttons.Nodes_Num)&&(ta->PointY>tbx_btn->Canvas.Area.Y)))
+//                _RO_WRITE(tbx->Event_LostFocus_Happened,status_flag,Enable);
+//        }
+//        else
+//            _RO_WRITE(tbx->Event_LostFocus_Happened,status_flag,Enable);
+//    }
+//    else
+//        _RO_WRITE(tbx->Event_LostFocus_Happened,status_flag,Enable);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void GUI_Panel_Info_Print(USART_TypeDef* usart, panel* pnl)
+//{
+//    int i;
+//    
+//    USART_Printf(usart,"\nRow Number: %d\n",pnl->RowsNum);
+//    USART_Printf(usart,"Line Number: %d\n",pnl->LinesNum);
+//    
+//    USART_Printf(usart,"Block Width: ");
+//    for (i=0;i<pnl->LinesNum;i++)
+//        USART_Printf(usart,"%d  ",pnl->Blocks_Width[i]);
+//    
+//    USART_Printf(usart,"\nBlock Height: ");
+//    for (i=0;i<pnl->RowsNum;i++)
+//        USART_Printf(usart,"%d  ",pnl->Blocks_Height[i]);
+//    
+//    USART_Printf(usart,"\nX: ");
+//    for (i=0;i<pnl->LinesNum;i++)
+//        USART_Printf(usart,"%d  ",pnl->Blocks_X[i]);
+//    
+//    USART_Printf(usart,"\nY: ");
+//    for (i=0;i<pnl->RowsNum;i++)
+//        USART_Printf(usart,"%d  ",pnl->Blocks_Y[i]);
+//    USART_Printf(usart,"\n");
+//}
+
+//void GUI_Info_Print(USART_TypeDef* usart, gui_controller* guictrl)
+//{
+//    int i,j;
+//    component_layer* cl;
+//    component* cm;
+//    
+//    USART_Printf(usart,"\n\nGUI_Controller info:\n");
+//    USART_Printf(usart,"Active layer:%d\n",guictrl->Active_Layer);
+//    USART_Printf(usart,"Layer number:%d\n",guictrl->Layers.Nodes_Num);
+//    for (i=0;i<guictrl->Layers.Nodes_Num;i++)
+//    {
+//        USART_Printf(usart,"Layer%d:\n",i);
+//        cl=LinkedList_Find(&guictrl->Layers,i);
+//        USART_Printf(usart,"    Is Active:%d | Components number:%d | Color:%#x\n",cl->Active,cl->Components.Nodes_Num,cl->Color);
+//        for (j=0;j<cl->Components.Nodes_Num;j++)
+//        {
+//            USART_Printf(usart,"\n    Component#%d: Type:",j);
+//            cm=LinkedList_Find(&cl->Components,j);
+//            if (cm->Type==BUTTON)
+//                USART_Printf(usart,"Button(%#x)\n",cm);
+//            else if (cm->Type==PANEL)
+//                USART_Printf(usart,"Panel(%#x)\n",cm);
+//            else if (cm->Type==LABEL)
+//                USART_Printf(usart,"Label(%#x)\n",cm);
+//            else if (cm->Type==TOOLBOX)
+//                USART_Printf(usart,"Toolbox(%#x)\n",cm);
+//            else if (cm->Type==SCOPE)
+//                USART_Printf(usart,"Scope(%#x)\n",cm);
+//        }
+//    }
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///*Scopeè®¾ç½®ï¼Œä¸»è¦æ˜¯è®¾ç½®Curve_Rangeä¸­çš„å„ä¸ªå‚æ•°ä»¥åŠXå’ŒYè½´åæ ‡*/
+//void _GUI_ScopeSet(scope* Scope);
+
+///*æ˜¾ç¤ºæ³¢å½¢æ›²çº¿*/
+//void _GUI_DisplayWaveform(canvas* Canvas, float* Data, line* Line, u16 X, u16 Y, u16 Wide, u16 Height, u16 Axis_Position, u16 Data_Length, u8 Style);
 
 
 
