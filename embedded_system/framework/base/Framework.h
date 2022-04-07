@@ -115,7 +115,7 @@
 ************************************************************/
 typedef union
 {
-	//ADC_TypeDef *adc;
+	ADC_TypeDef *adc;
 	//ADC_Common_TypeDef*         adc_common;
 	//CAN_TxMailBox_TypeDef*      can_txmailbox;
 	//CAN_FIFOMailBox_TypeDef*    can_fifomailbox;

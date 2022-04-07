@@ -4,8 +4,9 @@
 #include "GPIO.h"
 #include "MathHelper.h"
 #include "mpu.h"
-#include <math.h>
+#include "ArrayList.h"
 
+#include <math.h>
 
 int main(void)
 {
@@ -17,10 +18,9 @@ int main(void)
 	USART_Init(USART1, 115200);
 	MPU_Memory_Protection();
 	Memory_Init();
-	
-	
-	
-	while (1);
-	
+
+	while (1)
+		;
+
 	return 0;
 }

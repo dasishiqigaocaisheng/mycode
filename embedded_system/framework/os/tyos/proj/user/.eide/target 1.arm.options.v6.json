@@ -10,9 +10,13 @@
         "optimization": "level-0",
         "language-c": "c99",
         "language-cpp": "c++11",
-        "link-time-optimization": true
+        "link-time-optimization": true,
+        "short-enums#wchar": true,
+        "warnings": "ac5-like-warnings"
     },
-    "asm-compiler": {},
+    "asm-compiler": {
+        "$use": "asm"
+    },
     "linker": {
         "output-format": "elf",
         "misc-controls": "--diag_suppress=L6329"

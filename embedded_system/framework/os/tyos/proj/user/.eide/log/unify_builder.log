@@ -1,0 +1,1584 @@
+[2022-04-05 21:47:55]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\proj\user\main.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x018f4] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+./main.c:1:10: fatal error: 'sys.h' file not found
+#include "sys.h"
+         ^~~~~~~
+1 error generated.
+
+[2022-04-05 21:57:51]	link failed !, exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01a98] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+Error: L6242E: Cannot link object arm_cmplx_mag_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_cfft_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rms_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_var_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q15.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q15.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q31.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q31.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_cfft_radix8_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Not enough information to list image symbols.
+Not enough information to list the image map.
+Finished: 244 information, 0 warning and 121 error messages.
+
+
+[2022-04-05 21:59:19]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\stm32\stm32h7\HAL\GPIO.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x018f4] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+".\..\..\..\..\base\Framework.h", line 162: Error:  #169: expected a declaration
+  } peripheral_register_type;
+  ^
+.\..\..\..\..\..\stm32\stm32h7\HAL\GPIO.c: 0 warnings, 1 error
+
+[2022-04-05 22:00:08]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\stm32\stm32h7\sys\sys.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x018f4] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+".\..\..\..\..\..\stm32\stm32h7\sys\sys.c", line 150: Warning:  #1267-D: Implicit physical register R0 should be defined as a variable
+  	__ASM volatile("MSR MSP, r0"); 			//set Main Stack value
+  	                ^
+".\..\..\..\..\..\stm32\stm32h7\sys\sys.c", line 150: Error:  #549: variable "R0"  is used before its value is set
+  	__ASM volatile("MSR MSP, r0"); 			//set Main Stack value
+  	                ^
+".\..\..\..\..\..\stm32\stm32h7\sys\sys.c", line 151: Error:  #1084: This instruction not permitted in inline assembler
+  	__ASM volatile("BX r14");
+  	                ^
+".\..\..\..\..\..\stm32\stm32h7\sys\sys.c", line 151: Error:  #114: label "r14"  was referenced but not defined
+  	__ASM volatile("BX r14");
+  	                ^
+.\..\..\..\..\..\stm32\stm32h7\sys\sys.c: 1 warning, 3 errors
+
+[2022-04-05 22:00:39]	link failed !, exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01a98] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+Error: L6242E: Cannot link object arm_cmplx_mag_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_cfft_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rms_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_var_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q15.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q15.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q31.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q31.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_cfft_radix8_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Not enough information to list image symbols.
+Not enough information to list the image map.
+Finished: 244 information, 0 warning and 121 error messages.
+
+
+[2022-04-05 22:04:33]	link failed !, exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01a98] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+Error: L6242E: Cannot link object arm_cmplx_mag_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_cfft_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rms_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_var_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q15.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q15.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q31.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q31.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_cfft_radix8_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Not enough information to list image symbols.
+Not enough information to list the image map.
+Finished: 244 information, 0 warning and 121 error messages.
+
+
+[2022-04-05 22:06:54]	link failed !, exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01a98] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+Error: L6242E: Cannot link object arm_cmplx_mag_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_cfft_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rms_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_var_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_const_structs.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q15.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q15.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q31.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_rfft_init_q31.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_cfft_radix8_f32.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Error: L6242E: Cannot link object arm_common_tables.o as its attributes are incompatible with the image attributes.
+   ... wchart-16 clashes with wchart-32.
+   ... packed-enum clashes with enum_is_int.
+Not enough information to list image symbols.
+Not enough information to list the image map.
+Finished: 244 information, 0 warning and 121 error messages.
+
+
+[2022-04-05 22:07:23]	link failed !, exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01a98] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+Error: L6406E: No space in execution regions with .ANY selector matching lto-llvm-a38b5e.o(.bss).
+Error: L6406E: No space in execution regions with .ANY selector matching startup_stm32h743xx.o(STACK).
+Error: L6407E: Sections of aggregate size 0x11048 bytes could not fit into .ANY selector(s).
+Not enough information to list image symbols.
+Not enough information to list the image map.
+Finished: 2 information, 0 warning and 3 error messages.
+
+
+[2022-04-05 22:09:30]	[done]
+	build successfully !
+
+[2022-04-05 22:11:13]	[done]
+	build successfully !
+
+[2022-04-05 22:21:52]	[done]
+	build successfully !
+
+[2022-04-05 22:22:46]	link failed !, exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01a98] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+Error: L6985E: Unable to automatically place AT section lto-llvm-09b401.o(.ARM.__at_0x24000000) with required base address 0x24000000. Please manually place in the scatter file using the --no_autoat option. 
+Not enough information to list image symbols.
+Finished: 1 information, 0 warning and 1 error messages.
+
+
+[2022-04-05 22:23:22]	link failed !, exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01a98] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+Error: L6985E: Unable to automatically place AT section lto-llvm-41d9d2.o(.ARM.__at_0x24000000) with required base address 0x24000000. Please manually place in the scatter file using the --no_autoat option. 
+Not enough information to list image symbols.
+Finished: 1 information, 0 warning and 1 error messages.
+
+
+[2022-04-05 22:23:44]	[done]
+	build successfully !
+
+[2022-04-05 22:25:01]	[done]
+	build successfully !
+
+[2022-04-05 22:26:49]	[done]
+	build successfully !
+
+[2022-04-05 22:26:54]	link failed !, exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01a98] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+Error: L6985E: Unable to automatically place AT section lto-llvm-197c39.o(.ARM.__at_0x24000000) with required base address 0x24000000. Please manually place in the scatter file using the --no_autoat option. 
+Not enough information to list image symbols.
+Finished: 1 information, 0 warning and 1 error messages.
+
+
+[2022-04-05 22:48:11]	link failed !, exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01a98] in <a38660f3f427450ba15f9858507cbeb8>:0 
+---
+Error: L6985E: Unable to automatically place AT section lto-llvm-7c2a5c.o(.ARM.__at_0x24000000) with required base address 0x24000000. Please manually place in the scatter file using the --no_autoat option. 
+Not enough information to list image symbols.
+Finished: 1 information, 0 warning and 1 error messages.
+
+
+[2022-04-05 22:52:01]	[done]
+	build successfully !
+
+[2022-04-05 22:54:33]	[done]
+	build successfully !
+

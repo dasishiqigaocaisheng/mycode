@@ -1,0 +1,87 @@
+{
+    "name": "user",
+    "target": "Target 1",
+    "toolchain": "AC6",
+    "showRepathOnLog": true,
+    "threadNum": 14,
+    "rootDir": "d:\\Electric_Design\\gitlib\\mycode\\embedded_system\\framework\\os\\tyos\\proj\\user",
+    "dumpPath": ".eide\\log",
+    "outDir": "build\\Target 1",
+    "ram": 65536,
+    "rom": 2097152,
+    "incDirs": [
+        ".cmsis/dsp_lib",
+        ".cmsis/include",
+        "RTE/_Target 1",
+        ".eide/deps",
+        "../../../../base",
+        "../../../../../stm32/stm32h7/HAL",
+        "../../../../../stm32/stm32h7/mpu",
+        "../../../../../stm32/stm32h7/peripheral",
+        "../../../../../stm32/stm32h7/sys",
+        "../../../../../stm32/stm32h7/mathhelper",
+        "../../src",
+        ".eide/deps"
+    ],
+    "libDirs": [],
+    "defines": [
+        "STM32H743xx",
+        "ARM_MATH_CM7"
+    ],
+    "sourceList": [
+        "../../../../../stm32/stm32h7/HAL/GPIO.c",
+        "../../../../../stm32/stm32h7/HAL/USART.c",
+        "../../../../../stm32/stm32h7/mathhelper/MathHelper.c",
+        "../../../../../stm32/stm32h7/mathhelper/arm_cortexM7lfdp_math.lib",
+        "../../../../../stm32/stm32h7/mpu/mpu.c",
+        "../../../../../stm32/stm32h7/sys/sys.c",
+        "../../../../base/Framework.c",
+        "../../../../base/LinkedList.c",
+        "../../../../base/Memory.c",
+        "main.c",
+        "startup_stm32h743xx.s"
+    ],
+    "sourceParams": {},
+    "sourceParamsMtime": 1649166474652.0303,
+    "options": {
+        "version": 3,
+        "beforeBuildTasks": [],
+        "afterBuildTasks": [],
+        "global": {
+            "use-microLIB": true,
+            "output-debug-info": "enable",
+            "microcontroller-cpu": "cortex-m7-dp",
+            "microcontroller-fpu": "cortex-m7-dp",
+            "microcontroller-float": "cortex-m7-dp",
+            "target": "cortex-m7-dp"
+        },
+        "c/cpp-compiler": {
+            "optimization": "level-0",
+            "language-c": "c99",
+            "language-cpp": "c++11",
+            "link-time-optimization": true,
+            "short-enums#wchar": true,
+            "warnings": "ac5-like-warnings"
+        },
+        "asm-compiler": {
+            "$use": "asm"
+        },
+        "linker": {
+            "output-format": "elf",
+            "misc-controls": "--diag_suppress=L6329",
+            "link-time-optimization": true,
+            "link-scatter": [
+                "\"d:/Electric_Design/gitlib/mycode/embedded_system/framework/os/tyos/proj/user/build/Target 1/user.sct\""
+            ]
+        }
+    },
+    "sha": {
+        "c/cpp-defines": "7683350ec69398bb0bace1c5066cf47b",
+        "beforeBuildTasks": "d751713988987e9331980363e24189ce",
+        "afterBuildTasks": "d751713988987e9331980363e24189ce",
+        "global": "cac9ebb7f9962eedc2224bd91a5b3174",
+        "c/cpp-compiler": "09e17d2096b2bec4d9c10646041af11c",
+        "asm-compiler": "41ada285171eb44cc747ea97210ce555",
+        "linker": "bb4c155d2e404028b8473df6f5d41fe2"
+    }
+}
