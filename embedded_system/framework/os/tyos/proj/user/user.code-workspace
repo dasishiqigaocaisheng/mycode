@@ -6,10 +6,7 @@
     ],
     "settings": {
         "files.associations": {
-            "memory.h": "c",
-            "arraylist.h": "c",
-            "framework.h": "c",
-            "type_traits": "cpp"
+            "arraylist.h": "c"
         }
     },
     "extensions": {},

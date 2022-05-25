@@ -6,14 +6,14 @@
 #include "Memory.h"
 #endif
 
-#define MATHHELPER_HEAP_ORDER 0
+#define MATHHELPER_HEAP heap0
 
-#if (MATHHELPER_HEAP_ORDER!=0)&&(MATHHELPER_HEAP_ORDER!=1)&&(MATHHELPER_HEAP_ORDER!=2)&& \
-	(MATHHELPER_HEAP_ORDER!=3)&&(MATHHELPER_HEAP_ORDER!=4)
+#if (MATHHELPER_HEAP!=heap0)&&(MATHHELPER_HEAP!=heap1)&&(MATHHELPER_HEAP!=heap2)&& \
+	(MATHHELPER_HEAP!=heap3)&&(MATHHELPER_HEAP!=heap4)
 #error "MathHelper没有指定有效堆空间"
 #endif
 
-#if (MATHHELPER_HEAP_ORDER!=0)&&(MATHHELPER_HEAP_ORDER!=1)
+#if (MATHHELPER_HEAP!=heap0)&&(MATHHELPER_HEAP!=heap1)
 #warning "MathHelper使用的堆空间在外部存储器上"
 #endif
 
@@ -1343,7 +1343,7 @@ u8 MathHelper_FFT_Plan_Build(struct FFT_Plan_Information *Execute_Plan)
 	
 	FFT_Plan_List[Execute_Plan->Plan_Order].Plan=Execute_Plan;
 	
-	FFT_Plan_List[Execute_Plan->Plan_Order].Data_Buffer=(float*)Malloc(MATHHELPER_HEAP_ORDER,Execute_Plan->Sample_Number*8);
+	FFT_Plan_List[Execute_Plan->Plan_Order].Data_Buffer=(float*)Memory_Malloc(&MATHHELPER_HEAP,Execute_Plan->Sample_Number*8);
 
 	if (Execute_Plan->Sample_Number==16)
 		FFT_Plan_List[Execute_Plan->Plan_Order].FFT_Struct=&arm_cfft_sR_f32_len16;
@@ -1364,7 +1364,7 @@ u8 MathHelper_FFT_Plan_Build(struct FFT_Plan_Information *Execute_Plan)
 
 	/*if ((Execute_Plan->Data_Type==DATA_TYPE_INT16)||(Execute_Plan->Data_Type==DATA_TYPE_UINT16)||
 		(Execute_Plan->Data_Type==DATA_TYPE_INT8)||(Execute_Plan->Data_Type==DATA_TYPE_UINT8))
-		FFT_Plan_List[Execute_Plan->Plan_Order].Temporary_Data_Buffer=(float*)Malloc(MATHHELPER_HEAP_ORDER,(Execute_Plan->Sample_Number/2+1)*4);
+		FFT_Plan_List[Execute_Plan->Plan_Order].Temporary_Data_Buffer=(float*)Malloc(MATHHELPER_HEAP,(Execute_Plan->Sample_Number/2+1)*4);
 	*/
 	FFT_Plan_List[Execute_Plan->Plan_Order].Has_Been_Built=1;
 
@@ -1436,8 +1436,8 @@ u8 MathHelper_FFT(u8 FFT_Plan_Order)
 
 void MathHelper_FFT_Plan_Cancel(struct FFT_Plan_Information *Execute_Plan)
 {
-	Free(MATHHELPER_HEAP_ORDER,FFT_Plan_List[Execute_Plan->Plan_Order].Data_Buffer);
-	Free(MATHHELPER_HEAP_ORDER,FFT_Plan_List[Execute_Plan->Plan_Order].Temporary_Data_Buffer);
+	Memory_Free(&MATHHELPER_HEAP,FFT_Plan_List[Execute_Plan->Plan_Order].Data_Buffer);
+	Memory_Free(&MATHHELPER_HEAP,FFT_Plan_List[Execute_Plan->Plan_Order].Temporary_Data_Buffer);
 	FFT_Plan_List[Execute_Plan->Plan_Order].Plan=NULL;
 	FFT_Plan_List[Execute_Plan->Plan_Order].Has_Been_Built=0;
 }

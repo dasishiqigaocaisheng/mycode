@@ -46,41 +46,37 @@
 
 typedef enum
 {
-    HEAP0 = 0, //堆0的序号，也就是IRAM1区
-    HEAP1 = 1, //堆1的序号，也就是IRAM2区
-    HEAP2 = 2, //堆2，外部存储
-    HEAP3 = 3, //堆3，外部存储
-    HEAP4 = 4  //堆4，外部存储
-} heap_type;
+    HeapDir_Normal,
+    HeapDir_Reverse
+} heap_dir_type;
 
-/*内存初始化
-在使用内存管理前必须调用一次*/
+typedef struct
+{
+    status_flag Is_Free;
+    uint16_t MemBlock_Size;
+} heap_node;
+
+typedef struct
+{
+    vro heap_dir_type Dirction;
+    vro uint16_t BlockSize;
+    vro uint16_t BlockNum;
+    heap_node *Node_List;
+    vro void* ro Addr;
+} heap;
+
+extern heap heap0,heap1,heap2,heap3,heap4,heap5;
+
+#define Memory_Malloc_Size(h,addr) 	((h)->Dirction==HeapDir_Normal? \
+									(h)->Node_List[((uint32_t)(addr)-(uint32_t)(h)->Addr)/(h)->BlockSize].MemBlock_Size: \
+									(h)->Node_List[(h)->BlockNum-1-((uint32_t)(addr)-(uint32_t)(h)->Addr)/(h)->BlockSize].MemBlock_Size)
+
 void Memory_Init(void);
+void Memory_Heap_Init(heap *h, heap_dir_type dir, uint16_t blk_size, uint16_t blk_num, heap_node *nodes, void *addr);
+void *Memory_Malloc(heap *h, uint32_t size);
+void Memory_Free(heap *h, void *addr);
+float Memory_Heap_Utilization_Ratio(heap* h);
+void Memory_Print_Heap_Info(heap* h);
 
-/*外部堆初始化
-初始化外部堆空间，也就是HEAP2、HEAP3、HEAP4*/
-float Extern_Heap_Init(heap_type heap, void *Address, u32 Block_Size, u32 Block_Number);
-
-/*申请一块内存
-参数：Size：要申请的大小（Byte）*/
-void *Malloc(heap_type heap, u32 Size);
-
-/*释放一块内存
-参数：Source：指向要释放内存的首地址*/
-void Free(heap_type heap, void *Address);
-
-/*获取当前内存使用率
-返回值：利用率（已使用的块数量/全部块数量）*/
-float Heap_Utilization_Ratio(heap_type heap);
-
-/*对于一个已经被分配的内存块，给出该内存块分配到的内存实际大小
-参数：Heap_Order：堆序号
-      Address：内存块地址
-返回值：实际大小（字节）*/
-u32 Malloc_Size(heap_type heap, void *Address);
-
-u16 Memory_Block_Size(heap_type heap);
-
-void Memory_Print_Block_Number(heap_type heap, USART_TypeDef *USART, void *Address);
 
 #endif

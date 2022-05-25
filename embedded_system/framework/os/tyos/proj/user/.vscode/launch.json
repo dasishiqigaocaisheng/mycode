@@ -10,7 +10,20 @@
             "interface": "swd",
             "executable": "build\\Target 1\\user.elf",
             "runToMain": true,
-            "device": "STM32F103C8"
+            "device": "STM32H743II"
+        },
+        {
+            "cwd": "${workspaceRoot}",
+            "type": "cortex-debug",
+            "request": "launch",
+            "name": "stlink",
+            "servertype": "openocd",
+            "executable": "build\\Target 1\\user.elf",
+            "runToMain": true,
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/<target-name>.cfg"
+            ]
         }
     ]
 }

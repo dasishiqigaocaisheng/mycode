@@ -6,10 +6,14 @@
 ".\objects\framework.o"
 ".\objects\linkedlist.o"
 ".\objects\memory.o"
+".\objects\arraylist.o"
 ".\objects\sys.o"
 ".\objects\mathhelper.o"
 "..\..\..\..\..\stm32\stm32h7\mathhelper\arm_cortexM7lfdp_math.lib"
 ".\objects\mpu.o"
+".\objects\tyos_kernel.o"
+".\objects\tyos_multprocess.o"
+".\objects\tyos_assembly.o"
 --strict --scatter ".\Objects\tyos.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

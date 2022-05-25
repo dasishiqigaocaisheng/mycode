@@ -1,0 +1,6 @@
+r
+halt
+loadfile "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\proj\user\build\Target 1\user.hex"
+r
+go
+exit

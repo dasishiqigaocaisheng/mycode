@@ -22,8 +22,8 @@ uint8_t *IRAM1_Heap = (uint8_t *)0x20000000;
 uint8_t *IRAM2_Heap = (uint8_t *)0x24000000;
 #endif
 
-#define HEAP5_BLOCK_SIZE 64	   // HEAP5块大小
-#define HEAP5_BLOCK_NUMBER 512 // HEAP5块数量
+#define HEAP5_BLOCK_SIZE 4		// HEAP5块大小
+#define HEAP5_BLOCK_NUMBER 4096 // HEAP5块数量
 
 #if !defined USE_STM32H7
 #define HEAP5_ADDRESS ((void *)0x1000c000) // HEAP5首地址
@@ -32,175 +32,141 @@ uint8_t *IRAM2_Heap = (uint8_t *)0x24000000;
 #endif
 #define HEAP5_SIZE 32768 // HEAP5总大小
 
-//堆信息结构体
-struct Heap_Info
-{
-	void *Address;
-	u16 Block_Number;
-	u16 Block_Size;
-	struct block_Info *Block_List;
-} Custom_Heap_List[6] = {{NULL, 0, 0, NULL}, {NULL, 0, 0, NULL}, {NULL, 0, 0, NULL}, {NULL, 0, 0, NULL}, {NULL, 0, 0, NULL}, {NULL, 0, 0, NULL}};
-
-//内存块信息结构体
-struct block_Info
-{
-	u16 Head_Address; //如果这个块已经被分配了，则该项代表该分配区域在表中的起始地址
-	u16 Area_Size;	  //这个块所属的分配区域的大小（以块为单位），为0代表这个块没有被分配
-};
-
-/*内存分配*/
-void *_Malloc(u32 Size, struct Heap_Info *Heap);
-
-/*内存释放*/
-void _Free(void *Address, struct Heap_Info *Heap);
-
-void *_Malloc(u32 Size, struct Heap_Info *Heap)
-{
-	int Blocks_Needed;
-	int i, j;
-
-	if (Size % Heap->Block_Size == 0)
-		Blocks_Needed = Size / Heap->Block_Size;
-	else
-		Blocks_Needed = Size / Heap->Block_Size + 1;
-
-	for (i = 0; i < Heap->Block_Number; i++) //从第一个块开始搜索
-	{
-		if (Heap->Block_List[i].Area_Size == 0) //找到一个空块
-		{
-			int save = i;							 //记录下这个位置
-			for (j = 0; j < Blocks_Needed; j++, i++) //搜索所有需要分配的块
-			{
-				if (Heap->Block_Number - save < Blocks_Needed) //说明没用足够的块剩下
-					return NULL;
-				if (Heap->Block_List[i].Area_Size != 0) //有块被使用
-				{
-					i += Heap->Block_List[i].Area_Size - 1; // i定位到当前被分配区域的结尾,-1防溢出
-					break;
-				}
-			}
-			if (j == Blocks_Needed) //说明存在合适大小的空闲区域
-			{
-				for (j = 0, i = save; j < Blocks_Needed; j++, i++) //对这些块进行标记
-				{
-					Heap->Block_List[i].Area_Size = Blocks_Needed;
-					Heap->Block_List[i].Head_Address = save;
-				}
-
-				return (void *)((u32)Heap->Address + save * Heap->Block_Size);
-			}
-		}
-	}
-
-	return NULL;
-}
-
-void _Free(void *Address, struct Heap_Info *Heap)
-{
-	int i;
-	u32 Block_Address;
-
-	if (Address != NULL)
-	{
-		Block_Address = (u32)((u8 *)Address - (u8 *)Heap->Address) / Heap->Block_Size;
-
-		for (i = Block_Address; Heap->Block_List[i].Head_Address == Block_Address; i++)
-		{
-			if (i == Heap->Block_Number)
-				break;
-			Heap->Block_List[i].Area_Size = 0;
-			Heap->Block_List[i].Head_Address = 0;
-		}
-	}
-}
+heap heap0, heap1, heap2, heap3, heap4, heap5;
 
 void Memory_Init(void)
 {
-	// Heap5内存初始化
-	memset(HEAP5_ADDRESS, 0, HEAP5_SIZE);
-
-	//首先初始化Heap5，并为其分配内存表
-	Custom_Heap_List[5].Address = HEAP5_ADDRESS;
-	Custom_Heap_List[5].Block_Number = HEAP5_BLOCK_NUMBER;
-	Custom_Heap_List[5].Block_Size = HEAP5_BLOCK_SIZE;
-	Custom_Heap_List[5].Block_List = HEAP5_ADDRESS;
-	_Malloc(Custom_Heap_List[5].Block_Number * sizeof(struct block_Info), &Custom_Heap_List[5]);
+	//首先初始化heap5，块大小：4，块数量：4096，这样节点列表+堆的总大小为32KB
+	Memory_Heap_Init(&heap5, HeapDir_Normal, HEAP5_BLOCK_SIZE, HEAP5_BLOCK_NUMBER, HEAP5_ADDRESS, (void *)((uint32_t)HEAP5_ADDRESS + HEAP5_SIZE / 2));
 
 #ifdef USE_IRAM1
-	//初始化Heap0，并为其分配内存表
-	Custom_Heap_List[0].Address = IRAM1_Heap;
-	Custom_Heap_List[0].Block_Number = HEAP0_BLOCK_NUMBER;
-	Custom_Heap_List[0].Block_Size = HEAP0_BLOCK_SIZE;
-	Custom_Heap_List[0].Block_List = _Malloc(Custom_Heap_List[0].Block_Number * sizeof(struct block_Info), &Custom_Heap_List[5]);
+	Memory_Heap_Init(&heap0, HeapDir_Normal, HEAP0_BLOCK_SIZE, HEAP0_BLOCK_NUMBER,
+					 Memory_Malloc(&heap5, sizeof(heap_node) * HEAP0_BLOCK_NUMBER), IRAM1_Heap);
 #endif
 
 #ifdef USE_IRAM2
-	//初始化Heap1，并为其分配内存表
-	Custom_Heap_List[1].Address = IRAM2_Heap;
-	Custom_Heap_List[1].Block_Number = HEAP1_BLOCK_NUMBER;
-	Custom_Heap_List[1].Block_Size = HEAP1_BLOCK_SIZE;
-	Custom_Heap_List[1].Block_List = _Malloc(Custom_Heap_List[1].Block_Number * sizeof(struct block_Info), &Custom_Heap_List[5]);
+	Memory_Heap_Init(&heap1, HeapDir_Normal, HEAP1_BLOCK_SIZE, HEAP1_BLOCK_NUMBER,
+					 Memory_Malloc(&heap5, sizeof(heap_node) * HEAP1_BLOCK_NUMBER), IRAM2_Heap);
 #endif
 }
 
-float Extern_Heap_Init(heap_type heap, void *Address, u32 Block_Size, u32 Block_Number)
+void Memory_Heap_Init(heap *h, heap_dir_type dir, uint16_t blk_size, uint16_t blk_num, heap_node *nodes, void *addr)
 {
-	Custom_Heap_List[heap].Address = (void *)Address;
-	Custom_Heap_List[heap].Block_Number = Block_Number;
-	Custom_Heap_List[heap].Block_Size = Block_Size;
-	Custom_Heap_List[heap].Block_List = _Malloc(Custom_Heap_List[heap].Block_Number * sizeof(struct block_Info), &Custom_Heap_List[5]);
+	h->Node_List = nodes;
+	_RO_WRITE(h->Dirction, heap_dir_type, dir);
+	_RO_WRITE(h->BlockSize, uint16_t, blk_size);
+	_RO_WRITE(h->BlockNum, uint16_t, blk_num);
+	_RO_WRITE(h->Addr, void *, addr);
 
-	return Heap_Utilization_Ratio(5);
-}
-
-void *Malloc(heap_type heap, u32 Size)
-{
-	return _Malloc(Size, &Custom_Heap_List[heap]);
-}
-
-void Free(heap_type heap, void *Address)
-{
-	_Free(Address, &Custom_Heap_List[heap]);
-}
-
-float Heap_Utilization_Ratio(heap_type heap)
-{
-	int i;
-	float Used = 0;
-
-	for (i = 0; i < Custom_Heap_List[heap].Block_Number; i++)
-	{
-		if (Custom_Heap_List[heap].Block_List[i].Area_Size != 0)
-			Used++;
-	}
-
-	return Used / Custom_Heap_List[heap].Block_Number;
-}
-
-u32 Malloc_Size(heap_type heap, void *Address)
-{
-	u32 Block_Address;
-
-	if (Address == NULL)
-		return 0;
-	Block_Address = (u32)((u8 *)Address - (u8 *)Custom_Heap_List[heap].Address) / Custom_Heap_List[heap].Block_Size;
-
-	return Custom_Heap_List[heap].Block_List[Block_Address].Area_Size * Custom_Heap_List[heap].Block_Size;
-}
-
-u16 Memory_Block_Size(heap_type heap)
-{
-	return Custom_Heap_List[heap].Block_Size;
-}
-
-void Memory_Print_Block_Number(heap_type heap, USART_TypeDef *USART, void *Address)
-{
-	int i, Block_Address;
-
-	if (Address == NULL)
+	for (int i = 0; i < blk_num; i++)
+		nodes[i].Is_Free = Enable;
+	if (dir == HeapDir_Normal)
+		nodes[0].MemBlock_Size = blk_num;
+	else if (dir == HeapDir_Reverse)
+		nodes[blk_num - 1].MemBlock_Size = blk_num;
+	else
 		return;
-	Block_Address = (u32)((u8 *)Address - (u8 *)Custom_Heap_List[heap].Address) / Custom_Heap_List[heap].Block_Size;
-	for (i = 0; i < Custom_Heap_List[heap].Block_List[Block_Address].Area_Size; i++)
-		USART_Printf(USART1, "%d ", Custom_Heap_List[heap].Block_List[Block_Address].Head_Address + i);
-	USART_Printf(USART1, "\n");
+}
+
+void *Memory_Malloc(heap *h, uint32_t size)
+{
+	if (size == 0)
+		return NULL;
+
+	int idx, need_blk_num = size / h->BlockSize; //计算分配size空间最少需要的块数
+
+	if (size % h->BlockSize != 0)
+		need_blk_num++;
+	idx = 0; //从第一个块（也是第一个帧）开始搜索
+	while (idx < h->BlockNum)
+	{
+		//如果帧是空闲
+		if (h->Node_List[idx].Is_Free == Enable)
+		{
+			//如果帧大小足够
+			if (h->Node_List[idx].MemBlock_Size >= need_blk_num)
+			{
+				h->Node_List[idx].Is_Free = Disable;
+				//如果将该帧没有被完全分配，那么需要将帧变为两段
+				if (need_blk_num != h->Node_List[idx].MemBlock_Size)
+				{
+					h->Node_List[idx + need_blk_num].Is_Free = Enable;
+					h->Node_List[idx + need_blk_num].MemBlock_Size = h->Node_List[idx].MemBlock_Size - need_blk_num;
+				}
+				h->Node_List[idx].MemBlock_Size = need_blk_num;
+
+				USART_Printf(USART1, "%#x\r\n", (uint32_t)h->Addr + idx * h->BlockSize);
+
+				//如果增长方向为反向，需要重新进行地址映射
+				if (h->Dirction == HeapDir_Normal)
+					return (void *)((uint32_t)h->Addr + idx * h->BlockSize);
+				else
+					return (void *)((uint32_t)h->Addr + (h->BlockNum - 1 - idx - need_blk_num - 1) * h->BlockSize);
+			}
+		}
+		idx += h->Node_List[idx].MemBlock_Size;
+	}
+	return NULL;
+}
+
+void Memory_Free(heap *h, void *addr)
+{
+	if (addr == NULL)
+		return;
+
+	int idx = ((uint32_t)addr - (uint32_t)h->Addr) / h->BlockSize; //计算帧的块地址
+	uint32_t blk_num = h->Node_List[idx].MemBlock_Size;			   //帧的块大小
+
+	//如果不是最后一帧，则需要检查下一帧是否是空闲
+	//如果是则要将两帧合并
+	if (idx + blk_num != h->BlockNum)
+	{
+		if (h->Node_List[idx + blk_num].Is_Free == Enable)
+			h->Node_List[idx].MemBlock_Size += h->Node_List[idx + blk_num].MemBlock_Size;
+	}
+	h->Node_List[idx].Is_Free = Enable;
+}
+
+float Memory_Heap_Utilization_Ratio(heap *h)
+{
+	int idx = 0, used_block = 0;
+
+	while (idx < h->BlockNum)
+	{
+		if (h->Node_List[idx].Is_Free == Disable)
+			used_block += h->Node_List[idx].MemBlock_Size;
+		idx += h->Node_List[idx].MemBlock_Size;
+	}
+	return (float)used_block / h->BlockNum;
+}
+
+void Memory_Print_Heap_Info(heap *h)
+{
+	USART_Printf(USART1, "Heap Properties:\r\n");
+	USART_Printf(USART1, "--Address: %#x\r\n", h->Addr);
+	USART_Printf(USART1, "--Increase Direction: ");
+	if (h->Dirction == HeapDir_Normal)
+		USART_Printf(USART1, "Normal\r\n");
+	else if (h->Dirction == HeapDir_Reverse)
+		USART_Printf(USART1, "Reverse\r\n");
+	USART_Printf(USART1, "--Block Size: %d\r\n", h->BlockSize);
+	USART_Printf(USART1, "--Block Number: %d\r\n", h->BlockNum);
+	USART_Printf(USART1, "--Node List Address: %#x\r\n", h->Node_List);
+	USART_Printf(USART1, "--Utilization Ratio: %.3f%%\r\n", Memory_Heap_Utilization_Ratio(h) * 100);
+
+	USART_Printf(USART1, "Heap Nodes Info:\r\n");
+	int idx = 0, used_block_num = 0;
+	while (idx < h->BlockNum)
+	{
+		if (h->Node_List[idx].Is_Free == Disable)
+		{
+			used_block_num++;
+			USART_Printf(USART1, "--Frame%d: idx=%d len=%d size=%d\r\n",
+						 used_block_num, idx, h->Node_List[idx].MemBlock_Size, h->Node_List[idx].MemBlock_Size * h->BlockSize);
+		}
+		idx += h->Node_List[idx].MemBlock_Size;
+	}
+	if (used_block_num == 0)
+		USART_Printf(USART1, "--No Block Used\r\n");
+	USART_Printf(USART1, "\r\n");
 }

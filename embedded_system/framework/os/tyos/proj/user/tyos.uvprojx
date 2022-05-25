@@ -300,13 +300,13 @@
               </OCR_RVCT8>
               <OCR_RVCT9>
                 <Type>0</Type>
-                <StartAddress>0x20000000</StartAddress>
-                <Size>0x20000</Size>
+                <StartAddress>0x20010000</StartAddress>
+                <Size>0x10000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
-                <StartAddress>0x24000000</StartAddress>
-                <Size>0x80000</Size>
+                <StartAddress>0x24010000</StartAddress>
+                <Size>0x70000</Size>
               </OCR_RVCT10>
             </OnChipMemories>
             <RvctStartVector></RvctStartVector>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32H743xx,ARM_MATH_CM7</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\base;..\..\..\..\..\stm32\stm32h7\HAL;..\..\..\..\..\stm32\stm32h7\mathhelper;..\..\..\..\..\stm32\stm32h7\mpu;..\..\..\..\..\stm32\stm32h7\sys;..\..\..\..\os;..\..\..\..\..\stm32\stm32h7\peripheral</IncludePath>
+              <IncludePath>..\..\..\..\base;..\..\..\..\..\stm32\stm32h7\HAL;..\..\..\..\..\stm32\stm32h7\mathhelper;..\..\..\..\..\stm32\stm32h7\mpu;..\..\..\..\..\stm32\stm32h7\sys;..\..\..\..\os;..\..\..\..\..\stm32\stm32h7\peripheral;..\..\src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -428,6 +428,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\base\Memory.c</FilePath>
             </File>
+            <File>
+              <FileName>ArrayList.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\ArrayList.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -467,6 +472,23 @@
         </Group>
         <Group>
           <GroupName>tyos</GroupName>
+          <Files>
+            <File>
+              <FileName>TYOS_Kernel.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\TYOS_Kernel.c</FilePath>
+            </File>
+            <File>
+              <FileName>TYOS_MultProcess.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\TYOS_MultProcess.c</FilePath>
+            </File>
+            <File>
+              <FileName>TYOS_Assembly.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\src\TYOS_Assembly.s</FilePath>
+            </File>
+          </Files>
         </Group>
       </Groups>
     </Target>

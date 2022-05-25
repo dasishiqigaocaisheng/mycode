@@ -38,6 +38,9 @@
         "../../../../base/Framework.c",
         "../../../../base/LinkedList.c",
         "../../../../base/Memory.c",
+        "../../src/ArrayList.c",
+        "../../src/TYOS_Kernel.c",
+        "../../src/TYOS_MultProcess.c",
         "main.c",
         "startup_stm32h743xx.s"
     ],

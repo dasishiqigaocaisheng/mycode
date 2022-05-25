@@ -20,4 +20,6 @@
   ..\..\..\..\..\stm32\stm32h7\mathhelper\arm_math.h \
   ..\..\..\..\..\stm32\stm32h7\sys\core_cm7.h \
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
-  ..\..\..\..\..\stm32\stm32h7\mpu\mpu.h
+  ..\..\..\..\..\stm32\stm32h7\mpu\mpu.h ..\..\src\ArrayList.h \
+  ..\..\src\TYOS_Kernel.h ..\..\src\TYOS_DataStructure.h \
+  ..\..\src\ArrayList.h

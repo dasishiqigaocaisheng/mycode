@@ -1582,3 +1582,36 @@ Finished: 1 information, 0 warning and 1 error messages.
 [2022-04-05 22:54:33]	[done]
 	build successfully !
 
+[2022-04-12 12:12:53]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x018f4] in <5ad0758a213a4017a4a43a71c811e836>:0 
+---
+In file included from ./../../src/TYOS_Kernel.c:2:
+./../../src/TYOS_Kernel.h:8:6: error: conflicting types for 'TYOS_Kernel_Prepare'
+void TYOS_Kernel_Prepare(void);
+     ^
+./../../src/TYOS_Kernel.h:6:6: note: previous declaration is here
+void TYOS_Kernel_Prepare(uint16_t t_slice, heap_type p_heap);
+     ^
+1 error generated.
+
+[2022-04-12 12:20:21]	[done]
+	build successfully !
+
+[2022-05-07 22:17:52]	[done]
+	build successfully !
+
+[2022-05-07 22:23:42]	[done]
+	build successfully !
+
+[2022-05-07 22:25:27]	[done]
+	build successfully !
+
+[2022-05-07 22:48:05]	[done]
+	build successfully !
+
+[2022-05-07 22:51:30]	[done]
+	build successfully !
+
+[2022-05-07 22:53:09]	[done]
+	build successfully !
+

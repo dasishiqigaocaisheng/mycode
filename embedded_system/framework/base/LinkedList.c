@@ -3,7 +3,7 @@
 
 #include "USART.h"
 
-#define LINKEDLIST_HEAP HEAP0
+#define LINKEDLIST_HEAP heap0
 
 #define FIND_NEXTADDR(l, index) ((void **)((uint32_t)LinkedList_Find(l, index) + l->Node_Size - 4))
 
@@ -44,7 +44,7 @@ void *LinkedList_Add(linkedlist *l, int index)
     if (index == 0)
     {
         save = l->Head_Addr;
-        l->Head_Addr = Malloc(LINKEDLIST_HEAP, l->Node_Size);
+        l->Head_Addr = Memory_Malloc(&LINKEDLIST_HEAP, l->Node_Size);
         *FIND_NEXTADDR(l, 0) = save;
         l->Nodes_Num++;
         return l->Head_Addr;
@@ -52,7 +52,7 @@ void *LinkedList_Add(linkedlist *l, int index)
     else
     {
         save = LinkedList_Find(l, index);
-        *FIND_NEXTADDR(l, index - 1) = Malloc(LINKEDLIST_HEAP, l->Node_Size);
+        *FIND_NEXTADDR(l, index - 1) = Memory_Malloc(&LINKEDLIST_HEAP, l->Node_Size);
         *FIND_NEXTADDR(l, index) = save;
         l->Nodes_Num++;
         return LinkedList_Find(l, index);
@@ -136,14 +136,14 @@ void LinkedList_Dispose(linkedlist *l, int index)
     {
         save = l->Head_Addr;
         l->Head_Addr = LinkedList_Find(l, 1);
-        Free(LINKEDLIST_HEAP, save);
+        Memory_Free(&LINKEDLIST_HEAP, save);
         l->Nodes_Num--;
     }
     else
     {
         save = LinkedList_Find(l, index);
         *FIND_NEXTADDR(l, index - 1) = LinkedList_Find(l, index + 1);
-        Free(LINKEDLIST_HEAP, save);
+        Memory_Free(&LINKEDLIST_HEAP, save);
         l->Nodes_Num--;
     }
 }
