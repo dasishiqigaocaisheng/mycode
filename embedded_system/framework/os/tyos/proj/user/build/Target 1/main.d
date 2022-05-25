@@ -9,6 +9,8 @@
   ..\..\..\..\..\stm32\stm32h7\HAL\GPIO.h \
   ..\..\..\..\..\stm32\stm32h7\mathhelper\MathHelper.h \
   ..\..\..\..\..\stm32\stm32h7\mathhelper\arm_math.h \
-  .cmsis\include\core_cm7.h ..\..\..\..\..\stm32\stm32h7\mpu\mpu.h \
-  ..\..\src\ArrayList.h ..\..\src\TYOS_Kernel.h \
-  ..\..\src\TYOS_DataStructure.h ..\..\src\ArrayList.h
+  ..\..\..\..\..\stm32\stm32h7\sys\core_cm7.h \
+  ..\..\..\..\..\stm32\stm32h7\mpu\mpu.h ..\..\src\ArrayList.h \
+  ..\..\src\TYOS_Kernel.h ..\..\src\TYOS_DataStructure.h \
+  ..\..\..\..\base\LinkedList.h ..\..\..\..\base\Framework.h \
+  ..\..\src\ArrayList.h

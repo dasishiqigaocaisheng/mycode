@@ -7,14 +7,6 @@
 
 #define FIND_NEXTADDR(l, index) ((void **)((uint32_t)LinkedList_Find(l, index) + l->Node_Size - 4))
 
-void LinkedList_Prepare(linkedlist *l, uint16_t obsize)
-{
-    l->DataField_Size = obsize;
-    l->Node_Size = (obsize / 4 + 1) * 4;
-    l->Nodes_Num = 0;
-    l->Head_Addr = NULL;
-}
-
 void *LinkedList_Find(linkedlist *l, int index)
 {
     int i;
@@ -28,11 +20,6 @@ void *LinkedList_Find(linkedlist *l, int index)
         next = (void *)(*(uint32_t *)((uint32_t)next + l->Node_Size - 4));
     }
     return next;
-}
-
-void *LinkedList_Get_FirstNode(linkedlist *l)
-{
-    return l->Head_Addr;
 }
 
 void *LinkedList_Add(linkedlist *l, int index)

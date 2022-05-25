@@ -12,5 +12,6 @@
 "./build/Target 1/__/__/src/TYOS_Kernel.o"
 "./build/Target 1/__/__/src/TYOS_MultProcess.o"
 "./build/Target 1/main.o"
+"./build/Target 1/__/__/src/TYOS_Assembly.o"
 "./build/Target 1/startup_stm32h743xx.o"
 ./../../../../../stm32/stm32h7/mathhelper/arm_cortexM7lfdp_math.lib -o "./build/Target 1/user.axf"

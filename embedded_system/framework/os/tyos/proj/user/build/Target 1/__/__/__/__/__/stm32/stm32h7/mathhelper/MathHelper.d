@@ -9,7 +9,7 @@
   ..\..\..\..\base\Framework.h \
   ..\..\..\..\..\stm32\stm32h7\sys\stm32h743xx.h \
   ..\..\..\..\..\stm32\stm32h7\mathhelper\arm_math.h \
-  .cmsis\include\core_cm7.h \
+  ..\..\..\..\..\stm32\stm32h7\sys\core_cm7.h \
   ..\..\..\..\..\stm32\stm32h7\mathhelper\arm_const_structs.h \
   ..\..\..\..\..\stm32\stm32h7\mathhelper\arm_common_tables.h \
   ..\..\..\..\base\Memory.h

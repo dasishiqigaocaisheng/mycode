@@ -6,7 +6,9 @@
     ],
     "settings": {
         "files.associations": {
-            "arraylist.h": "c"
+            "arraylist.h": "c",
+            "tyos_kernel.h": "c",
+            "linkedlist.h": "c"
         }
     },
     "extensions": {},

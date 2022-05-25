@@ -1615,3 +1615,62 @@ void TYOS_Kernel_Prepare(uint16_t t_slice, heap_type p_heap);
 [2022-05-07 22:53:09]	[done]
 	build successfully !
 
+[2022-05-25 17:51:02]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+./../../src/TYOS_Kernel.c:67:1: warning: non-void function does not return a value [-Wreturn-type]
+}
+^
+./../../src/TYOS_Kernel.c:82:2: error: expected identifier
+        _RO_WRITE((&my_os.Processes)->Member_Size, uint16_t, sizeof(process));   
+        ^
+./../../../../base/Framework.h:206:40: note: expanded from macro '_RO_WRITE'
+#define _RO_WRITE(object, type, value) *((type *)((uint32_t)(&object))) = value
+                                       ^
+./../../src/TYOS_Kernel.c:82:20: error: no member named 'Processes' in 'tyos'
+        _RO_WRITE((&my_os.Processes)->Member_Size, uint16_t, sizeof(process));   
+                    ~~~~~ ^
+./../../../../base/Framework.h:206:63: note: expanded from macro '_RO_WRITE'
+#define _RO_WRITE(object, type, value) *((type *)((uint32_t)(&object))) = value
+                                                              ^~~~~~
+./../../src/TYOS_Kernel.c:83:23: error: no member named 'Processes' in 'tyos'
+    _RO_WRITE((&my_os.Processes)->Heap, heap*, p_heap);           
+                ~~~~~ ^
+./../../../../base/Framework.h:206:63: note: expanded from macro '_RO_WRITE'
+#define _RO_WRITE(object, type, value) *((type *)((uint32_t)(&object))) = value
+                                                              ^~~~~~
+./../../src/TYOS_Kernel.c:84:23: error: no member named 'Processes' in 'tyos'
+    _RO_WRITE((&my_os.Processes)->MinMalloc_Num, uint8_t, 5);  
+                ~~~~~ ^
+./../../../../base/Framework.h:206:63: note: expanded from macro '_RO_WRITE'
+#define _RO_WRITE(object, type, value) *((type *)((uint32_t)(&object))) = value
+                                                              ^~~~~~
+./../../src/TYOS_Kernel.c:86:13: error: no member named 'Processes' in 'tyos'
+    (&my_os.Processes)->Members = Memory_Malloc(p_heap, sizeof(process) * 5);    
+      ~~~~~ ^
+./../../src/TYOS_Kernel.c:87:13: error: no member named 'Processes' in 'tyos'
+    (&my_os.Processes)->MaxNum = Memory_Malloc_Size(p_heap,(&my_os.Processes)->Members) / sizeof(process); 
+      ~~~~~ ^
+./../../src/TYOS_Kernel.c:87:68: error: no member named 'Processes' in 'tyos'
+    (&my_os.Processes)->MaxNum = Memory_Malloc_Size(p_heap,(&my_os.Processes)->Members) / sizeof(process); 
+                                                             ~~~~~ ^
+./../../../../base\Memory.h:71:37: note: expanded from macro 'Memory_Malloc_Size'
+                                                                        (h)->Node_List[((uint32_t)(addr)-(uint32_t)(h)->Addr)/(h)->BlockSize].MemBlock_Size: \
+                                                                                                   ^~~~
+./../../src/TYOS_Kernel.c:87:68: error: no member named 'Processes' in 'tyos'
+    (&my_os.Processes)->MaxNum = Memory_Malloc_Size(p_heap,(&my_os.Processes)->Members) / sizeof(process); 
+                                                             ~~~~~ ^
+./../../../../base\Memory.h:72:53: note: expanded from macro 'Memory_Malloc_Size'
+                                                                        (h)->Node_List[(h)->BlockNum-1-((uint32_t)(addr)-(uint32_t)(h)->Addr)/(h)->BlockSize].MemBlock_Size)
+                                                                                                                   ^~~~
+./../../src/TYOS_Kernel.c:88:13: error: no member named 'Processes' in 'tyos'
+    (&my_os.Processes)->Member_Num = 0;
+      ~~~~~ ^
+1 warning and 9 errors generated.
+
+[2022-05-25 18:00:48]	[done]
+	build successfully !
+
+[2022-05-25 20:01:14]	[done]
+	build successfully !
+

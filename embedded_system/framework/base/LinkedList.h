@@ -11,12 +11,21 @@ typedef struct linkedlist_class
     void *Head_Addr;
 } linkedlist;
 
-void LinkedList_Prepare(linkedlist *l, uint16_t obsize);
+#define LinkedList_Prepare(l, obsize)                                  \
+    {                                                                  \
+        (l)->DataField_Size = (obsize);                                \
+        (l)->Node_Size = ((obsize) / 4 + obsize % 4 == 0 ? 1 : 2) * 4; \
+        (l)->Nodes_Num = 0;                                            \
+        (l)->Head_Addr = NULL;                                         \
+    }
+
+#define LinkedList_Get_Next(l, object) (void *)((uint32_t)(object) + (l)->Node_Size - 4)
+#define LinkedList_Get_FirstNode(l) (l)->Head_Addr
+
 void *LinkedList_Find(linkedlist *l, int index);
-void *LinkedList_Get_FirstNode(linkedlist *l);
 void *LinkedList_Add(linkedlist *l, int index);
 void LinkedList_Add2(linkedlist *l, int index, void *object);
-void *LinkedList_AddtoEnd(linkedlist* l);
+void *LinkedList_AddtoEnd(linkedlist *l);
 void LinkedList_AddtoEnd2(linkedlist *l, void *object);
 void *LinkedList_Remove(linkedlist *l, int index);
 void LinkedList_Remove2(linkedlist *l, void *object);

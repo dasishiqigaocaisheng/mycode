@@ -2,12 +2,13 @@
 #define _TYOS_DATASTRUCTURE_H_
 
 #include "Framework.h"
+#include "LinkedList.h"
 #include "ArrayList.h"
 #include "Memory.h"
 
-typedef int process_id;
-typedef int metux_id;
-typedef int process_priority;
+typedef uint32_t process_id;
+typedef int32_t metux_id;
+typedef uint8_t process_priority;
 
 typedef void (*task)(void);
 
@@ -26,7 +27,8 @@ typedef enum
     PROCESS_AWAIT_TIME,
     PROCESS_AWAIT_MUTEX,
     PROCESS_AWAIT_RESOURCE,
-    PROCESS_READY
+    PROCESS_READY,
+    PROCESS_SLEEP
 } process_status;
 
 typedef struct __ALIGNED(4)
@@ -51,18 +53,20 @@ typedef struct __ALIGNED(4)
 
 typedef struct
 {
-    process *Active_Prcs;
-    uint8_t Prcs_Nmbr;
-
-} prcs_ctrl;
+    process_priority Priority;
+    int Process_Ready_Index;
+    arraylist Processes;
+} process_list_base;
 
 typedef struct
 {
-    uint8_t TimeSlice;       //时间片长度（ms）
-    uint64_t Tick;           //从操作系统启动开始经过的tick
-    arraylist Processes;     //进程列表
-    arraylist Mutexes;       //互斥锁列表
-    heap *ProcessStack_Heap; //默认进程栈所在的堆
+    uint8_t TimeSlice; //时间片长度（ms）
+    uint64_t Tick;     //从操作系统启动开始经过的tick
+    process *Active_Process;
+    uint8_t Process_Number;
+    linkedlist Process_List;
+    arraylist Mutexes;  //互斥锁列表
+    heap *Process_Heap; //默认进程栈所在的堆
     metux_id ProcessStack_MutexID;
 } tyos;
 
