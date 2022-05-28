@@ -1674,3 +1674,639 @@ void TYOS_Kernel_Prepare(uint16_t t_slice, heap_type p_heap);
 [2022-05-25 20:01:14]	[done]
 	build successfully !
 
+[2022-05-26 20:00:22]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\base\LinkedList.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+./../../../../base/LinkedList.c:63:9: error: void function 'LinkedList_Add2' should not return a value [-Wreturn-type]
+        return NULL;
+        ^      ~~~~
+1 error generated.
+
+[2022-05-26 20:00:40]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+./../../src/TYOS_Kernel.c:81:4: error: expected expression
+                        process *p = ArrayList_AddtoEnd(&plb->Processes);
+                        ^
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk);
+                                     ^
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:82:17: error: use of undeclared identifier 'p'
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+
+[2022-05-26 20:03:03]	[done]
+	build successfully !
+
+[2022-05-26 20:03:25]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+./../../src/TYOS_Kernel.c:82:4: error: expected expression
+                        process *p = ArrayList_AddtoEnd(&plb->Processes);
+                        ^
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk);
+                                     ^
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+./../../src/TYOS_Kernel.c:83:17: error: use of undeclared identifier 'p'
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+
+[2022-05-26 20:03:44]	[done]
+	build successfully !
+
+[2022-05-26 20:05:30]	[done]
+	build successfully !
+
+[2022-05-26 20:06:13]	[done]
+	build successfully !
+
+[2022-05-27 16:43:09]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+./../../src/TYOS_Kernel.c:83:4: error: no member named 'PLB' in 'process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:34:8: note: expanded from macro 'PROCESS_INIT'
+                (p)->PLB = plb;                                                  \
+                ~~~  ^
+1 error generated.
+
+[2022-05-27 16:44:48]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+In file included from ./../../src/TYOS_Kernel.c:2:
+In file included from ./../../src/TYOS_Kernel.h:4:
+./../../src/TYOS_DataStructure.h:44:5: error: unknown type name 'process_list_base'
+    process_list_base *PLB;
+    ^
+1 error generated.
+
+[2022-05-27 16:45:59]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+In file included from ./../../src/TYOS_Kernel.c:2:
+In file included from ./../../src/TYOS_Kernel.h:4:
+./../../src/TYOS_DataStructure.h:24:1: warning: typedef requires a name [-Wmissing-declarations]
+typedef enum process_status;
+^~~~~~~
+./../../src/TYOS_DataStructure.h:25:1: warning: typedef requires a name [-Wmissing-declarations]
+typedef struct process;
+^~~~~~~
+./../../src/TYOS_DataStructure.h:26:1: warning: typedef requires a name [-Wmissing-declarations]
+typedef struct metux;
+^~~~~~~
+./../../src/TYOS_DataStructure.h:27:1: warning: typedef requires a name [-Wmissing-declarations]
+typedef struct process_list_base;
+^~~~~~~
+./../../src/TYOS_DataStructure.h:49:5: error: must use 'struct' tag to refer to type 'process_list_base'
+    process_list_base *PLB;
+    ^
+    struct 
+./../../src/TYOS_Kernel.c:83:4: warning: incompatible pointer types assigning to 'struct process_list_base *' from 'process_list_base *' [-Wincompatible-pointer-types]
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^                                                                                          ~~~
+./../../src/TYOS_Kernel.c:34:12: note: expanded from macro 'PROCESS_INIT'
+                (p)->PLB = plb;                                                  \
+                         ^ ~~~
+5 warnings and 1 error generated.
+
+[2022-05-27 16:50:56]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+In file included from ./../../src/TYOS_Kernel.c:2:
+In file included from ./../../src/TYOS_Kernel.h:4:
+./../../src/TYOS_DataStructure.h:37:3: error: typedef redefinition with different types ('enum process_status' vs 'enum process_status_type')
+} process_status;
+  ^
+./../../src/TYOS_DataStructure.h:24:34: note: previous definition is here
+typedef enum process_status_type process_status;
+                                 ^
+./../../src/TYOS_DataStructure.h:46:20: error: field has incomplete type 'process_status' (aka 'enum process_status_type')
+    process_status Status;
+                   ^
+./../../src/TYOS_DataStructure.h:24:14: note: forward declaration of 'enum process_status_type'
+typedef enum process_status_type process_status;
+             ^
+./../../src/TYOS_DataStructure.h:50:3: error: typedef redefinition with different types ('struct (anonymous struct at ./../../src/TYOS_DataStructure.h:39:9)' vs 'struct process_class')
+} process;
+  ^
+./../../src/TYOS_DataStructure.h:25:30: note: previous definition is here
+typedef struct process_class process;
+                             ^
+./../../src/TYOS_DataStructure.h:53:1: error: expected identifier or '('
+{
+^
+./../../src/TYOS_DataStructure.h:65:3: error: typedef redefinition with different types ('struct process_list_base' vs 'struct process_pri_list_class')
+} process_list_base;
+  ^
+./../../src/TYOS_DataStructure.h:27:39: note: previous definition is here
+typedef struct process_pri_list_class process_list_base;
+                                      ^
+./../../src/TYOS_Kernel.c:80:10: error: incomplete definition of type 'struct process_pri_list_class'
+                if (plb->Priority == pri)
+                    ~~~^
+./../../src/TYOS_DataStructure.h:27:16: note: forward declaration of 'struct process_pri_list_class'
+typedef struct process_pri_list_class process_list_base;
+               ^
+./../../src/TYOS_Kernel.c:82:40: error: incomplete definition of type 'struct process_pri_list_class'
+                        process *p = ArrayList_AddtoEnd(&plb->Processes);
+                                                         ~~~^
+./../../src/ArrayList.h:28:49: note: expanded from macro 'ArrayList_AddtoEnd'
+#define ArrayList_AddtoEnd(al) ArrayList_Insert(al, (al)->Member_Num);
+                                                ^~
+./../../src/TYOS_DataStructure.h:27:16: note: forward declaration of 'struct process_pri_list_class'
+typedef struct process_pri_list_class process_list_base;
+               ^
+./../../src/TYOS_Kernel.c:82:40: error: incomplete definition of type 'struct process_pri_list_class'
+                        process *p = ArrayList_AddtoEnd(&plb->Processes);
+                                                         ~~~^
+./../../src/ArrayList.h:28:54: note: expanded from macro 'ArrayList_AddtoEnd'
+#define ArrayList_AddtoEnd(al) ArrayList_Insert(al, (al)->Member_Num);
+                                                     ^~
+./../../src/TYOS_DataStructure.h:27:16: note: forward declaration of 'struct process_pri_list_class'
+typedef struct process_pri_list_class process_list_base;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:17:6: note: expanded from macro 'PROCESS_INIT'
+                (p)->ID = ((uint32_t)((pri) << 8) + (number));                   \
+                ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:18:6: note: expanded from macro 'PROCESS_INIT'
+                (p)->Initial_Pri = (pri);                                        \
+                ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:19:6: note: expanded from macro 'PROCESS_INIT'
+                (p)->Current_Pri = (pri);                                        \
+                ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:20:6: note: expanded from macro 'PROCESS_INIT'
+                (p)->Stack = Memory_Malloc(my_os.Process_Heap, stk_size);        \
+                ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:21:6: note: expanded from macro 'PROCESS_INIT'
+                (p)->StackTop = (uint32_t *)((uint32_t)(p)->Stack + (stk_size)); \
+                ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:21:45: note: expanded from macro 'PROCESS_INIT'
+                (p)->StackTop = (uint32_t *)((uint32_t)(p)->Stack + (stk_size)); \
+                                                       ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:22:10: note: expanded from macro 'PROCESS_INIT'
+                *(--(p)->StackTop) = 0x01000000;                                 \
+                    ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:23:10: note: expanded from macro 'PROCESS_INIT'
+                *(--(p)->StackTop) = (uint32_t)(tsk) | 1;                        \
+                    ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:24:10: note: expanded from macro 'PROCESS_INIT'
+                *(--(p)->StackTop) = 0;                                          \
+                    ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:25:10: note: expanded from macro 'PROCESS_INIT'
+                *(--(p)->StackTop) = (uint32_t)(p)->Stack + (stk_size) + 4;      \
+                    ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process_class'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:25:37: note: expanded from macro 'PROCESS_INIT'
+                *(--(p)->StackTop) = (uint32_t)(p)->Stack + (stk_size) + 4;      \
+                                               ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process_class'
+typedef struct process_class process;
+               ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+
+[2022-05-27 16:52:42]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+In file included from ./../../src/TYOS_Kernel.c:2:
+In file included from ./../../src/TYOS_Kernel.h:4:
+./../../src/TYOS_DataStructure.h:41:1: error: expected identifier or '('
+{
+^
+./../../src/TYOS_DataStructure.h:54:1: error: expected identifier or '('
+{
+^
+./../../src/TYOS_Kernel.c:76:2: error: use of undeclared identifier 'process_list_base'
+        process_list_base *plb = LinkedList_Get_FirstObject(&my_os.Process_List);
+        ^
+./../../src/TYOS_Kernel.c:76:21: error: use of undeclared identifier 'plb'
+        process_list_base *plb = LinkedList_Get_FirstObject(&my_os.Process_List);
+                           ^
+./../../src/TYOS_Kernel.c:77:9: error: use of undeclared identifier 'plb'
+        while (plb != NULL)
+               ^
+./../../src/TYOS_Kernel.c:80:7: error: use of undeclared identifier 'plb'
+                if (plb->Priority == pri)
+                    ^
+./../../src/TYOS_Kernel.c:82:37: error: use of undeclared identifier 'plb'
+                        process *p = ArrayList_AddtoEnd(&plb->Processes);
+                                                         ^
+./../../src/TYOS_Kernel.c:82:37: error: use of undeclared identifier 'plb'
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:17:6: note: expanded from macro 'PROCESS_INIT'
+                (p)->ID = ((uint32_t)((pri) << 8) + (number));                   \
+                ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:18:6: note: expanded from macro 'PROCESS_INIT'
+                (p)->Initial_Pri = (pri);                                        \
+                ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:19:6: note: expanded from macro 'PROCESS_INIT'
+                (p)->Current_Pri = (pri);                                        \
+                ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:20:6: note: expanded from macro 'PROCESS_INIT'
+                (p)->Stack = Memory_Malloc(my_os.Process_Heap, stk_size);        \
+                ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:21:6: note: expanded from macro 'PROCESS_INIT'
+                (p)->StackTop = (uint32_t *)((uint32_t)(p)->Stack + (stk_size)); \
+                ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:21:45: note: expanded from macro 'PROCESS_INIT'
+                (p)->StackTop = (uint32_t *)((uint32_t)(p)->Stack + (stk_size)); \
+                                                       ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:22:10: note: expanded from macro 'PROCESS_INIT'
+                *(--(p)->StackTop) = 0x01000000;                                 \
+                    ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:23:10: note: expanded from macro 'PROCESS_INIT'
+                *(--(p)->StackTop) = (uint32_t)(tsk) | 1;                        \
+                    ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:24:10: note: expanded from macro 'PROCESS_INIT'
+                *(--(p)->StackTop) = 0;                                          \
+                    ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:25:10: note: expanded from macro 'PROCESS_INIT'
+                *(--(p)->StackTop) = (uint32_t)(p)->Stack + (stk_size) + 4;      \
+                    ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+./../../src/TYOS_Kernel.c:83:4: error: incomplete definition of type 'struct process'
+                        PROCESS_INIT(p, pri, my_os.Process_Number, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, plb);
+                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:25:37: note: expanded from macro 'PROCESS_INIT'
+                *(--(p)->StackTop) = (uint32_t)(p)->Stack + (stk_size) + 4;      \
+                                               ~~~^
+./../../src/TYOS_DataStructure.h:25:16: note: forward declaration of 'struct process'
+typedef struct process process;
+               ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+
+[2022-05-27 16:58:44]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+In file included from ./../../src/TYOS_Kernel.c:2:
+In file included from ./../../src/TYOS_Kernel.h:4:
+./../../src/TYOS_DataStructure.h:50:5: error: unknown type name 'process_list_base'
+    process_list_base *PLB;
+    ^
+./../../src/TYOS_DataStructure.h:54:1: error: expected identifier or '('
+{
+^
+./../../src/TYOS_Kernel.c:94:56: error: use of undeclared identifier 'plb'
+                ppl = LinkedList_Get_NextObject(&my_os.Process_List, plb);
+                                                                     ^
+./../../src/TYOS_Kernel.c:94:56: error: use of undeclared identifier 'plb'
+./../../src/TYOS_Kernel.c:100:21: error: use of undeclared identifier 'plb'
+        ArrayList_Prepare(&plb->Processes, sizeof(process), my_os.Process_Heap, 5);
+                           ^
+./../../src/TYOS_Kernel.c:100:21: error: use of undeclared identifier 'plb'
+./../../src/TYOS_Kernel.c:100:21: error: use of undeclared identifier 'plb'
+./../../src/TYOS_Kernel.c:100:21: error: use of undeclared identifier 'plb'
+./../../src/TYOS_Kernel.c:100:21: error: use of undeclared identifier 'plb'
+./../../src/TYOS_Kernel.c:100:21: error: use of undeclared identifier 'plb'
+./../../src/TYOS_Kernel.c:100:21: error: use of undeclared identifier 'plb'
+./../../src/TYOS_Kernel.c:100:21: error: use of undeclared identifier 'plb'
+./../../src/TYOS_Kernel.c:141:36: error: invalid application of 'sizeof' to an incomplete type 'metux' (aka 'struct metux')
+        ArrayList_Prepare(&my_os.Mutexes, sizeof(metux), my_os.Process_Heap, 5);
+                                          ^     ~~~~~~~
+./../../src/ArrayList.h:20:48: note: expanded from macro 'ArrayList_Prepare'
+        _RO_WRITE((al)->Member_Size, uint16_t, m_size);                               \
+                                               ^~~~~~
+./../../../../base/Framework.h:206:75: note: expanded from macro '_RO_WRITE'
+#define _RO_WRITE(object, type, value) *((type *)((uint32_t)(&object))) = value
+                                                                          ^~~~~
+./../../src/TYOS_DataStructure.h:26:16: note: forward declaration of 'struct metux'
+typedef struct metux metux;
+               ^
+./../../src/TYOS_Kernel.c:141:36: error: invalid application of 'sizeof' to an incomplete type 'metux' (aka 'struct metux')
+        ArrayList_Prepare(&my_os.Mutexes, sizeof(metux), my_os.Process_Heap, 5);
+                                          ^     ~~~~~~~
+./../../src/ArrayList.h:23:58: note: expanded from macro 'ArrayList_Prepare'
+        (al)->Members = Memory_Malloc((heap *)(al_heap), m_size * (mm_num));          \
+                                                         ^~~~~~
+./../../src/TYOS_DataStructure.h:26:16: note: forward declaration of 'struct metux'
+typedef struct metux metux;
+               ^
+./../../src/TYOS_Kernel.c:141:36: error: invalid application of 'sizeof' to an incomplete type 'metux' (aka 'struct metux')
+        ArrayList_Prepare(&my_os.Mutexes, sizeof(metux), my_os.Process_Heap, 5);
+                                          ^     ~~~~~~~
+./../../src/ArrayList.h:24:79: note: expanded from macro 'ArrayList_Prepare'
+        (al)->MaxNum = Memory_Malloc_Size((heap *)(al_heap), (al)->Members) / m_size; \
+                                                                              ^~~~~~
+./../../src/TYOS_DataStructure.h:26:16: note: forward declaration of 'struct metux'
+typedef struct metux metux;
+               ^
+15 errors generated.
+
+[2022-05-27 19:10:51]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\base\LinkedList.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+./../../../../base/LinkedList.c:103:13: error: void function 'LinkedList_Add2' should not return a value [-Wreturn-type]
+            return NULL;
+            ^      ~~~~
+./../../../../base/LinkedList.c:234:13: error: void function 'LinkedList_Dispose' should not return a value [-Wreturn-type]
+            return NULL;
+            ^      ~~~~
+./../../../../base/LinkedList.c:254:13: error: void function 'LinkedList_Dispose' should not return a value [-Wreturn-type]
+            return NULL;
+            ^      ~~~~
+3 errors generated.
+
+[2022-05-27 19:11:11]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\base\LinkedList.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+./../../../../base/LinkedList.c:234:13: error: void function 'LinkedList_Dispose' should not return a value [-Wreturn-type]
+            return NULL;
+            ^      ~~~~
+1 error generated.
+
+[2022-05-27 19:11:21]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+./../../src/TYOS_Kernel.c:152:66: error: too few arguments provided to function-like macro invocation
+        LinkedList_Prepare(&my_os.Process_List, sizeof(process_pri_list));
+                                                                        ^
+./../../../../base\LinkedList.h:15:9: note: macro 'LinkedList_Prepare' defined here
+#define LinkedList_Prepare(l, obsize, is_loop)                             \
+        ^
+./../../src/TYOS_Kernel.c:152:2: error: use of undeclared identifier 'LinkedList_Prepare'
+        LinkedList_Prepare(&my_os.Process_List, sizeof(process_pri_list));
+        ^
+2 errors generated.
+
+[2022-05-27 19:11:39]	[done]
+	build successfully !
+
+[2022-05-27 19:12:17]	[done]
+	build successfully !
+
+[2022-05-27 19:16:59]	[done]
+	build successfully !
+
+[2022-05-27 19:19:37]	[done]
+	build successfully !
+
+[2022-05-27 19:20:25]	[done]
+	build successfully !
+
+[2022-05-27 19:20:50]	[done]
+	build successfully !
+
+[2022-05-28 16:15:40]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+./../../src/TYOS_Kernel.c:122:7: error: no member named 'Process_Ready_Index' in 'struct process_pri_list'
+        ppl->Process_Ready_Index = -1;
+        ~~~  ^
+./../../src/TYOS_Kernel.c:137:11: warning: incompatible integer to pointer conversion initializing 'process *' (aka 'struct process *') with an expression of type 'uint16_t' (aka 'unsigned short') [-Wint-conversion]
+        process *prcs = ppl->Processes.Nodes_Num;
+                 ^      ~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:169:7: error: no member named 'Process_Ready_Index' in 'struct process_pri_list'
+        ppl->Process_Ready_Index = 0;
+        ~~~  ^
+./../../src/TYOS_Kernel.c:183:23: warning: incompatible integer to pointer conversion assigning to 'process *' (aka 'struct process *') from 'process_id' (aka 'unsigned int') [-Wint-conversion]
+        my_os.Active_Process = p->ID;
+                             ^ ~~~~~
+./../../src/TYOS_Kernel.c:195:25: error: invalid operands to binary expression ('process *' (aka 'struct process *') and 'int')
+        FIND_PPL_WITH_PRI(ppl, GET_PRIORITY_FROM_ID(my_os.Active_Process));
+        ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:15:41: note: expanded from macro 'GET_PRIORITY_FROM_ID'
+#define GET_PRIORITY_FROM_ID(id) (((id) >> 8) & 0xff)
+                                        ^  ~
+./../../src/TYOS_Kernel.c:44:4: note: expanded from macro 'FIND_PPL_WITH_PRI'
+                (ppl) = LinkedList_Get_FirstObject(&my_os.Process_List);           \
+                 ^~~
+./../../src/TYOS_Kernel.c:195:25: error: invalid operands to binary expression ('process *' (aka 'struct process *') and 'int')
+        FIND_PPL_WITH_PRI(ppl, GET_PRIORITY_FROM_ID(my_os.Active_Process));
+        ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:15:41: note: expanded from macro 'GET_PRIORITY_FROM_ID'
+#define GET_PRIORITY_FROM_ID(id) (((id) >> 8) & 0xff)
+                                        ^  ~
+./../../src/TYOS_Kernel.c:45:11: note: expanded from macro 'FIND_PPL_WITH_PRI'
+                while ((ppl)->Priority != pri && (ppl) != NULL)                    \
+                        ^~~
+./../../src/TYOS_Kernel.c:195:25: error: invalid operands to binary expression ('process *' (aka 'struct process *') and 'int')
+        FIND_PPL_WITH_PRI(ppl, GET_PRIORITY_FROM_ID(my_os.Active_Process));
+        ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:15:41: note: expanded from macro 'GET_PRIORITY_FROM_ID'
+#define GET_PRIORITY_FROM_ID(id) (((id) >> 8) & 0xff)
+                                        ^  ~
+./../../src/TYOS_Kernel.c:45:37: note: expanded from macro 'FIND_PPL_WITH_PRI'
+                while ((ppl)->Priority != pri && (ppl) != NULL)                    \
+                                                  ^~~
+./../../src/TYOS_Kernel.c:195:25: error: invalid operands to binary expression ('process *' (aka 'struct process *') and 'int')
+        FIND_PPL_WITH_PRI(ppl, GET_PRIORITY_FROM_ID(my_os.Active_Process));
+        ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:15:41: note: expanded from macro 'GET_PRIORITY_FROM_ID'
+#define GET_PRIORITY_FROM_ID(id) (((id) >> 8) & 0xff)
+                                        ^  ~
+./../../src/TYOS_Kernel.c:46:5: note: expanded from macro 'FIND_PPL_WITH_PRI'
+                        (ppl) = LinkedList_Get_NextObject(&my_os.Process_List, (ppl)); \
+                         ^~~
+./../../src/TYOS_Kernel.c:195:25: error: invalid operands to binary expression ('process *' (aka 'struct process *') and 'int')
+        FIND_PPL_WITH_PRI(ppl, GET_PRIORITY_FROM_ID(my_os.Active_Process));
+        ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:15:41: note: expanded from macro 'GET_PRIORITY_FROM_ID'
+#define GET_PRIORITY_FROM_ID(id) (((id) >> 8) & 0xff)
+                                        ^  ~
+./../../src/TYOS_Kernel.c:46:60: note: expanded from macro 'FIND_PPL_WITH_PRI'
+                        (ppl) = LinkedList_Get_NextObject(&my_os.Process_List, (ppl)); \
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+./../../../../base\LinkedList.h:24:47: note: expanded from macro 'LinkedList_Get_NextObject'
+#define LinkedList_Get_NextObject(l, object) (object != NULL ? (*(void **)((uint32_t)(object) + (l)->Node_Size - 8)) : NULL)
+                                              ^~~~~~
+./../../src/TYOS_Kernel.c:195:25: error: invalid operands to binary expression ('process *' (aka 'struct process *') and 'int')
+        FIND_PPL_WITH_PRI(ppl, GET_PRIORITY_FROM_ID(my_os.Active_Process));
+        ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:15:41: note: expanded from macro 'GET_PRIORITY_FROM_ID'
+#define GET_PRIORITY_FROM_ID(id) (((id) >> 8) & 0xff)
+                                        ^  ~
+./../../src/TYOS_Kernel.c:46:60: note: expanded from macro 'FIND_PPL_WITH_PRI'
+                        (ppl) = LinkedList_Get_NextObject(&my_os.Process_List, (ppl)); \
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+./../../../../base\LinkedList.h:24:87: note: expanded from macro 'LinkedList_Get_NextObject'
+#define LinkedList_Get_NextObject(l, object) (object != NULL ? (*(void **)((uint32_t)(object) + (l)->Node_Size - 8)) : NULL)
+                                                                                      ^~~~~~
+./../../src/TYOS_Kernel.c:197:15: error: no member named 'Members' in 'struct linkedlist_class'
+        process *p = GET_PROCESS_FROM_ID_WITH_PPL(ppl, my_os.Active_Process);
+                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:18:47: note: expanded from macro 'GET_PROCESS_FROM_ID_WITH_PPL'
+#define GET_PROCESS_FROM_ID_WITH_PPL(ppl, id) GET_PROCESS_FROM_INDEX_WITH_PPL(ppl, GET_INDEX_FROM_ID(id))
+                                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:17:71: note: expanded from macro 'GET_PROCESS_FROM_INDEX_WITH_PPL'
+#define GET_PROCESS_FROM_INDEX_WITH_PPL(ppl, idx) (&((ppl)->Processes.Members[idx]))
+                                                     ~~~~~~~~~~~~~~~~ ^
+./../../src/TYOS_Kernel.c:197:15: error: invalid operands to binary expression ('process *' (aka 'struct process *') and 'int')
+        process *p = GET_PROCESS_FROM_ID_WITH_PPL(ppl, my_os.Active_Process);
+                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:18:84: note: expanded from macro 'GET_PROCESS_FROM_ID_WITH_PPL'
+#define GET_PROCESS_FROM_ID_WITH_PPL(ppl, id) GET_PROCESS_FROM_INDEX_WITH_PPL(ppl, GET_INDEX_FROM_ID(id))
+                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:16:36: note: expanded from macro 'GET_INDEX_FROM_ID'
+#define GET_INDEX_FROM_ID(id) ((id)&0xff)
+                                   ^~~~~
+./../../src/TYOS_Kernel.c:17:79: note: expanded from macro 'GET_PROCESS_FROM_INDEX_WITH_PPL'
+#define GET_PROCESS_FROM_INDEX_WITH_PPL(ppl, idx) (&((ppl)->Processes.Members[idx]))
+                                                                              ^~~
+./../../src/TYOS_Kernel.c:203:12: error: no member named 'Process_Ready_Index' in 'struct process_pri_list'
+                if (ppl->Process_Ready_Index != -1)
+                    ~~~  ^
+./../../src/TYOS_Kernel.c:205:38: error: no member named 'Members' in 'struct linkedlist_class'
+                        process *next_p = &ppl->Processes.Members[ppl->Process_Ready_Index];
+                                           ~~~~~~~~~~~~~~ ^
+./../../src/TYOS_Kernel.c:205:51: error: no member named 'Process_Ready_Index' in 'struct process_pri_list'
+                        process *next_p = &ppl->Processes.Members[ppl->Process_Ready_Index];
+                                                                  ~~~  ^
+./../../src/TYOS_Kernel.c:207:25: warning: incompatible integer to pointer conversion assigning to 'process *' (aka 'struct process *') from 'process_id' (aka 'unsigned int') [-Wint-conversion]
+                        my_os.Active_Process = p->ID;
+                                             ^ ~~~~~
+3 warnings and 13 errors generated.
+

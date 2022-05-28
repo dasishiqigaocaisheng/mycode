@@ -94,9 +94,6 @@ void *Memory_Malloc(heap *h, uint32_t size)
 					h->Node_List[idx + need_blk_num].MemBlock_Size = h->Node_List[idx].MemBlock_Size - need_blk_num;
 				}
 				h->Node_List[idx].MemBlock_Size = need_blk_num;
-
-				USART_Printf(USART1, "%#x\r\n", (uint32_t)h->Addr + idx * h->BlockSize);
-
 				//如果增长方向为反向，需要重新进行地址映射
 				if (h->Dirction == HeapDir_Normal)
 					return (void *)((uint32_t)h->Addr + idx * h->BlockSize);

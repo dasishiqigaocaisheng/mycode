@@ -22,4 +22,5 @@
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
   ..\..\..\..\..\stm32\stm32h7\mpu\mpu.h ..\..\src\ArrayList.h \
   ..\..\src\TYOS_Kernel.h ..\..\src\TYOS_DataStructure.h \
+  ..\..\..\..\base\LinkedList.h ..\..\..\..\base\Framework.h \
   ..\..\src\ArrayList.h

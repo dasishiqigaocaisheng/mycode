@@ -11,6 +11,7 @@
   D:\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
   ..\..\..\..\..\stm32\stm32h7\sys\mpu_armv7.h \
   ..\..\..\..\..\stm32\stm32h7\sys\system_stm32h7xx.h \
+  ..\..\..\..\base\LinkedList.h ..\..\..\..\base\Framework.h \
   ..\..\src\ArrayList.h ..\..\..\..\base\Memory.h \
   ..\..\..\..\..\stm32\stm32h7\sys\sys.h \
   ..\..\..\..\..\stm32\stm32h7\sys\stm32h7xx.h \

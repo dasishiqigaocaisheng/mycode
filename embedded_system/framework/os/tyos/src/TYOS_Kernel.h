@@ -6,8 +6,12 @@
 #define TYOS_PRCS_STACK_SIZE 512
 #define TYOS_PRCS_HEAP_SIZE 2048
 #define Set_PendSV_Interrupt() SCB->ICSR |= 1 << 28
+#define TYOS_Get_Priority(id) ((id & 0xff00) >> 8)
+
+// extern TYOS_Start(process *p);
 
 void TYOS_Kernel_Prepare(uint16_t t_slice, heap *p_heap);
 process_id TYOS_Create_Process(process_priority pri, task tsk);
+process *TYOS_Get_Process(process_id id);
 
 #endif

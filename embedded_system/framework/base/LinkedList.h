@@ -8,23 +8,28 @@ typedef struct linkedlist_class
     uint16_t DataField_Size;
     uint16_t Node_Size;
     uint16_t Nodes_Num;
+    status_flag Is_Loop;
     void *Head_Addr;
 } linkedlist;
 
-#define LinkedList_Prepare(l, obsize)                                  \
-    {                                                                  \
-        (l)->DataField_Size = (obsize);                                \
-        (l)->Node_Size = ((obsize) / 4 + obsize % 4 == 0 ? 1 : 2) * 4; \
-        (l)->Nodes_Num = 0;                                            \
-        (l)->Head_Addr = NULL;                                         \
+#define LinkedList_Prepare(l, obsize, is_loop)                             \
+    {                                                                      \
+        (l)->DataField_Size = (obsize);                                    \
+        (l)->Node_Size = ((obsize) / 4 + ((obsize) % 4 == 0 ? 2 : 3)) * 4; \
+        (l)->Nodes_Num = 0;                                                \
+        (l)->Head_Addr = NULL;                                             \
+        (l)->Is_Loop = is_loop;                                            \
     }
 
-#define LinkedList_Get_Next(l, object) (void *)((uint32_t)(object) + (l)->Node_Size - 4)
-#define LinkedList_Get_FirstNode(l) (l)->Head_Addr
+#define LinkedList_Get_NextObject(l, object) (object != NULL ? (*(void **)((uint32_t)(object) + (l)->Node_Size - 8)) : NULL)
+#define LinkedList_Get_LastObject(l, object) (object != NULL ? (*(void **)((uint32_t)(object)-4)) : NULL)
+#define LinkedList_Get_FirstObject(l) (l != NULL ? ((l)->Head_Addr) : NULL)
 
 void *LinkedList_Find(linkedlist *l, int index);
 void *LinkedList_Add(linkedlist *l, int index);
 void LinkedList_Add2(linkedlist *l, int index, void *object);
+void *LinkedList_AddBehind(linkedlist *l, void *object);
+void LinkedList_AddBehind2(linkedlist *l, void *object);
 void *LinkedList_AddtoEnd(linkedlist *l);
 void LinkedList_AddtoEnd2(linkedlist *l, void *object);
 void *LinkedList_Remove(linkedlist *l, int index);

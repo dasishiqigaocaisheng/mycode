@@ -1,27 +1,25 @@
+SYSPROCESS_ID EQU 0x0000ff00	
+
 	AREA TYOS,CODE,READONLY
-	
-	EXPORT TYOS_SaveEnvironment
-	EXPORT TYOS_RebuildEnvironment
+
 	EXPORT TYOS_Start
 	EXPORT PendSV_Handler
-		
+	
+	IMPORT TYOS_Get_Process
+
 	IMPORT recent_prs
 	IMPORT process1
 	IMPORT process2
-		
-TYOS_SaveEnvironment	;
-	MRS R1, MSP			;读取栈顶地址
-	STR R1, [R0]
-	BX LR
-		
-TYOS_RebuildEnvironment	;重置SP指针
-	MSR MSP, R0
-	BX LR
 	
-TYOS_Start	;启动TYOS，此函数有两个参数：1.要跳转的PC值，2.进程栈顶地址
-	MSR MSP, R1
-	ORR R0, #1	;确保地址最低位为1
-	MOV PC, R0
+TYOS_Start	;启动TYOS
+	LDR R0,	=SYSPROCESS_ID
+	BL	TYOS_Get_Process ;获得SYSPROCESS_ID对应的process地址
+	;此时，R0中的值已经是SYSPROCESS_ID对应的process地址了
+	LDR R1, [R0]		;读入栈顶地址
+	MSR PSP, R1		;更新PSP
+	LDR R1, [R0, #4] ;读入启动进程函数地址
+	MOV PC, R1		;将PC指向启动进程地址
+
 
 PendSV_Handler
 	CPSID I
