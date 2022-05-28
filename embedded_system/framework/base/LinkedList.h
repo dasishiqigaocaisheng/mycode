@@ -29,7 +29,7 @@ void *LinkedList_Find(linkedlist *l, int index);
 void *LinkedList_Add(linkedlist *l, int index);
 void LinkedList_Add2(linkedlist *l, int index, void *object);
 void *LinkedList_AddBehind(linkedlist *l, void *object);
-void LinkedList_AddBehind2(linkedlist *l, void *object);
+void LinkedList_AddBehind2(linkedlist *l, void *object1, void *object2);
 void *LinkedList_AddtoEnd(linkedlist *l);
 void LinkedList_AddtoEnd2(linkedlist *l, void *object);
 void *LinkedList_Remove(linkedlist *l, int index);

@@ -146,16 +146,10 @@ void *LinkedList_AddBehind(linkedlist *l, void *object)
     {
         void *new_obj = (void *)((uint32_t)Memory_Malloc(&LINKEDLIST_HEAP, l->Node_Size) + 4);
         void *next_obj = LinkedList_Get_NextObject(l, object);
-        void *last_obj = object;
 
-        *GET_LAST_LINK_REG(l, new_obj) = last_obj;
+        *GET_LAST_LINK_REG(l, new_obj) = object;
         *GET_NEXT_LINK_REG(l, new_obj) = next_obj;
-        //在非循环链表中，last_obj==NULL意味着在头部添加节点
-        //而next_obj==NULL意味着在尾部添加节点
-        if (last_obj != NULL)
-            *GET_NEXT_LINK_REG(l, last_obj) = new_obj;
-        else
-            l->Head_Addr = new_obj;
+        *GET_NEXT_LINK_REG(l, object) = new_obj;
         if (next_obj != NULL)
             *GET_LAST_LINK_REG(l, next_obj) = new_obj;
         l->Nodes_Num++;
@@ -164,29 +158,43 @@ void *LinkedList_AddBehind(linkedlist *l, void *object)
     else
     {
         void *new_obj = (void *)((uint32_t)Memory_Malloc(&LINKEDLIST_HEAP, l->Node_Size) + 4);
-        void *next_obj = LinkedList_Find(l, index);
-        void *last_obj = LinkedList_Find(l, index - 1);
+        void *next_obj = LinkedList_Get_NextObject(l, object);
 
         //在循环节点中last_obj==NULL||next_obj==NULL说明原来链表中没有节点，此时new_obj形成自循环
         //如果链表中有任何一个节点，那么last_obj和next_obj都不可能为NULL
-        if (last_obj == NULL || next_obj == NULL)
-        {
-            *GET_LAST_LINK_REG(l, new_obj) = new_obj;
-            *GET_NEXT_LINK_REG(l, new_obj) = new_obj;
-            l->Head_Addr = new_obj;
-        }
-        else
-        {
-            *GET_NEXT_LINK_REG(l, last_obj) = new_obj;
-            *GET_LAST_LINK_REG(l, new_obj) = last_obj;
-            *GET_NEXT_LINK_REG(l, new_obj) = next_obj;
-            *GET_LAST_LINK_REG(l, next_obj) = new_obj;
-            //如果在头部添加节点
-            if (index == 0)
-                l->Head_Addr = new_obj;
-        }
+        *GET_NEXT_LINK_REG(l, object) = new_obj;
+        *GET_LAST_LINK_REG(l, new_obj) = object;
+        *GET_NEXT_LINK_REG(l, new_obj) = next_obj;
+        *GET_LAST_LINK_REG(l, next_obj) = new_obj;
         l->Nodes_Num++;
         return new_obj;
+    }
+}
+
+void LinkedList_AddBehind2(linkedlist *l, void *object1, void *object2)
+{
+    if (object1 == NULL)
+        return NULL;
+    if (!l->Is_Loop)
+    {
+        void *next_obj = LinkedList_Get_NextObject(l, object1);
+
+        *GET_LAST_LINK_REG(l, object2) = object1;
+        *GET_NEXT_LINK_REG(l, object2) = next_obj;
+        *GET_NEXT_LINK_REG(l, object1) = object2;
+        if (next_obj != NULL)
+            *GET_LAST_LINK_REG(l, next_obj) = object2;
+        l->Nodes_Num++;
+    }
+    else
+    {
+        void *next_obj = LinkedList_Get_NextObject(l, object1);
+
+        *GET_NEXT_LINK_REG(l, object1) = object2;
+        *GET_LAST_LINK_REG(l, object2) = object1;
+        *GET_NEXT_LINK_REG(l, object2) = next_obj;
+        *GET_LAST_LINK_REG(l, next_obj) = object2;
+        l->Nodes_Num++;
     }
 }
 

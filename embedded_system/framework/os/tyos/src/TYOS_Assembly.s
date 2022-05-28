@@ -7,6 +7,7 @@ SYSPROCESS_ID EQU 0x0000ff00
 	
 	IMPORT TYOS_Get_Process
 
+	IMPORT my_os
 	IMPORT recent_prs
 	IMPORT process1
 	IMPORT process2
@@ -22,6 +23,21 @@ TYOS_Start	;启动TYOS
 
 
 PendSV_Handler
+	CPSID I
+	MRS R0, PSP			;读取PSP
+	STMDB R0!, {R4-R11}
+	TST LR, #0x10		;检测浮点寄存器保存标志位
+	IT EQ
+	VSTMDBEQ R0!, {S16-S31}
+	STMDB R0!, LR
+
+
+
+
+
+
+	
+
 	CPSID I
 	PUSH {R4-R11}		;入栈R4~R11
 	TST LR, #0x10

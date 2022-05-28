@@ -14,10 +14,8 @@ process process1, process2;
 
 #define GET_PRIORITY_FROM_ID(id) (((id) >> 8) & 0xff)
 #define GET_INDEX_FROM_ID(id) ((id)&0xff)
-#define GET_PROCESS_FROM_INDEX_WITH_PPL(ppl, idx) (&((ppl)->Processes.Members[idx]))
-#define GET_PROCESS_FROM_ID_WITH_PPL(ppl, id) GET_PROCESS_FROM_INDEX_WITH_PPL(ppl, GET_INDEX_FROM_ID(id))
 
-#define PROCESS_INIT(p, pri, stk_size, hp_size, tsk, idx)                \
+#define PROCESS_INIT(p, ppl, pri, stk_size, hp_size, tsk, idx)           \
 	{                                                                    \
 		(p)->ID = ((uint32_t)((pri) << 8) + (idx));                      \
 		(p)->Initial_Pri = (pri);                                        \
@@ -36,7 +34,7 @@ process process1, process2;
 		*(--(p)->StackTop) = 0xfffffff9;                                 \
 		(p)->Status = PROCESS_SLEEP;                                     \
 		(p)->Task = tsk;                                                 \
-		(p)->PLB = ppl;                                                  \
+		(p)->PPL = ppl;                                                  \
 	}
 
 #define FIND_PPL_WITH_PRI(pri, ppl)                                        \
@@ -99,50 +97,34 @@ process_id TYOS_Create_Process(process_priority pri, task tsk)
 	//如果没有找到，则需要创建
 	if (ppl == NULL)
 	{
+		//搜索优先级高于pri的最低优先级ppl
 		ppl = LinkedList_Get_FirstObject(&my_os.Process_List);
 		while (ppl->Priority < pri)
 			ppl = LinkedList_Get_NextObject(&my_os.Process_List, ppl);
 		ppl = LinkedList_Get_LastObject(&my_os.Process_List, ppl);
+		//在找到的ppl后面加入新的ppl
+		//如果ppl==NULL说明pri比现有的优先级都高
+		if (ppl != NULL)
+			ppl = LinkedList_AddBehind(&my_os.Process_List, ppl);
+		else
+			ppl = LinkedList_Add(&my_os.Process_List, 0);
+		// ppl成员初始化
+		ppl->Priority = pri;
+		LinkedList_Prepare(&ppl->Processes, sizeof(process), Enable);
+		ppl->Ready_Process = NULL;
 	}
 	//找到合适的index用来构成ID
 	int idx = 0;
 	process *p = LinkedList_Get_FirstObject(&ppl->Processes);
-	while (idx == GET_INDEX_FROM_ID(p->ID))
-		idx++;
-	//创建process并初始化
-	p = LinkedList_AddtoEnd(&ppl->Processes);
-	PROCESS_INIT(p, pri, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, idx);
-
-	while (ppl != NULL)
+	while (idx == GET_INDEX_FROM_ID(p->ID) && p != NULL)
 	{
-	CREATE_PROCESS:
-		if (ppl->Priority == pri)
-		{
-			//找到合适的index用来构成ID
-			int idx = 0;
-			process *p = LinkedList_Get_FirstObject(&ppl->Processes);
-			while (idx == GET_INDEX_FROM_ID(p->ID))
-				idx++;
-			p = LinkedList_AddtoEnd(&ppl->Processes);
-			PROCESS_INIT(p, pri, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, idx);
-			my_os.Process_Number++;
-			__enable_irq();
-
-			return p->ID;
-		}
-		else
-		{
-			if (ppl->Priority > pri)
-				break;
-		}
-		ppl = LinkedList_Get_NextObject(&my_os.Process_List, ppl);
+		p = LinkedList_Get_NextObject(&ppl->Processes, p);
 		idx++;
 	}
-	ppl = LinkedList_Add(&my_os.Process_List, idx);
-	ppl->Priority = pri;
-	ppl->Process_Ready_Index = -1;
-	LinkedList_Prepare(&ppl->Processes, sizeof(process), Enable);
-	goto CREATE_PROCESS;
+	//创建process并初始化
+	p = LinkedList_AddtoEnd(&ppl->Processes);
+	PROCESS_INIT(p, ppl, pri, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, idx);
+	__enable_irq();
 }
 
 process *TYOS_Get_Process(process_id id)
@@ -187,10 +169,8 @@ void TYOS_Kernel_Prepare(uint16_t t_slice, heap *p_heap)
 	//添加第一个process队列，优先级255（最低）
 	process_pri_list *ppl = LinkedList_Add(&my_os.Process_List, 0);
 	ppl->Priority = 255;
-	ppl->Process_Ready_Index = 0;
-
-	//初始化队列
 	LinkedList_Prepare(&ppl->Processes, sizeof(process), Enable);
+
 	//创建系统进程，也就是第一个执行的进程
 	process *p = LinkedList_AddtoEnd(&ppl->Processes);
 	p->Current_Pri = 255;
@@ -200,8 +180,10 @@ void TYOS_Kernel_Prepare(uint16_t t_slice, heap *p_heap)
 	p->StackTop = (uint32_t *)((uint32_t)p->Stack + TYOS_PRCS_STACK_SIZE);
 	p->Status = PROCESS_ACTIVE;
 	p->Task = System_Process;
+	p->PPL = ppl;
 	//将当前活跃进程设定为系统进程
-	my_os.Active_Process = p->ID;
+	ppl->Ready_Process = p;
+	my_os.Active_Process = p;
 
 	SysTick->CTRL |= 1 << 2;					  //使用内核时钟
 	SysTick->CTRL |= 1 << 1;					  //产生异常请求
@@ -211,24 +193,15 @@ void TYOS_Kernel_Prepare(uint16_t t_slice, heap *p_heap)
 
 process *_TYOS_Process_Switch(void)
 {
-	//找到当前线程对应的优先级列表
-	process_pri_list *ppl;
-	FIND_PPL_WITH_PRI(ppl, GET_PRIORITY_FROM_ID(my_os.Active_Process));
-	//找到当前线程
-	process *p = GET_PROCESS_FROM_ID_WITH_PPL(ppl, my_os.Active_Process);
-	//对每个优先级高于p的线程列表进行搜索
-	ppl = LinkedList_Get_FirstObject(&my_os.Process_List);
-	while (ppl != NULL && ppl->Priority < p->Current_Pri)
-	{
-		//说明该列表内有就绪线程
-		if (ppl->Process_Ready_Index != -1)
-		{
-			process *next_p = &ppl->Processes.Members[ppl->Process_Ready_Index];
-			p->Status = PROCESS_ACTIVE;
-			my_os.Active_Process = p->ID;
-			return p;
-		}
-	}
+	//寻找第一个有就绪进程的ppl
+	process_pri_list *ppl = LinkedList_Get_FirstObject(&my_os.Process_List);
+	while (ppl->Ready_Process == NULL)
+		ppl = LinkedList_Get_NextObject(&my_os.Process_List, ppl);
+	//运行进程切换
+	ppl->Ready_Process->Status = PROCESS_ACTIVE;
+	if (my_os.Active_Process->Status == PROCESS_ACTIVE)
+		my_os.Active_Process->Status = PROCESS_READY;
+	return ppl->Ready_Process;
 }
 
 void SysTick_Handler(void)
