@@ -2310,3 +2310,155 @@ typedef struct metux metux;
                                              ^ ~~~~~
 3 warnings and 13 errors generated.
 
+[2022-05-29 12:48:05]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\base\LinkedList.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+./../../../../base/LinkedList.c:177:9: error: void function 'LinkedList_AddBehind2' should not return a value [-Wreturn-type]
+        return NULL;
+        ^      ~~~~
+1 error generated.
+
+[2022-05-29 12:48:19]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Assembly.s", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+"./../../src/TYOS_Assembly.s", line 26 (column 2): Error: A1137E: Unexpected characters at end of line
+   26 0000000e  @ LDR R0, =SYSPROCESS_ID
+                ^
+"./../../src/TYOS_Assembly.s", line 27 (column 2): Error: A1137E: Unexpected characters at end of line
+   27 0000000e  @ BL TYOS_Get_Process ;获得SYSPROCESS_ID对应的process地址
+                ^
+"./../../src/TYOS_Assembly.s", line 28 (column 2): Error: A1137E: Unexpected characters at end of line
+   28 0000000e  @ ;此时，R0中的值已经是SYSPROCESS_ID对应的process地址了
+                ^
+"./../../src/TYOS_Assembly.s", line 29 (column 2): Error: A1137E: Unexpected characters at end of line
+   29 0000000e  @ LDR R1, [R0]  ;读入栈顶地址
+                ^
+"./../../src/TYOS_Assembly.s", line 30 (column 2): Error: A1137E: Unexpected characters at end of line
+   30 0000000e  @ MSR PSP, R1  ;更新PSP
+                ^
+"./../../src/TYOS_Assembly.s", line 31 (column 2): Error: A1137E: Unexpected characters at end of line
+   31 0000000e  @ LDR R1, [R0, #4] ;读入启动进程函数地址
+                ^
+"./../../src/TYOS_Assembly.s", line 32 (column 2): Error: A1137E: Unexpected characters at end of line
+   32 0000000e  @ MOV PC, R1  ;将PC指向启动进程地址
+                ^
+"./../../src/TYOS_Assembly.s", line 50 (column 13): Error: A1215E: Bad register list symbol
+   50 0000002e  LDMIA R1!, [R4-R11, LR] ;R4-R11，LR出栈
+                           ^
+"./../../src/TYOS_Assembly.s", line 65: Error: A1167E: Invalid line start 
+   65 0000003e @  CPSID I
+"./../../src/TYOS_Assembly.s", line 66: Error: A1167E: Invalid line start 
+   66 0000003e @  PUSH {R4-R11}  ;入栈R4~R11
+"./../../src/TYOS_Assembly.s", line 67: Error: A1167E: Invalid line start 
+   67 0000003e @  TST LR, #0x10
+"./../../src/TYOS_Assembly.s", line 68: Error: A1167E: Invalid line start 
+   68 0000003e @  BNE FPU_NO_PUSH
+"./../../src/TYOS_Assembly.s", line 69: Error: A1167E: Invalid line start 
+   69 0000003e @  VPUSH {S16-S31}
+"./../../src/TYOS_Assembly.s", line 70 (column 3): Error: A1163E: Unknown opcode FPU_NO_PUSH , expecting opcode or Macro
+   70 0000003e @ FPU_NO_PUSH
+                 ^
+"./../../src/TYOS_Assembly.s", line 71: Error: A1167E: Invalid line start 
+   71 0000003e @  PUSH {LR}
+"./../../src/TYOS_Assembly.s", line 72: Error: A1167E: Invalid line start 
+   72 0000003e @  MRS R0, MSP   ;读入MSP
+"./../../src/TYOS_Assembly.s", line 73: Error: A1167E: Invalid line start 
+   73 0000003e @  LDR R2, =recent_prs ;读取recent_prs地址
+"./../../src/TYOS_Assembly.s", line 74: Error: A1167E: Invalid line start 
+   74 0000003e @  LDR R1, [R2]  ;读入recent_prs的值，也就是实例的地址
+"./../../src/TYOS_Assembly.s", line 75: Error: A1167E: Invalid line start 
+   75 0000003e @  STR R0, [R1]  ;MSP存入recent_prs->StackTop
+"./../../src/TYOS_Assembly.s", line 76: Error: A1167E: Invalid line start 
+   76 0000003e @  LDR R0, =process1 ;读入process1地址
+"./../../src/TYOS_Assembly.s", line 77: Error: A1167E: Invalid line start 
+   77 0000003e @  CMP R0, R1   ;比较recent_prs和process1的地址
+"./../../src/TYOS_Assembly.s", line 78: Error: A1167E: Invalid line start 
+   78 0000003e @  BNE LABEL0   ;不同则跳转
+"./../../src/TYOS_Assembly.s", line 79: Error: A1167E: Invalid line start 
+   79 0000003e @  ;如果 recent_prs==process1
+"./../../src/TYOS_Assembly.s", line 80: Error: A1167E: Invalid line start 
+   80 0000003e @  LDR R0, =process2 ;获取process2的地址
+"./../../src/TYOS_Assembly.s", line 81: Error: A1167E: Invalid line start 
+   81 0000003e @  STR R0, [R2]  ;更新recent_prs
+"./../../src/TYOS_Assembly.s", line 82: Error: A1167E: Invalid line start 
+   82 0000003e @  LDR R0, [R0]  ;读取process2的栈顶
+"./../../src/TYOS_Assembly.s", line 83: Error: A1167E: Invalid line start 
+   83 0000003e @  MSR MSP, R0   ;MSP更新为process2的栈顶
+"./../../src/TYOS_Assembly.s", line 84: Error: A1167E: Invalid line start 
+   84 0000003e @  POP {LR}
+"./../../src/TYOS_Assembly.s", line 85: Error: A1167E: Invalid line start 
+   85 0000003e @  TST LR, #0x10
+"./../../src/TYOS_Assembly.s", line 86: Error: A1167E: Invalid line start 
+   86 0000003e @  BNE FPU_NO_POP
+"./../../src/TYOS_Assembly.s", line 87: Error: A1167E: Invalid line start 
+   87 0000003e @  VPOP {S16-S31}
+"./../../src/TYOS_Assembly.s", line 88 (column 3): Error: A1163E: Unknown opcode FPU_NO_POP , expecting opcode or Macro
+   88 0000003e @ FPU_NO_POP
+                 ^
+"./../../src/TYOS_Assembly.s", line 89: Error: A1167E: Invalid line start 
+   89 0000003e @  POP {R4-R11}  ;R4~R11出栈
+"./../../src/TYOS_Assembly.s", line 90: Error: A1167E: Invalid line start 
+   90 0000003e @  CPSIE I
+"./../../src/TYOS_Assembly.s", line 91: Error: A1167E: Invalid line start 
+   91 0000003e @  BX LR
+"./../../src/TYOS_Assembly.s", line 92 (column 3): Error: A1163E: Unknown opcode LABEL0 , expecting opcode or Macro
+   92 0000003e @ LABEL0
+                 ^
+"./../../src/TYOS_Assembly.s", line 93: Error: A1167E: Invalid line start 
+   93 0000003e @  STR R0, [R2]  ;更新recent_prs
+"./../../src/TYOS_Assembly.s", line 94: Error: A1167E: Invalid line start 
+   94 0000003e @  LDR R0, [R0]  ;读取process1的栈顶
+"./../../src/TYOS_Assembly.s", line 95: Error: A1167E: Invalid line start 
+   95 0000003e @  MSR MSP, R0   ;MSP更新为process1的栈顶
+"./../../src/TYOS_Assembly.s", line 96: Error: A1167E: Invalid line start 
+   96 0000003e @  POP {LR}
+"./../../src/TYOS_Assembly.s", line 97: Error: A1167E: Invalid line start 
+   97 0000003e @  TST LR, #0x10
+"./../../src/TYOS_Assembly.s", line 98: Error: A1167E: Invalid line start 
+   98 0000003e @  BNE FPU_NO_POP
+"./../../src/TYOS_Assembly.s", line 99: Error: A1167E: Invalid line start 
+   99 0000003e @  VPOP {S16-S31}
+"./../../src/TYOS_Assembly.s", line 100: Error: A1167E: Invalid line start 
+  100 0000003e @  POP {R4-R11}  ;R4~R11出栈
+"./../../src/TYOS_Assembly.s", line 101: Error: A1167E: Invalid line start 
+  101 0000003e @  CPSIE I
+"./../../src/TYOS_Assembly.s", line 102: Error: A1167E: Invalid line start 
+  102 0000003e @  BX LR
+46 Errors, 0 Warnings
+
+[2022-05-29 12:49:48]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Assembly.s", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+"./../../src/TYOS_Assembly.s", line 50 (column 13): Error: A1215E: Bad register list symbol
+   50 0000002e  LDMIA R1!, [R4-R11, LR] ;R4-R11，LR出栈
+                           ^
+1 Error, 0 Warnings
+
+[2022-05-29 12:50:46]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Assembly.s", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01775] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+"./../../src/TYOS_Assembly.s", line 50 (column 13): Error: A1215E: Bad register list symbol
+   50 0000002e  LDMIA R1!, [R4-R11, LR] ;R4-R11，LR出栈
+                           ^
+1 Error, 0 Warnings
+
+[2022-05-29 12:51:25]	[done]
+	build successfully !
+
+[2022-05-29 12:52:53]	[done]
+	build successfully !
+
+[2022-05-29 22:15:56]	[done]
+	build successfully !
+
+[2022-05-29 22:38:56]	link failed !, exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x01919] in <fd78e56b6e324a5db5bf438ab450b5f7>:0 
+---
+Error: L6218E: Undefined symbol Set_PendSV_Interrupt (referred from main.o).
+Not enough information to list image symbols.
+Finished: 1 information, 0 warning and 1 error messages.
+
+
+[2022-05-29 22:39:31]	[done]
+	build successfully !
+

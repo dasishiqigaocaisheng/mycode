@@ -1,0 +1,222 @@
+[2022-06-01 18:14:30]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+   at unify_builder.Program.Main(String[] args)
+---
+./../../src/TYOS_Kernel.c:171:54: error: unexpected type name 'process': expected expression
+        ArrayList_Prepare(&my_os.Waiting_Processes, sizeof(*process), my_os.Process_Heap, 10);
+                                                            ^
+./../../src/TYOS_Kernel.c:171:54: error: unexpected type name 'process': expected expression
+./../../src/TYOS_Kernel.c:171:54: error: unexpected type name 'process': expected expression
+3 errors generated.
+
+[2022-06-01 18:15:21]	[done]
+	build successfully !
+
+[2022-06-02 16:32:09]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+   at unify_builder.Program.Main(String[] args)
+---
+./../../src/TYOS_Kernel.c:257:2: error: no member named 'my_os' in 'struct tyos'
+        my_os.Tick++;
+        ^
+1 error generated.
+
+[2022-06-02 16:49:23]	[done]
+	build successfully !
+
+[2022-06-02 16:56:02]	[done]
+	build successfully !
+
+[2022-06-03 18:22:08]	[done]
+	build successfully !
+
+[2022-07-11 16:14:07]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+   at unify_builder.Program.Main(String[] args)
+---
+./../../src/TYOS_Kernel.c:258:20: error: use of undeclared identifier 'ppl'
+        process *next_p = ppl->Ready_Process; //下一个将要执行的进程
+                          ^
+./../../src/TYOS_Kernel.c:261:27: warning: comparison of distinct pointer types ('process_handler *' (aka 'struct process_handler *') and 'process *' (aka 'struct process *')) [-Wcompare-distinct-pointer-types]
+        if (my_os.Active_Process != next_p)
+            ~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~
+./../../src/TYOS_Kernel.c:263:29: error: no member named 'Status' in 'struct process_handler'
+                if (my_os.Active_Process->Status == PROCESS_ACTIVE)
+                    ~~~~~~~~~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:264:26: error: no member named 'Status' in 'struct process_handler'
+                        my_os.Active_Process->Status = PROCESS_READY;
+                        ~~~~~~~~~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:265:24: warning: incompatible pointer types assigning to 'process_handler *' (aka 'struct process_handler *') from 'process *' (aka 'struct process *') [-Wincompatible-pointer-types]
+                my_os.Active_Process = next_p;
+                                     ^ ~~~~~~
+./../../src/TYOS_Kernel.c:269:2: warning: implicit declaration of function 'PPL_FIND_NEXT_RDY_PROCESS' is invalid in C99 [-Wimplicit-function-declaration]
+        PPL_FIND_NEXT_RDY_PROCESS(&ppl->Processes, next_p, next_rdy_p);
+        ^
+./../../src/TYOS_Kernel.c:269:29: error: use of undeclared identifier 'ppl'
+        PPL_FIND_NEXT_RDY_PROCESS(&ppl->Processes, next_p, next_rdy_p);
+                                   ^
+./../../src/TYOS_Kernel.c:270:2: error: use of undeclared identifier 'ppl'
+        ppl->Ready_Process = next_rdy_p;
+        ^
+./../../src/TYOS_Kernel.c:278:24: error: no member named 'Running_Time' in 'struct process_handler'
+        my_os.Active_Process->Running_Time++;
+        ~~~~~~~~~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:295:17: error: no member named 'Status' in 'struct process_handler'
+                wtt->Process->Status = PROCESS_READY;
+                ~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:296:21: error: no member named 'PPL' in 'struct process_handler'
+                if (wtt->Process->PPL->Ready_Process == NULL)
+                    ~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:297:18: error: no member named 'PPL' in 'struct process_handler'
+                        wtt->Process->PPL->Ready_Process = wtt->Process;
+                        ~~~~~~~~~~~~  ^
+3 warnings and 9 errors generated.
+
+[2022-07-11 16:15:50]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+   at unify_builder.Program.Main(String[] args)
+---
+./../../src/TYOS_Kernel.c:125:2: error: no member named 'PM' in 'struct process'
+        PROCESS_INIT(p, pm, ph, pri, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, idx);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:41:8: note: expanded from macro 'PROCESS_INIT'
+                (p)->PM = pm;                                                                    \
+                ~~~  ^
+./../../src/TYOS_Kernel.c:125:2: error: no member named 'PH' in 'struct process'
+        PROCESS_INIT(p, pm, ph, pri, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, idx);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./../../src/TYOS_Kernel.c:42:8: note: expanded from macro 'PROCESS_INIT'
+                (p)->PH = ph;                                                                    \
+                ~~~  ^
+./../../src/TYOS_Kernel.c:142:10: error: no member named 'PM' in 'struct process'
+                if (p->PM->Ready_Process == NULL)
+                    ~  ^
+./../../src/TYOS_Kernel.c:143:7: error: no member named 'PM' in 'struct process'
+                        p->PM->Ready_Process = p;
+                        ~  ^
+./../../src/TYOS_Kernel.c:159:29: error: no member named 'PH' in 'struct process'
+                        if (wtt[i].Process == p->PH)
+                                              ~  ^
+./../../src/TYOS_Kernel.c:177:9: error: no member named 'PM' in 'struct process'
+        if (p->PM->Ready_Process == p)
+            ~  ^
+./../../src/TYOS_Kernel.c:180:36: error: no member named 'PM' in 'struct process'
+                FIND_NEXT_RDY_PROCESS_FROM_PM(p->PM, p, next_rdy_p);
+                                              ~  ^
+./../../src/TYOS_Kernel.c:66:41: note: expanded from macro 'FIND_NEXT_RDY_PROCESS_FROM_PM'
+                (nxt_p) = LinkedList_Get_NextObject(&(pm)->Instance, rec_p);               \
+                                                      ^~
+./../../../../base\LinkedList.h:24:98: note: expanded from macro 'LinkedList_Get_NextObject'
+#define LinkedList_Get_NextObject(l, object) (object != NULL ? (*(void **)((uint32_t)(object) + (l)->Node_Size - 8)) : NULL)
+                                                                                                 ^
+./../../src/TYOS_Kernel.c:180:36: error: no member named 'PM' in 'struct process'
+                FIND_NEXT_RDY_PROCESS_FROM_PM(p->PM, p, next_rdy_p);
+                                              ~  ^
+./../../src/TYOS_Kernel.c:71:42: note: expanded from macro 'FIND_NEXT_RDY_PROCESS_FROM_PM'
+                        (nxt_p) = LinkedList_Get_NextObject(&(pm)->Instance, nxt_p);           \
+                                                              ^~
+./../../../../base\LinkedList.h:24:98: note: expanded from macro 'LinkedList_Get_NextObject'
+#define LinkedList_Get_NextObject(l, object) (object != NULL ? (*(void **)((uint32_t)(object) + (l)->Node_Size - 8)) : NULL)
+                                                                                                 ^
+./../../src/TYOS_Kernel.c:181:6: error: no member named 'PM' in 'struct process'
+                p->PM->Ready_Process = next_rdy_p;
+                ~  ^
+./../../src/TYOS_Kernel.c:233:5: error: no member named 'PM' in 'struct process'
+        p->PM = pm;
+        ~  ^
+./../../src/TYOS_Kernel.c:234:5: error: no member named 'PH' in 'struct process'
+        p->PH = ph;
+        ~  ^
+./../../src/TYOS_Kernel.c:263:29: error: no member named 'Status' in 'struct process_handler'
+                if (my_os.Active_Process->Status == PROCESS_ACTIVE)
+                    ~~~~~~~~~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:264:26: error: no member named 'Status' in 'struct process_handler'
+                        my_os.Active_Process->Status = PROCESS_READY;
+                        ~~~~~~~~~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:265:24: warning: incompatible pointer types assigning to 'process_handler *' (aka 'struct process_handler *') from 'process *' (aka 'struct process *') [-Wincompatible-pointer-types]
+                my_os.Active_Process = next_p;
+                                     ^ ~~~~~~
+./../../src/TYOS_Kernel.c:269:2: warning: implicit declaration of function 'PPL_FIND_NEXT_RDY_PROCESS' is invalid in C99 [-Wimplicit-function-declaration]
+        PPL_FIND_NEXT_RDY_PROCESS(&ppl->Processes, next_p, next_rdy_p);
+        ^
+./../../src/TYOS_Kernel.c:269:29: error: use of undeclared identifier 'ppl'
+        PPL_FIND_NEXT_RDY_PROCESS(&ppl->Processes, next_p, next_rdy_p);
+                                   ^
+./../../src/TYOS_Kernel.c:270:2: error: use of undeclared identifier 'ppl'
+        ppl->Ready_Process = next_rdy_p;
+        ^
+./../../src/TYOS_Kernel.c:278:24: error: no member named 'Running_Time' in 'struct process_handler'
+        my_os.Active_Process->Running_Time++;
+        ~~~~~~~~~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:295:17: error: no member named 'Status' in 'struct process_handler'
+                wtt->Process->Status = PROCESS_READY;
+                ~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:296:21: error: no member named 'PPL' in 'struct process_handler'
+                if (wtt->Process->PPL->Ready_Process == NULL)
+                    ~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:297:18: error: no member named 'PPL' in 'struct process_handler'
+                        wtt->Process->PPL->Ready_Process = wtt->Process;
+                        ~~~~~~~~~~~~  ^
+2 warnings and 19 errors generated.
+
+[2022-07-11 16:17:34]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Kernel.c", exit code: 1
+   at unify_builder.Program.Main(String[] args)
+---
+./../../src/TYOS_Kernel.c:159:29: error: no member named 'PH' in 'struct process'
+                        if (wtt[i].Process == p->PH)
+                                              ~  ^
+./../../src/TYOS_Kernel.c:177:9: error: no member named 'PM' in 'struct process'
+        if (p->PM->Ready_Process == p)
+            ~  ^
+./../../src/TYOS_Kernel.c:180:36: error: no member named 'PM' in 'struct process'
+                FIND_NEXT_RDY_PROCESS_FROM_PM(p->PM, p, next_rdy_p);
+                                              ~  ^
+./../../src/TYOS_Kernel.c:66:41: note: expanded from macro 'FIND_NEXT_RDY_PROCESS_FROM_PM'
+                (nxt_p) = LinkedList_Get_NextObject(&(pm)->Instance, rec_p);               \
+                                                      ^~
+./../../../../base\LinkedList.h:24:98: note: expanded from macro 'LinkedList_Get_NextObject'
+#define LinkedList_Get_NextObject(l, object) (object != NULL ? (*(void **)((uint32_t)(object) + (l)->Node_Size - 8)) : NULL)
+                                                                                                 ^
+./../../src/TYOS_Kernel.c:180:36: error: no member named 'PM' in 'struct process'
+                FIND_NEXT_RDY_PROCESS_FROM_PM(p->PM, p, next_rdy_p);
+                                              ~  ^
+./../../src/TYOS_Kernel.c:71:42: note: expanded from macro 'FIND_NEXT_RDY_PROCESS_FROM_PM'
+                        (nxt_p) = LinkedList_Get_NextObject(&(pm)->Instance, nxt_p);           \
+                                                              ^~
+./../../../../base\LinkedList.h:24:98: note: expanded from macro 'LinkedList_Get_NextObject'
+#define LinkedList_Get_NextObject(l, object) (object != NULL ? (*(void **)((uint32_t)(object) + (l)->Node_Size - 8)) : NULL)
+                                                                                                 ^
+./../../src/TYOS_Kernel.c:181:6: error: no member named 'PM' in 'struct process'
+                p->PM->Ready_Process = next_rdy_p;
+                ~  ^
+./../../src/TYOS_Kernel.c:233:5: error: no member named 'PM' in 'struct process'
+        p->PM = pm;
+        ~  ^
+./../../src/TYOS_Kernel.c:234:5: error: no member named 'PH' in 'struct process'
+        p->PH = ph;
+        ~  ^
+./../../src/TYOS_Kernel.c:269:2: warning: implicit declaration of function 'PPL_FIND_NEXT_RDY_PROCESS' is invalid in C99 [-Wimplicit-function-declaration]
+        PPL_FIND_NEXT_RDY_PROCESS(&ppl->Processes, next_p, next_rdy_p);
+        ^
+./../../src/TYOS_Kernel.c:269:29: error: use of undeclared identifier 'ppl'
+        PPL_FIND_NEXT_RDY_PROCESS(&ppl->Processes, next_p, next_rdy_p);
+                                   ^
+./../../src/TYOS_Kernel.c:270:2: error: use of undeclared identifier 'ppl'
+        ppl->Ready_Process = next_rdy_p;
+        ^
+./../../src/TYOS_Kernel.c:278:24: error: no member named 'Running_Time' in 'struct process_handler'
+        my_os.Active_Process->Running_Time++;
+        ~~~~~~~~~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:295:17: error: no member named 'Status' in 'struct process_handler'
+                wtt->Process->Status = PROCESS_READY;
+                ~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:296:21: error: no member named 'PPL' in 'struct process_handler'
+                if (wtt->Process->PPL->Ready_Process == NULL)
+                    ~~~~~~~~~~~~  ^
+./../../src/TYOS_Kernel.c:297:18: error: no member named 'PPL' in 'struct process_handler'
+                        wtt->Process->PPL->Ready_Process = wtt->Process;
+                        ~~~~~~~~~~~~  ^
+1 warning and 13 errors generated.
+
+[2022-07-22 17:36:10]	[done]
+	build successfully !
+
+[2022-07-22 17:37:26]	[done]
+	build successfully !
+

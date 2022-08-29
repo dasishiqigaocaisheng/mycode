@@ -25,11 +25,20 @@ typedef struct
         (al)->Member_Num = 0;                                                         \
     }
 
-#define ArrayList_AddtoEnd(al) ArrayList_Insert(al, (al)->Member_Num);
-
-#define ArrayList_RemoveLast(al) ArrayList_Remove(al, (al)->Member_Num - 1);
+#define ArrayList_AddtoEnd(al) ArrayList_Insert(al, (al)->Member_Num)
+#define ArrayList_RemoveLast(al) ArrayList_Remove(al, (al)->Member_Num - 1)
+#define ArrayList_AddBehind(al, obj) ArrayList_Insert(al, ((uint32_t)(obj) - ((uint32_t)(al)->Members)) / (al)->Member_Size + 1)
+#define ArrayList_IsLastOne(al, obj) (((uint32_t)(obj)) == ((uint32_t)(al)->Members) + ((al)->Member_Num - 1) * (al)->Member_Size)
+#define ArrayList_Clear(al)                                                                 \
+    {                                                                                       \
+        Memory_Free((al)->Heap, (al)->Members);                                             \
+        (al)->Members = Memory_Malloc((al)->Heap, (al)->Member_Size * (al)->MinMalloc_Num); \
+        (al)->Member_Num = 0;                                                               \
+    }
 
 void *ArrayList_Insert(arraylist *al, uint16_t idx);
+void *ArrayList_Insert_Group(arraylist *al, uint16_t idx, uint16_t num);
 void ArrayList_Remove(arraylist *al, uint16_t idx);
+status_flag ArrayList_IsContain(arraylist *al, void *object);
 
 #endif

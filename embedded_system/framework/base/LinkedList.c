@@ -174,7 +174,7 @@ void *LinkedList_AddBehind(linkedlist *l, void *object)
 void LinkedList_AddBehind2(linkedlist *l, void *object1, void *object2)
 {
     if (object1 == NULL)
-        return NULL;
+        return;
     if (!l->Is_Loop)
     {
         void *next_obj = LinkedList_Get_NextObject(l, object1);

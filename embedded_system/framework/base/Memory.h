@@ -67,9 +67,9 @@ typedef struct
 
 extern heap heap0,heap1,heap2,heap3,heap4,heap5;
 
-#define Memory_Malloc_Size(h,addr) 	((h)->Dirction==HeapDir_Normal? \
-									(h)->Node_List[((uint32_t)(addr)-(uint32_t)(h)->Addr)/(h)->BlockSize].MemBlock_Size: \
-									(h)->Node_List[(h)->BlockNum-1-((uint32_t)(addr)-(uint32_t)(h)->Addr)/(h)->BlockSize].MemBlock_Size)
+#define Memory_Malloc_Size(h,addr) 	((addr)!=NULL?((h)->Dirction==HeapDir_Normal? \
+									(h)->Node_List[((uint32_t)(addr)-(uint32_t)(h)->Addr)/(h)->BlockSize].MemBlock_Size*(h)->BlockSize: \
+(h)->Node_List[(h)->BlockNum-1-((uint32_t)(addr)-(uint32_t)(h)->Addr)/(h)->BlockSize].MemBlock_Size*(h)->BlockSize):0) \
 
 void Memory_Init(void);
 void Memory_Heap_Init(heap *h, heap_dir_type dir, uint16_t blk_size, uint16_t blk_num, heap_node *nodes, void *addr);
