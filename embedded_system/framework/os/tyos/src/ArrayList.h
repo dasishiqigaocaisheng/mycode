@@ -25,20 +25,26 @@ typedef struct
         (al)->Member_Num = 0;                                                         \
     }
 
+#define ArrayList_Insert2(al, idx, type) (*(type *)ArrayList_Insert(al, idx))
 #define ArrayList_AddtoEnd(al) ArrayList_Insert(al, (al)->Member_Num)
+#define ArrayList_AddtoEnd2(al, type) (*(type *)ArrayList_Insert(al, (al)->Member_Num))
 #define ArrayList_RemoveLast(al) ArrayList_Remove(al, (al)->Member_Num - 1)
 #define ArrayList_AddBehind(al, obj) ArrayList_Insert(al, ((uint32_t)(obj) - ((uint32_t)(al)->Members)) / (al)->Member_Size + 1)
+#define ArrayList_AddBehind2(al, obj, type) (*(type *)ArrayList_Insert(al, ((uint32_t)(obj) - ((uint32_t)(al)->Members)) / (al)->Member_Size + 1))
+#define ArrayList_Get_Index(al, obj) (((uint32_t)(obj) - (uint32_t)(al)->Members) / ((al)->Member_Size))
+#define ArrayList_Get_Member(al, idx, type) ((type *)((al)->Members))[idx]
 #define ArrayList_IsLastOne(al, obj) (((uint32_t)(obj)) == ((uint32_t)(al)->Members) + ((al)->Member_Num - 1) * (al)->Member_Size)
-#define ArrayList_Clear(al)                                                                 \
-    {                                                                                       \
-        Memory_Free((al)->Heap, (al)->Members);                                             \
-        (al)->Members = Memory_Malloc((al)->Heap, (al)->Member_Size * (al)->MinMalloc_Num); \
-        (al)->Member_Num = 0;                                                               \
+#define ArrayList_Clear(al)                                                                         \
+    {                                                                                               \
+        Memory_Free((heap *)(al)->Heap, (al)->Members);                                             \
+        (al)->Members = Memory_Malloc((heap *)(al)->Heap, (al)->Member_Size * (al)->MinMalloc_Num); \
+        (al)->Member_Num = 0;                                                                       \
     }
 
 void *ArrayList_Insert(arraylist *al, uint16_t idx);
 void *ArrayList_Insert_Group(arraylist *al, uint16_t idx, uint16_t num);
 void ArrayList_Remove(arraylist *al, uint16_t idx);
+void ArrayList_Remove2(arraylist *al, void *obj);
 status_flag ArrayList_IsContain(arraylist *al, void *object);
 
 #endif

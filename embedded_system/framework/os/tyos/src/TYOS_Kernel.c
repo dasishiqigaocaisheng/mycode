@@ -1,48 +1,60 @@
 #include "Framework.h"
 #include "TYOS_Kernel.h"
+#include "TYOS_SysCall.h"
 
 #include "USART.h"
 
+///////////////////用户配置/////////////////////
+#define GLOBAL_INTERRUPT_DISABLE() __disable_irq()
+#define GLOBAL_INTERRUPT_ENABLE() __enable_irq()
+#define TICKTIMER_INTERRUPT_DISABLE() SysTick->CTRL &= ~1
+#define TICKTIMER_INTERRUPT_ENABLE() SysTick->CTRL |= 1
+#define SET_PENDSV_INTERRUPT() \
+	SCB->ICSR |= 1 << 28;      \
+	__DSB();                   \
+	__ISB()
+
+///////////////////////////////////////////////
+
 tyos my_os;
-
-volatile float save = 1.5f;
-
 process *sys_p;
 
 process *_TYOS_Process_Switch(void);
-void _TYOS_SVC_Handler_C(uint32_t *stk_tp);
+void _TYOS_SVC_Handler_C(uint32_t *stk_tp, uint32_t *ex_para);
 
 #define SYSTIMER_1MS_VALUE ((uint32_t)SYSCLK_MAX_CLOCK / 1000)
 
 #define GET_PRIORITY_FROM_ID(id) (((id) >> 8) & 0xff)
 #define GET_INDEX_FROM_ID(id) ((id)&0xff)
 
-#define PROCESS_INIT(p, pm, ph, pri, stk_size, hp_size, tsk, idx)                        \
-	{                                                                                    \
-		(p)->ID = ((uint32_t)((pri) << 8) + (idx));                                      \
-		(p)->Initial_Pri = (pri);                                                        \
-		(p)->Current_Pri = (pri);                                                        \
-		(p)->Stack = Memory_Malloc(my_os.Process_Heap, stk_size);                        \
-		(p)->StackTop = (uint32_t *)((uint32_t)(p)->Stack + (stk_size));                 \
-		*(--(p)->StackTop) = 0x01000000;                                                 \
-		*(--(p)->StackTop) = (uint32_t)(tsk) | 1;                                        \
-		*(--(p)->StackTop) = 0;                                                          \
-		*(--(p)->StackTop) = (uint32_t)(p)->Stack + (stk_size) + 4;                      \
-		*(--(p)->StackTop) = 0;                                                          \
-		*(--(p)->StackTop) = 0;                                                          \
-		*(--(p)->StackTop) = 0;                                                          \
-		*(--(p)->StackTop) = 0;                                                          \
-		*(--(p)->StackTop) = 1;                                                          \
-		*(--(p)->StackTop) = 2;                                                          \
-		(p)->StackTop -= 6;                                                              \
-		*(--(p)->StackTop) = 0xfffffffd;                                                 \
-		(p)->Status = PROCESS_SLEEP;                                                     \
-		(p)->Task = tsk;                                                                 \
-		(p)->Manager = pm;                                                               \
-		(p)->Handler = ph;                                                               \
-		(p)->Start_Time = 0;                                                             \
-		(p)->Running_Time = 0;                                                           \
-		ArrayList_Prepare(&((p)->Assets), sizeof(process_asset), my_os.Process_Heap, 5); \
+#define PROCESS_INIT(p, pm, ph, pri, stk_size, hp_size, tsk, idx)                              \
+	{                                                                                          \
+		(p)->ID = ((uint32_t)((pri) << 8) + (idx));                                            \
+		(p)->Initial_Pri = (pri);                                                              \
+		(p)->Current_Pri = (pri);                                                              \
+		(p)->Stack = Memory_Malloc(my_os.Process_Heap, stk_size);                              \
+		(p)->StackTop = (uint32_t *)((uint32_t)(p)->Stack + (stk_size));                       \
+		*(--(p)->StackTop) = 0x01000000;                                                       \
+		*(--(p)->StackTop) = (uint32_t)(tsk) | 1;                                              \
+		*(--(p)->StackTop) = 0;                                                                \
+		*(--(p)->StackTop) = (uint32_t)(p)->Stack + (stk_size) + 4;                            \
+		*(--(p)->StackTop) = 0;                                                                \
+		*(--(p)->StackTop) = 0;                                                                \
+		*(--(p)->StackTop) = 0;                                                                \
+		*(--(p)->StackTop) = 0;                                                                \
+		*(--(p)->StackTop) = 1;                                                                \
+		*(--(p)->StackTop) = 2;                                                                \
+		(p)->StackTop -= 6;                                                                    \
+		*(--(p)->StackTop) = 0xfffffffd;                                                       \
+		(p)->Status = PROCESS_SLEEP;                                                           \
+		(p)->Task = tsk;                                                                       \
+		(p)->Manager = pm;                                                                     \
+		(p)->Handler = ph;                                                                     \
+		(p)->Start_Time = 0;                                                                   \
+		(p)->Running_Time = 0;                                                                 \
+		(p)->Mutex_Count = 0;                                                                  \
+		ArrayList_Prepare(&((p)->Assets), sizeof(process_asset), my_os.Process_Heap, 5);       \
+		ArrayList_Prepare(&((p)->Request_Mutex_IDs), sizeof(mutex_id), my_os.Process_Heap, 3); \
 	}
 
 #define FIND_PM_WITH_PRI(pri, pm)                                            \
@@ -78,9 +90,10 @@ void System_Process(void)
 {
 	while (1)
 	{
-		__disable_irq();
+		TYOS_Stop_Schedule();
 		USART_Printf(USART1, "S:%ld\r\n", my_os.Active_Process->Running_Time);
-		__enable_irq();
+		TYOS_Resume_Schedule();
+		TYOS_Schedule_Immediately();
 	}
 }
 
@@ -122,7 +135,7 @@ process *TYOS_Create_Process(process_priority pri, task tsk)
 	ph = LinkedList_AddBehind(&pm->Handler, ph);
 	//创建process并初始化
 	process *p = LinkedList_AddtoEnd(&pm->Instance);
-	PROCESS_INIT(p, pm, ph, pri, TYOS_PRCS_STACK_SIZE, TYOS_PRCS_HEAP_SIZE, tsk, idx);
+	PROCESS_INIT(p, pm, ph, pri, TYOS_PROCESS_STACK_SIZE, TYOS_PROCESS_HEAP_SIZE, tsk, idx);
 	//初始化process_handler
 	ph->Address = p;
 	ph->ID = p->ID;
@@ -147,7 +160,7 @@ void TYOS_Process_Start(process *p)
 
 void TYOS_Process_Wait_Time(process *p, uint32_t time)
 {
-	__disable_irq();
+	TYOS_Stop_Schedule();
 	int i;
 	waiting_time_table *wtt = my_os.Waiting_Processes.Members;
 
@@ -179,8 +192,8 @@ void TYOS_Process_Wait_Time(process *p, uint32_t time)
 		FIND_NEXT_RDY_PROCESS_FROM_PM(p->Manager, p, next_rdy_p);
 		p->Manager->Ready_Process = next_rdy_p;
 	}
-	__enable_irq();
-	Set_PendSV_Interrupt();
+	TYOS_Resume_Schedule();
+	TYOS_Schedule_Immediately();
 }
 
 void TYOS_Kernel_Prepare(uint16_t t_slice, heap *p_heap)
@@ -225,8 +238,8 @@ void TYOS_Kernel_Prepare(uint16_t t_slice, heap *p_heap)
 	p->Current_Pri = 255;
 	p->Initial_Pri = 255;
 	p->ID = (255 << 8) + 0;
-	p->Stack = Memory_Malloc(my_os.Process_Heap, TYOS_PRCS_STACK_SIZE);
-	p->StackTop = (uint32_t *)((uint32_t)p->Stack + TYOS_PRCS_STACK_SIZE);
+	p->Stack = Memory_Malloc(my_os.Process_Heap, TYOS_PROCESS_STACK_SIZE);
+	p->StackTop = (uint32_t *)((uint32_t)p->Stack + TYOS_PROCESS_STACK_SIZE);
 	p->Status = PROCESS_ACTIVE;
 	p->Task = System_Process;
 	p->Manager = pm;
@@ -301,11 +314,49 @@ void SysTick_Handler(void)
 	}
 	USART_Send_Data_Flow(USART1, "tick\r\n", 6);
 	__enable_irq();
-	Set_PendSV_Interrupt();
+	SET_PENDSV_INTERRUPT();
 }
 
-void _TYOS_SVC_Handler_C(uint32_t *stk_tp)
+void _TYOS_SVC_Handler_C(uint32_t *stk_tp, uint32_t *ex_para)
 {
+	uint8_t svc_num = ((uint8_t *)stk_tp[6])[-2];
+	switch (svc_num)
+	{
+	case 0:
+	{
+		GLOBAL_INTERRUPT_DISABLE();
+		break;
+	}
+	case 1:
+	{
+		GLOBAL_INTERRUPT_ENABLE();
+		break;
+	}
+	case 2:
+	{
+		TICKTIMER_INTERRUPT_DISABLE();
+		break;
+	}
+	case 3:
+	{
+		TICKTIMER_INTERRUPT_ENABLE();
+		break;
+	}
+	case 4:
+	{
+		SET_PENDSV_INTERRUPT();
+		break;
+	}
+	case 5:
+	{
+
+		break;
+	}
+	default:
+	{
+		USART_Printf(USART1, "%d\r\n", svc_num);
+	}
+	}
 }
 // PendSV中断，执行任务切换
 // void PendSV_Handler(void)

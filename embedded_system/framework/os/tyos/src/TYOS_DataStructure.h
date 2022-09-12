@@ -54,14 +54,14 @@ struct process
     arraylist Assets;
 
     int32_t Mutex_Count;
-    arraylist Request_Mutexes;
+    arraylist Request_Mutex_IDs;
 } __ALIGNED(4);
 
 struct mutex
 {
     mutex_id ID;
-    status_flag Locked;
     process *Owner;
+    status_flag Locked;
     process *User;
     uint32_t Object;
 

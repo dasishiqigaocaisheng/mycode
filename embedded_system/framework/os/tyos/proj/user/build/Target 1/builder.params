@@ -1,5 +1,5 @@
 {
-    "name": "user",
+    "name": "tyos",
     "target": "Target 1",
     "toolchain": "AC6",
     "toolchainLocation": "D:\\Keil_v5\\ARM\\ARMCLANG",
@@ -75,7 +75,7 @@
             "misc-controls": "--diag_suppress=L6329",
             "link-time-optimization": true,
             "link-scatter": [
-                "\"d:/Electric_Design/gitlib/mycode/embedded_system/framework/os/tyos/proj/user/build/Target 1/user.sct\""
+                "\"d:/Electric_Design/gitlib/mycode/embedded_system/framework/os/tyos/proj/user/build/Target 1/tyos.sct\""
             ]
         }
     },
@@ -86,6 +86,6 @@
         "global": "cac9ebb7f9962eedc2224bd91a5b3174",
         "c/cpp-compiler": "09e17d2096b2bec4d9c10646041af11c",
         "asm-compiler": "41ada285171eb44cc747ea97210ce555",
-        "linker": "bb4c155d2e404028b8473df6f5d41fe2"
+        "linker": "f98b5397998a6fa2bf0dd6c4d87667df"
     }
 }

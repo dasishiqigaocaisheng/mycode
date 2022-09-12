@@ -220,3 +220,499 @@
 [2022-07-22 17:37:26]	[done]
 	build successfully !
 
+[2022-09-03 10:20:20]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:110:1: warning: non-void function does not return a value [-Wreturn-type]
+}
+^
+./../../src/TYOS_MultProcess.c:134:35: warning: incompatible pointer to integer conversion passing 'process_asset *' (aka 'struct process_asset *') to parameter of type 'uint16_t' (aka 'unsigned short') [-Wint-conversion]
+        ArrayList_Remove(&owner->Assets, pa);
+                                         ^~
+../../src/ArrayList.h:41:47: note: passing argument to parameter 'idx' here
+void ArrayList_Remove(arraylist *al, uint16_t idx);
+                                              ^
+./../../src/TYOS_MultProcess.c:136:35: warning: incompatible pointer to integer conversion passing 'mutex *' (aka 'struct mutex *') to parameter of type 'uint16_t' (aka 'unsigned short') [-Wint-conversion]
+        ArrayList_Remove(&my_os.Mutexes, mtx);
+                                         ^~~
+../../src/ArrayList.h:41:47: note: passing argument to parameter 'idx' here
+void ArrayList_Remove(arraylist *al, uint16_t idx);
+                                              ^
+./../../src/TYOS_MultProcess.c:147:15: warning: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Wvarargs]
+        va_start(vl, num);
+                     ^
+./../../src/TYOS_MultProcess.c:142:42: note: parameter of type 'uint8_t' (aka 'unsigned char') is declared here
+void TYOS_Mutex_Lock(process *p, uint8_t num, ...)
+                                         ^
+./../../src/TYOS_MultProcess.c:148:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:34:21: note: expanded from macro 'ArrayList_Clear'
+        Memory_Free((al)->Heap, (al)->Members);                                             \
+                    ^~~~~~~~~~
+../../../../base\Memory.h:77:24: note: passing argument to parameter 'h' here
+void Memory_Free(heap *h, void *addr);
+                       ^
+./../../src/TYOS_MultProcess.c:148:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:35:39: note: expanded from macro 'ArrayList_Clear'
+        (al)->Members = Memory_Malloc((al)->Heap, (al)->Member_Size * (al)->MinMalloc_Num); \
+                                      ^~~~~~~~~~
+../../../../base\Memory.h:76:27: note: passing argument to parameter 'h' here
+void *Memory_Malloc(heap *h, uint32_t size);
+                          ^
+./../../src/TYOS_MultProcess.c:352:15: warning: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Wvarargs]
+        va_start(vl, num);
+                     ^
+./../../src/TYOS_MultProcess.c:348:45: note: parameter of type 'uint8_t' (aka 'unsigned char') is declared here
+void TYOS_Mutex_Release(process *p, uint8_t num, ...)
+                                            ^
+./../../src/TYOS_MultProcess.c:358:7: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:420:6: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+        if (TYOS_Mutex_Is_Requested(p, id))
+            ^
+./../../src/TYOS_MultProcess.c:490:13: error: conflicting types for 'TYOS_Mutex_Is_Requested'
+status_flag TYOS_Mutex_Is_Requested(process *p, mutex_id id)
+            ^
+./../../src/TYOS_MultProcess.c:358:7: note: previous implicit declaration is here
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:495:25: warning: relational comparison result unused [-Wunused-comparison]
+        for (int i = 0; i++; i < p->Request_Mutex_IDs.Member_Num)
+                             ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+10 warnings and 1 error generated.
+
+[2022-09-03 10:22:39]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:135:2: warning: implicit declaration of function 'ArrayList_Remove2' is invalid in C99 [-Wimplicit-function-declaration]
+        ArrayList_Remove2(&owner->Assets, pa);
+        ^
+./../../src/TYOS_MultProcess.c:148:15: warning: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Wvarargs]
+        va_start(vl, num);
+                     ^
+./../../src/TYOS_MultProcess.c:143:42: note: parameter of type 'uint8_t' (aka 'unsigned char') is declared here
+void TYOS_Mutex_Lock(process *p, uint8_t num, ...)
+                                         ^
+./../../src/TYOS_MultProcess.c:149:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:34:21: note: expanded from macro 'ArrayList_Clear'
+        Memory_Free((al)->Heap, (al)->Members);                                             \
+                    ^~~~~~~~~~
+../../../../base\Memory.h:77:24: note: passing argument to parameter 'h' here
+void Memory_Free(heap *h, void *addr);
+                       ^
+./../../src/TYOS_MultProcess.c:149:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:35:39: note: expanded from macro 'ArrayList_Clear'
+        (al)->Members = Memory_Malloc((al)->Heap, (al)->Member_Size * (al)->MinMalloc_Num); \
+                                      ^~~~~~~~~~
+../../../../base\Memory.h:76:27: note: passing argument to parameter 'h' here
+void *Memory_Malloc(heap *h, uint32_t size);
+                          ^
+./../../src/TYOS_MultProcess.c:353:15: warning: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Wvarargs]
+        va_start(vl, num);
+                     ^
+./../../src/TYOS_MultProcess.c:349:45: note: parameter of type 'uint8_t' (aka 'unsigned char') is declared here
+void TYOS_Mutex_Release(process *p, uint8_t num, ...)
+                                            ^
+./../../src/TYOS_MultProcess.c:359:7: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:421:6: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+        if (TYOS_Mutex_Is_Requested(p, id))
+            ^
+./../../src/TYOS_MultProcess.c:491:13: error: conflicting types for 'TYOS_Mutex_Is_Requested'
+status_flag TYOS_Mutex_Is_Requested(process *p, mutex_id id)
+            ^
+./../../src/TYOS_MultProcess.c:359:7: note: previous implicit declaration is here
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:496:25: warning: relational comparison result unused [-Wunused-comparison]
+        for (int i = 0; i++; i < p->Request_Mutex_IDs.Member_Num)
+                             ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+8 warnings and 1 error generated.
+
+[2022-09-03 10:40:35]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:148:15: error: unexpected type name 'mutex_id': expected expression
+        va_start(vl, mutex_id);
+                     ^
+./../../src/TYOS_MultProcess.c:149:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:35:21: note: expanded from macro 'ArrayList_Clear'
+        Memory_Free((al)->Heap, (al)->Members);                                             \
+                    ^~~~~~~~~~
+../../../../base\Memory.h:77:24: note: passing argument to parameter 'h' here
+void Memory_Free(heap *h, void *addr);
+                       ^
+./../../src/TYOS_MultProcess.c:149:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:36:39: note: expanded from macro 'ArrayList_Clear'
+        (al)->Members = Memory_Malloc((al)->Heap, (al)->Member_Size * (al)->MinMalloc_Num); \
+                                      ^~~~~~~~~~
+../../../../base\Memory.h:76:27: note: passing argument to parameter 'h' here
+void *Memory_Malloc(heap *h, uint32_t size);
+                          ^
+./../../src/TYOS_MultProcess.c:353:15: warning: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Wvarargs]
+        va_start(vl, num);
+                     ^
+./../../src/TYOS_MultProcess.c:349:45: note: parameter of type 'uint8_t' (aka 'unsigned char') is declared here
+void TYOS_Mutex_Release(process *p, uint8_t num, ...)
+                                            ^
+./../../src/TYOS_MultProcess.c:359:7: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:421:6: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+        if (TYOS_Mutex_Is_Requested(p, id))
+            ^
+./../../src/TYOS_MultProcess.c:491:13: error: conflicting types for 'TYOS_Mutex_Is_Requested'
+status_flag TYOS_Mutex_Is_Requested(process *p, mutex_id id)
+            ^
+./../../src/TYOS_MultProcess.c:359:7: note: previous implicit declaration is here
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:496:25: warning: relational comparison result unused [-Wunused-comparison]
+        for (int i = 0; i++; i < p->Request_Mutex_IDs.Member_Num)
+                             ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+6 warnings and 2 errors generated.
+
+[2022-09-03 10:41:05]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:148:15: warning: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Wvarargs]
+        va_start(vl, num);
+                     ^
+./../../src/TYOS_MultProcess.c:143:42: note: parameter of type 'uint8_t' (aka 'unsigned char') is declared here
+void TYOS_Mutex_Lock(process *p, uint8_t num, ...)
+                                         ^
+./../../src/TYOS_MultProcess.c:149:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:35:21: note: expanded from macro 'ArrayList_Clear'
+        Memory_Free((al)->Heap, (al)->Members);                                             \
+                    ^~~~~~~~~~
+../../../../base\Memory.h:77:24: note: passing argument to parameter 'h' here
+void Memory_Free(heap *h, void *addr);
+                       ^
+./../../src/TYOS_MultProcess.c:149:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:36:39: note: expanded from macro 'ArrayList_Clear'
+        (al)->Members = Memory_Malloc((al)->Heap, (al)->Member_Size * (al)->MinMalloc_Num); \
+                                      ^~~~~~~~~~
+../../../../base\Memory.h:76:27: note: passing argument to parameter 'h' here
+void *Memory_Malloc(heap *h, uint32_t size);
+                          ^
+./../../src/TYOS_MultProcess.c:353:15: warning: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Wvarargs]
+        va_start(vl, num);
+                     ^
+./../../src/TYOS_MultProcess.c:349:45: note: parameter of type 'uint8_t' (aka 'unsigned char') is declared here
+void TYOS_Mutex_Release(process *p, uint8_t num, ...)
+                                            ^
+./../../src/TYOS_MultProcess.c:359:7: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:421:6: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+        if (TYOS_Mutex_Is_Requested(p, id))
+            ^
+./../../src/TYOS_MultProcess.c:491:13: error: conflicting types for 'TYOS_Mutex_Is_Requested'
+status_flag TYOS_Mutex_Is_Requested(process *p, mutex_id id)
+            ^
+./../../src/TYOS_MultProcess.c:359:7: note: previous implicit declaration is here
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:496:25: warning: relational comparison result unused [-Wunused-comparison]
+        for (int i = 0; i++; i < p->Request_Mutex_IDs.Member_Num)
+                             ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+7 warnings and 1 error generated.
+
+[2022-09-03 10:50:21]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:149:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:35:21: note: expanded from macro 'ArrayList_Clear'
+        Memory_Free((al)->Heap, (al)->Members);                                             \
+                    ^~~~~~~~~~
+../../../../base\Memory.h:77:24: note: passing argument to parameter 'h' here
+void Memory_Free(heap *h, void *addr);
+                       ^
+./../../src/TYOS_MultProcess.c:149:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:36:39: note: expanded from macro 'ArrayList_Clear'
+        (al)->Members = Memory_Malloc((al)->Heap, (al)->Member_Size * (al)->MinMalloc_Num); \
+                                      ^~~~~~~~~~
+../../../../base\Memory.h:76:27: note: passing argument to parameter 'h' here
+void *Memory_Malloc(heap *h, uint32_t size);
+                          ^
+./../../src/TYOS_MultProcess.c:353:15: warning: passing an object that undergoes default argument promotion to 'va_start' has undefined behavior [-Wvarargs]
+        va_start(vl, num);
+                     ^
+./../../src/TYOS_MultProcess.c:349:45: note: parameter of type 'uint8_t' (aka 'unsigned char') is declared here
+void TYOS_Mutex_Release(process *p, uint8_t num, ...)
+                                            ^
+./../../src/TYOS_MultProcess.c:359:7: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:421:6: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+        if (TYOS_Mutex_Is_Requested(p, id))
+            ^
+./../../src/TYOS_MultProcess.c:491:13: error: conflicting types for 'TYOS_Mutex_Is_Requested'
+status_flag TYOS_Mutex_Is_Requested(process *p, mutex_id id)
+            ^
+./../../src/TYOS_MultProcess.c:359:7: note: previous implicit declaration is here
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:496:25: warning: relational comparison result unused [-Wunused-comparison]
+        for (int i = 0; i++; i < p->Request_Mutex_IDs.Member_Num)
+                             ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+6 warnings and 1 error generated.
+
+[2022-09-03 10:53:37]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:149:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:36:39: note: expanded from macro 'ArrayList_Clear'
+        (al)->Members = Memory_Malloc((al)->Heap, (al)->Member_Size * (al)->MinMalloc_Num); \
+                                      ^~~~~~~~~~
+../../../../base\Memory.h:76:27: note: passing argument to parameter 'h' here
+void *Memory_Malloc(heap *h, uint32_t size);
+                          ^
+./../../src/TYOS_MultProcess.c:359:7: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:421:6: warning: implicit declaration of function 'TYOS_Mutex_Is_Requested' is invalid in C99 [-Wimplicit-function-declaration]
+        if (TYOS_Mutex_Is_Requested(p, id))
+            ^
+./../../src/TYOS_MultProcess.c:491:13: error: conflicting types for 'TYOS_Mutex_Is_Requested'
+status_flag TYOS_Mutex_Is_Requested(process *p, mutex_id id)
+            ^
+./../../src/TYOS_MultProcess.c:359:7: note: previous implicit declaration is here
+                if (TYOS_Mutex_Is_Requested(p, mtx_id))
+                    ^
+./../../src/TYOS_MultProcess.c:496:25: warning: relational comparison result unused [-Wunused-comparison]
+        for (int i = 0; i++; i < p->Request_Mutex_IDs.Member_Num)
+                             ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4 warnings and 1 error generated.
+
+[2022-09-03 10:55:12]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:144:6: error: conflicting types for 'TYOS_Mutex_Lock'
+void TYOS_Mutex_Lock(process *p, int num, ...)
+     ^
+../../src/TYOS_MultProcess.h:7:6: note: previous declaration is here
+void TYOS_Mutex_Lock(process *p, uint8_t num, ...);
+     ^
+./../../src/TYOS_MultProcess.c:150:2: warning: passing 'const volatile heap *' to parameter of type 'heap *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+        ArrayList_Clear(&p->Request_Mutex_IDs);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../src/ArrayList.h:36:39: note: expanded from macro 'ArrayList_Clear'
+        (al)->Members = Memory_Malloc((al)->Heap, (al)->Member_Size * (al)->MinMalloc_Num); \
+                                      ^~~~~~~~~~
+../../../../base\Memory.h:76:27: note: passing argument to parameter 'h' here
+void *Memory_Malloc(heap *h, uint32_t size);
+                          ^
+./../../src/TYOS_MultProcess.c:350:6: error: conflicting types for 'TYOS_Mutex_Release'
+void TYOS_Mutex_Release(process *p, int num, ...)
+     ^
+../../src/TYOS_MultProcess.h:9:6: note: previous declaration is here
+void TYOS_Mutex_Release(process *p, uint8_t num, ...);
+     ^
+./../../src/TYOS_MultProcess.c:497:25: warning: relational comparison result unused [-Wunused-comparison]
+        for (int i = 0; i++; i < p->Request_Mutex_IDs.Member_Num)
+                             ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2 warnings and 2 errors generated.
+
+[2022-09-03 10:56:30]	[done]
+	build successfully !
+
+[2022-09-03 10:57:42]	[done]
+	build successfully !
+
+[2022-09-03 11:06:57]	[done]
+	build successfully !
+
+[2022-09-03 11:14:28]	[done]
+	build successfully !
+
+[2022-09-03 11:15:22]	[done]
+	build successfully !
+
+[2022-09-03 11:18:03]	[done]
+	build successfully !
+
+[2022-09-03 11:21:26]	[done]
+	build successfully !
+
+[2022-09-03 11:22:32]	[done]
+	build successfully !
+
+[2022-09-03 11:26:01]	[done]
+	build successfully !
+
+[2022-09-05 10:37:29]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:186:2: error: expected statement
+        }
+        ^
+./../../src/TYOS_MultProcess.c:254:2: error: expected statement
+        }
+        ^
+2 errors generated.
+
+[2022-09-05 10:40:45]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:255:2: error: expected statement
+        }
+        ^
+1 error generated.
+
+[2022-09-05 10:41:05]	[done]
+	build successfully !
+
+[2022-09-05 10:44:13]	[done]
+	build successfully !
+
+[2022-09-05 10:46:44]	[done]
+	build successfully !
+
+[2022-09-05 10:46:58]	[done]
+	build successfully !
+
+[2022-09-05 10:49:08]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\proj\user\main.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./main.c:151:3: error: expected '}'
+        }
+         ^
+./main.c:142:1: note: to match this '{'
+{
+^
+1 error generated.
+
+[2022-09-05 10:49:25]	[done]
+	build successfully !
+
+[2022-09-05 10:49:57]	[done]
+	build successfully !
+
+[2022-09-05 10:52:10]	[done]
+	build successfully !
+
+[2022-09-05 11:05:02]	[done]
+	build successfully !
+
+[2022-09-05 11:12:44]	[done]
+	build successfully !
+
+[2022-09-05 11:25:38]	[done]
+	build successfully !
+
+[2022-09-05 11:27:21]	[done]
+	build successfully !
+
+[2022-09-05 11:37:30]	[done]
+	build successfully !
+
+[2022-09-05 11:56:31]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:455:7: error: expected expression
+                                                ArrayList_Insert2(&mtx->Waiting_Process, j, process *) = p_sel;
+                                                ^
+../../src/ArrayList.h:28:52: note: expanded from macro 'ArrayList_Insert2'
+#define ArrayList_Insert2(al, idx, type) *((type) *)ArrayList_Insert(al, idx)
+                                                   ^
+1 error generated.
+
+[2022-09-05 11:57:12]	[done]
+	build successfully !
+
+[2022-09-05 11:57:32]	[done]
+	build successfully !
+
+[2022-09-05 11:57:48]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_MultProcess.c", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+./../../src/TYOS_MultProcess.c:455:7: error: expected expression
+                                                ArrayList_Insert2(&mtx->Waiting_Process, j, process *) = p_sel;
+                                                ^
+../../src/ArrayList.h:28:52: note: expanded from macro 'ArrayList_Insert2'
+#define ArrayList_Insert2(al, idx, type) *((type) *)ArrayList_Insert(al, idx)
+                                                   ^
+1 error generated.
+
+[2022-09-05 11:58:11]	[done]
+	build successfully !
+
+[2022-09-05 17:06:57]	[done]
+	build successfully !
+
+[2022-09-05 17:07:37]	[done]
+	build successfully !
+
+[2022-09-05 17:13:27]	[done]
+	build successfully !
+
+[2022-09-11 17:27:52]	compilation failed at : "d:\Electric_Design\gitlib\mycode\embedded_system\framework\os\tyos\src\TYOS_Assembly.s", exit code: 1
+   at unify_builder.Program.Main(String[] args_)
+---
+"./../../src/TYOS_Assembly.s", line 113 (column 7): Error: A1215E: Bad register list symbol
+  113 0000009c  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 120 (column 7): Error: A1215E: Bad register list symbol
+  120 000000a6  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 127 (column 7): Error: A1215E: Bad register list symbol
+  127 000000b0  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 134 (column 7): Error: A1215E: Bad register list symbol
+  134 000000ba  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 141 (column 7): Error: A1215E: Bad register list symbol
+  141 000000c4  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 148 (column 7): Error: A1215E: Bad register list symbol
+  148 000000ce  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 155 (column 7): Error: A1215E: Bad register list symbol
+  155 000000d8  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 162 (column 7): Error: A1215E: Bad register list symbol
+  162 000000e2  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 169 (column 7): Error: A1215E: Bad register list symbol
+  169 000000ec  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 176 (column 7): Error: A1215E: Bad register list symbol
+  176 000000f6  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 183 (column 7): Error: A1215E: Bad register list symbol
+  183 00000100  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 190 (column 7): Error: A1215E: Bad register list symbol
+  190 0000010a  PUSH R4
+                     ^
+"./../../src/TYOS_Assembly.s", line 197: Warning: A1447W: Missing END directive at end of file, but found a label named END
+  197 00000110 
+12 Errors, 1 Warning
+
+[2022-09-11 17:28:55]	[done]
+	build successfully !
+

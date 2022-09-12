@@ -6,7 +6,14 @@
     ],
     "settings": {
         "files.associations": {
-            "arraylist.h": "c"
+            "tyos_datastructure.h": "c",
+            "cstddef": "c",
+            "type_traits": "c",
+            "limits": "c",
+            "arraylist.h": "c",
+            "tyos_kernel.h": "c",
+            "tyos_syscall.h": "c",
+            "tyos_multprocess.h": "c"
         }
     },
     "extensions": {}

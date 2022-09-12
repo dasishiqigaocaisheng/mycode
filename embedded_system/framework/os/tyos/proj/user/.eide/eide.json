@@ -1,5 +1,5 @@
 {
-  "name": "user",
+  "name": "tyos",
   "type": "ARM",
   "dependenceList": [],
   "srcDirs": [
@@ -52,10 +52,10 @@
         "name": "mathhelper",
         "files": [
           {
-            "path": "../../../../../stm32/stm32h7/mathhelper/MathHelper.c"
+            "path": "../../../../../stm32/stm32h7/mathhelper/arm_cortexM7lfdp_math.lib"
           },
           {
-            "path": "../../../../../stm32/stm32h7/mathhelper/arm_cortexM7lfdp_math.lib"
+            "path": "../../../../../stm32/stm32h7/mathhelper/MathHelper.c"
           }
         ],
         "folders": []

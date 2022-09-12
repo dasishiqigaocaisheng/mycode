@@ -6,6 +6,27 @@ SYSRICK_CONTROL EQU 0xE000E010
 	EXPORT PendSV_Handler
 	EXPORT SVC_Handler
 	
+	EXPORT sys_call
+	EXPORT TYOS_Global_Interrupt_Disable
+	EXPORT TYOS_Global_Interrupt_Enable
+	EXPORT TYOS_Stop_Schedule
+	EXPORT TYOS_Resume_Schedule
+	EXPORT TYOS_Schedule_Immediately
+
+	EXPORT TYOS_Create_Metux
+	EXPORT TYOS_Delete_Metux
+	EXPORT TYOS_Mutex_Regist
+	EXPORT TYOS_Mutex_Unregist
+	EXPORT TYOS_Mutex_Unregist_All
+	EXPORT TYOS_Mutex_Lock
+	EXPORT TYOS_Mutex_Lock_Direct
+	EXPORT TYOS_Mutex_Lock_Try
+	EXPORT TYOS_Mutex_Lock_Direct_Try
+	EXPORT TYOS_Mutex_Release
+	EXPORT TYOS_Mutex_Is_Locked
+	EXPORT TYOS_Mutex_Is_Registed
+	
+	
 	IMPORT _TYOS_Process_Switch
 	IMPORT _TYOS_SVC_Handler_C
 
@@ -13,7 +34,7 @@ SYSRICK_CONTROL EQU 0xE000E010
 	
 TYOS_Start	;启动TYOS
 	MRS R0, CONTROL
-	ORR R0, R0, #0x2	;R0|=1<<1
+	ORR R0, R0, #0x2	;R0|=2，使用PSP
 	MSR CONTROL, R0
 	LDR R0, =my_os
 	LDR R0, [R0]		;读取sysprocess地址
@@ -24,6 +45,9 @@ TYOS_Start	;启动TYOS
 	LDR R2, [R0]		;读取Systick控制寄存器的值
 	ORR R2, R2, #1		;SysTick->CTRL|=1，使能SysTick
 	STR R2, [R0]		;回写SysTick的控制寄存器
+	MRS R0, CONTROL
+	ORR R0, R0, #0x1	;R0|=1，进入用户级
+	MSR CONTROL, R0
 	MOV PC, R1
 
 PendSV_Handler
@@ -56,7 +80,117 @@ SVC_Handler
 	ITE EQ
 	MRSEQ R0, MSP	;压栈使用的MSP
 	MRSNE R0, PSP	;压栈使用的PSP
+	LDR R1, [R0, #16]
 	B _TYOS_SVC_Handler_C
 
-	END
+sys_call
+	MOV R12, SP
+	SVC #100
+	BX LR
+
+TYOS_Global_Interrupt_Disable
+	SVC #0
+	BX LR
+
+TYOS_Global_Interrupt_Enable
+	SVC #1
+	BX LR
+
+TYOS_Stop_Schedule
+	SVC #2
+	BX LR
+	
+TYOS_Resume_Schedule
+	SVC #3
+	BX LR
+
+TYOS_Schedule_Immediately
+	SVC #4
+	BX LR
+
+TYOS_Create_Metux
+	MOV R4, #0
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Delete_Metux
+	MOV R4, #1
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Mutex_Regist
+	MOV R4, #2
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Mutex_Unregist
+	MOV R4, #3
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Mutex_Unregist_All
+	MOV R4, #4
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Mutex_Lock
+	MOV R4, #5
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Mutex_Lock_Direct
+	MOV R4, #6
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Mutex_Lock_Try
+	MOV R4, #7
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Mutex_Lock_Direct_Try
+	MOV R4, #8
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Mutex_Release
+	MOV R4, #9
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Mutex_Is_Locked
+	MOV R4, #10
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+TYOS_Mutex_Is_Registed
+	MOV R4, #11
+	PUSH {R4}
+	MOV R12, SP
+	SVC #5
+	BX LR
+
+END
 		

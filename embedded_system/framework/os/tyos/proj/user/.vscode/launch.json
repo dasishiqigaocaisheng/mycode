@@ -18,7 +18,7 @@
             "request": "launch",
             "name": "stlink",
             "servertype": "openocd",
-            "executable": "build\\Target 1\\user.elf",
+            "executable": "build\\Target 1\\tyos.elf",
             "runToMain": true,
             "configFiles": [
                 "interface/stlink.cfg",

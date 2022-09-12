@@ -125,7 +125,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGTARM</Key>
-          <Name>(1010=501,189,1097,874,0)(6017=-1,-1,-1,-1,0)(1008=-1,-1,-1,-1,0)(6016=692,151,1032,954,0)(1012=180,209,812,596,0)</Name>
+          <Name>(1010=501,189,1097,874,0)(6017=-1,-1,-1,-1,0)(1008=-1,-1,-1,-1,0)(6016=692,151,1032,954,0)(1012=412,229,1044,616,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -152,9 +152,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>302</LineNumber>
+          <LineNumber>98</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134222312</Address>
+          <Address>134222730</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -163,14 +163,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\..\src\TYOS_Kernel.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\tyos\../../src/TYOS_Kernel.c\302</Expression>
+          <Expression>\\tyos\../../src/TYOS_Kernel.c\98</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>272</LineNumber>
+          <LineNumber>97</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134222192</Address>
+          <Address>134222726</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -179,30 +179,30 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\..\src\TYOS_Kernel.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\tyos\../../src/TYOS_Kernel.c\272</Expression>
+          <Expression>\\tyos\../../src/TYOS_Kernel.c\97</Expression>
         </Bp>
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>181</LineNumber>
+          <LineNumber>48</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>135271788</Address>
+          <Address>134225316</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\src\TYOS_Kernel.c</Filename>
+          <Filename>.\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\tyos\../../src/TYOS_Kernel.c\181</Expression>
+          <Expression>\\tyos\main.c\48</Expression>
         </Bp>
         <Bp>
           <Number>3</Number>
           <Type>0</Type>
-          <LineNumber>30</LineNumber>
+          <LineNumber>35</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>135272428</Address>
+          <Address>135273906</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -211,60 +211,60 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\..\src\TYOS_Assembly.s</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\tyos\../../src/TYOS_Assembly.s\30</Expression>
+          <Expression>\\tyos\../../src/TYOS_Assembly.s\35</Expression>
         </Bp>
         <Bp>
           <Number>4</Number>
           <Type>0</Type>
-          <LineNumber>44</LineNumber>
+          <LineNumber>43</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>135272460</Address>
+          <Address>134225242</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\src\TYOS_Assembly.s</Filename>
+          <Filename>.\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\tyos\../../src/TYOS_Assembly.s\44</Expression>
+          <Expression>\\tyos\main.c\43</Expression>
         </Bp>
         <Bp>
           <Number>5</Number>
           <Type>0</Type>
-          <LineNumber>293</LineNumber>
+          <LineNumber>138</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
+          <Address>134222940</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\..\src\TYOS_Kernel.c</Filename>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\..\src\TYOS_MultProcess.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\tyos\../../src/TYOS_MultProcess.c\138</Expression>
         </Bp>
         <Bp>
           <Number>6</Number>
           <Type>0</Type>
-          <LineNumber>182</LineNumber>
+          <LineNumber>135</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
+          <Address>134222932</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\..\src\TYOS_Kernel.c</Filename>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\..\src\TYOS_MultProcess.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\tyos\../../src/TYOS_MultProcess.c\135</Expression>
         </Bp>
         <Bp>
           <Number>7</Number>
           <Type>0</Type>
-          <LineNumber>273</LineNumber>
+          <LineNumber>95</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -280,23 +280,7 @@
         <Bp>
           <Number>8</Number>
           <Type>0</Type>
-          <LineNumber>294</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\..\src\TYOS_Kernel.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>9</Number>
-          <Type>0</Type>
-          <LineNumber>303</LineNumber>
+          <LineNumber>96</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -331,19 +315,17 @@
           <WinNumber>1</WinNumber>
           <ItemText>sys_p</ItemText>
         </Ww>
-      </WatchWindow1>
-      <WatchWindow2>
         <Ww>
-          <count>0</count>
-          <WinNumber>2</WinNumber>
-          <ItemText>wtt</ItemText>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>svc_num</ItemText>
         </Ww>
-      </WatchWindow2>
+      </WatchWindow1>
       <MemoryWindow1>
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>1</SubType>
-          <ItemText>0x24000100</ItemText>
+          <ItemText>0x200001E0</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>

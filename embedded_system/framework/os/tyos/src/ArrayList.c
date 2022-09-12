@@ -74,6 +74,11 @@ void ArrayList_Remove(arraylist *al, uint16_t idx)
     al->Member_Num--;
 }
 
+void ArrayList_Remove2(arraylist *al, void *obj)
+{
+    ArrayList_Remove(al, ArrayList_Get_Index(al, obj));
+}
+
 status_flag ArrayList_IsContain(arraylist *al, void *object)
 {
     uint8_t *save = al->Members;

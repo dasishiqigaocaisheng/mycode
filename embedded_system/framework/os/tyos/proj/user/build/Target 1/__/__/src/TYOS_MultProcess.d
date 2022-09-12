@@ -8,4 +8,5 @@
   ..\..\src\ArrayList.h ..\..\..\..\base\Memory.h \
   ..\..\..\..\..\stm32\stm32h7\sys\sys.h \
   ..\..\..\..\..\stm32\stm32h7\sys\stm32h7xx.h \
-  ..\..\..\..\..\stm32\stm32h7\sys\stm32h743xx.h
+  ..\..\..\..\..\stm32\stm32h7\sys\stm32h743xx.h \
+  ..\..\src\TYOS_MultProcess.h ..\..\src\TYOS_SysCall.h
